@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; // this is the only place this import should be needed on v18 of react
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
