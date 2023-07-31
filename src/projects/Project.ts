@@ -1,12 +1,12 @@
 export class Project {
   id: number | undefined;
-  name: string = "";
-  description: string = "";
-  imageUrl: string = "";
+  name = "";
+  description = "";
+  imageUrl = "";
   contractTypeId: number | undefined;
   contractSignedOn: Date = new Date();
-  budget: number = 0;
-  isActive: boolean = false;
+  budget = 0;
+  isActive = false;
   get isNew(): boolean {
     return this.id === undefined;
   }

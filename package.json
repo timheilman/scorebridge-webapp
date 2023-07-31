@@ -46,6 +46,9 @@
   },
   "devDependencies": {
     "eslint": "^8.45.0",
+    "eslint-plugin-react": "^7.33.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
     "prettier": "^3.0.0"
   }
 }
