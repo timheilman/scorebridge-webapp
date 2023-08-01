@@ -1,6 +1,6 @@
 // per https://handsonreact.com/docs/react-typescript
 
-export interface Props {
+export interface HelloWorldProps {
   person: { first: string; last: string };
   logo: { name: string; title: string; path: string };
 }
@@ -9,20 +9,27 @@ type Fruit = {
   id: number;
   name: string;
 };
-function FruitListItem(props: { fruit: Fruit }) {
+
+interface FruitListItemProps {
+  fruit: Fruit;
+}
+
+function FruitListItem({ fruit }: FruitListItemProps) {
   function handleClick(id: number) {
     console.log(`removed ${id}`);
   }
 
-  return (
-    <li onClick={() => handleClick(props.fruit.id)}>{props.fruit.name} </li>
-  );
+  return <li onClick={() => handleClick(fruit.id)}>{fruit.name}</li>;
 }
 
-function FruitList(props: { fruits: Fruit[] }) {
+interface FruitListProps {
+  fruits: Fruit[];
+}
+
+function FruitList({ fruits }: FruitListProps) {
   return (
     <ul>
-      {props.fruits.map((fruit: Fruit) => (
+      {fruits.map((fruit: Fruit) => (
         <FruitListItem key={fruit.id} fruit={fruit} />
       ))}
     </ul>
@@ -44,7 +51,7 @@ function handleClick() {
   console.log("clicked");
 }
 
-function HelloWorld({ person, logo }: Props) {
+function HelloWorld({ person, logo }: HelloWorldProps) {
   const { first, last } = person;
   const { path, title } = logo;
   return (
