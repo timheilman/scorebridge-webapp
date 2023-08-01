@@ -1,5 +1,4 @@
 // per https://handsonreact.com/docs/react-typescript
-import { MouseEventHandler } from "react";
 
 export interface Props {
   person: { first: string; last: string };
