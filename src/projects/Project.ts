@@ -11,7 +11,16 @@ export class Project {
     return this.id === undefined;
   }
 
-  constructor(initializer?: any) {
+  constructor(initializer?: {
+    id?: number;
+    name: string;
+    description: string;
+    imageUrl: string;
+    contractTypeId: number;
+    contractSignedOn: string;
+    budget: number;
+    isActive: boolean;
+  }) {
     if (!initializer) return;
     if (initializer.id) this.id = initializer.id;
     if (initializer.name) this.name = initializer.name;

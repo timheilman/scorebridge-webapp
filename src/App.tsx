@@ -1,5 +1,7 @@
 import "./App.css";
 
+import React from "react";
+
 import ProjectsPage from "./projects/ProjectsPage";
 
 function App() {
