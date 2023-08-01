@@ -11,8 +11,8 @@ const reportWebVitals = (onPerfEntry?: ReportHandler) => {
         getTTFB(onPerfEntry);
       })
       .catch((reason) => {
-        console.log("Problems with import:");
-        console.log(reason);
+        console.error("Problems with import:");
+        console.error(reason);
       });
   }
 };
