@@ -13,13 +13,14 @@ function FruitListItem(props: { fruit: Fruit }) {
 }
 
 function FruitList(props: { fruits: Fruit[] }) {
-  const fruitListItems = props.fruits.map((fruit: Fruit) => (
-    <FruitListItem key={fruit.id} fruit={fruit} />
-    // <FruitListItem fruit={fruit} />
-  ));
-  return <ul>{fruitListItems}</ul>;
+  return (
+    <ul>
+      {props.fruits.map((fruit: Fruit) => (
+        <FruitListItem key={fruit.id} fruit={fruit} />
+      ))}
+    </ul>
+  );
 }
-
 const constFruits: Fruit[] = [
   { id: 1, name: "apple" },
   { id: 2, name: "orange" },
