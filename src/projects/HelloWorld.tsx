@@ -1,4 +1,6 @@
 // per https://handsonreact.com/docs/react-typescript
+import { MouseEventHandler } from "react";
+
 export interface Props {
   person: { first: string; last: string };
   logo: { name: string; title: string; path: string };
@@ -9,7 +11,13 @@ type Fruit = {
   name: string;
 };
 function FruitListItem(props: { fruit: Fruit }) {
-  return <li>{props.fruit.name}</li>;
+  function handleClick(id: number) {
+    console.log(`removed ${id}`);
+  }
+
+  return (
+    <li onClick={() => handleClick(props.fruit.id)}>{props.fruit.name} </li>
+  );
 }
 
 function FruitList(props: { fruits: Fruit[] }) {
