@@ -8,6 +8,9 @@ function formatDescription(description: string): string {
 
 function ProjectCard(props: { project: Project }) {
   const { project } = props;
+  const handleEditClick = (project: Project) => {
+    console.log(project);
+  };
   return (
     <div className="card">
       <img src={project.imageUrl} alt={project.name} />
@@ -17,6 +20,10 @@ function ProjectCard(props: { project: Project }) {
         </h5>
         <p>{formatDescription(project.description)}</p>
         <p>Budget : {project.budget.toLocaleString()}</p>
+        <button className="bordered" onClick={() => handleEditClick(project)}>
+          <span className="icon-edit "></span>
+          Edit
+        </button>
       </section>
     </div>
   );
