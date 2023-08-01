@@ -1,5 +1,6 @@
 // per https://handsonreact.com/docs/react-typescript
 
+import AsynchronouslyUpdatingComponent from "./AsynchronouslyUpdatingComponent";
 import Clock from "./Clock";
 
 export interface HelloWorldProps {
@@ -72,8 +73,9 @@ function HelloWorld({ person, logo }: HelloWorldProps) {
           <a href="">c</a>
         </li>
       </ul>
-      <Button />;
-      <Clock />;
+      <Button />
+      <Clock />
+      <AsynchronouslyUpdatingComponent />
     </>
   );
   // return <>Hello, world!</>;
