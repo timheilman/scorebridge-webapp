@@ -1,5 +1,7 @@
 // per https://handsonreact.com/docs/react-typescript
 
+import Clock from "./Clock";
+
 export interface HelloWorldProps {
   person: { first: string; last: string };
   logo: { name: string; title: string; path: string };
@@ -71,6 +73,7 @@ function HelloWorld({ person, logo }: HelloWorldProps) {
         </li>
       </ul>
       <Button />;
+      <Clock />;
     </>
   );
   // return <>Hello, world!</>;
