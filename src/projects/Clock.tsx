@@ -1,33 +1,14 @@
 import { useEffect, useState } from "react";
 function addMinutes(date: Date, minutes: number) {
-  //we multiply minutes by 60000 is to convert minutes to milliseconds
   return new Date(date.getTime() + minutes * 60000);
 }
 
-// function Clock() {
-//   const [time, setTime] = useState(new Date());
-//
-//   const handleClick = () => {
-//     setTime(addMinutes(time, 10));
-//   };
-//
-//   return (
-//     <div>
-//       <p>{time.toLocaleTimeString()}</p>
-//       <button onClick={handleClick}>+ 10 Minutes</button>
-//     </div>
-//   );
-// }
-
-// Still Messy!
 function Clock() {
   const [time, setTime] = useState(new Date());
 
-  const interval = setInterval(() => setTime(new Date()), 5000);
   useEffect(() => {
-    return () => {
-      clearInterval(interval); // This does not seem to work! Still getting quicker-than-5s refreshes after a few clicks
-    };
+    const interval = setInterval(() => setTime(new Date()), 5000);
+    return () => clearInterval(interval);
   });
 
   const handleClick1 = () => {
