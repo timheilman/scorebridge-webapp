@@ -29,6 +29,14 @@ const constFruits: Fruit[] = [
   { id: 5, name: "kiwi" },
 ];
 
+function Button() {
+  return <button onClick={handleClick}>Click Me!</button>;
+}
+
+function handleClick() {
+  console.log("clicked");
+}
+
 function HelloWorld({ person, logo }: Props) {
   const { first, last } = person;
   const { path, title } = logo;
@@ -48,6 +56,7 @@ function HelloWorld({ person, logo }: Props) {
           <a href="">c</a>
         </li>
       </ul>
+      <Button />;
     </>
   );
   // return <>Hello, world!</>;
