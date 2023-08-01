@@ -1,5 +1,6 @@
 import { Project } from "./Project";
 import ProjectCard from "./ProjectCard";
+import ProjectForm from "./ProjectForm";
 
 function ProjectList({ projects }: { projects: Project[] }) {
   return (
@@ -7,6 +8,7 @@ function ProjectList({ projects }: { projects: Project[] }) {
       {projects.map((p) => (
         <div key={p.id} className="cols-sm">
           <ProjectCard project={p} />
+          <ProjectForm />
         </div>
       ))}
     </div>
