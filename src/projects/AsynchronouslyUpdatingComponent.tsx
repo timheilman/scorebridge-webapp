@@ -12,6 +12,7 @@ export default function AsynchronouslyUpdatingComponent() {
 
   return (
     <>
+      <p>Asynchronously-updating Component:</p>
       {loading && <p>Loading...</p>}
       <pre>{JSON.stringify(data, null, " ")}</pre>
       <button onClick={loadData}>Load Data</button>

@@ -2,6 +2,7 @@
 
 import AsynchronouslyUpdatingComponent from "./AsynchronouslyUpdatingComponent";
 import Clock from "./Clock";
+import SlowLoadingComponent from "./SlowLoadingComponent";
 
 export interface HelloWorldProps {
   person: { first: string; last: string };
@@ -76,6 +77,7 @@ function HelloWorld({ person, logo }: HelloWorldProps) {
       <Button />
       <Clock />
       <AsynchronouslyUpdatingComponent />
+      <SlowLoadingComponent />
     </>
   );
   // return <>Hello, world!</>;

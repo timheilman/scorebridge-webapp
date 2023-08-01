@@ -42,7 +42,10 @@ function Clock() {
 
   return (
     <div>
-      Updates to true time every 5 seconds (even with multiple renders):{" "}
+      <p>
+        Messy clock initially updates to true time every 5 seconds, but multiple
+        clicks causes too-frequent updates:
+      </p>
       <p>{time.toLocaleTimeString()}</p>
       <button onClick={handleClick1}>
         + 20 Minutes may fail due to react event batching (tho it also may
