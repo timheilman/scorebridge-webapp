@@ -1,14 +1,13 @@
-const person = { first: "Tim", last: "Heilman" };
-const logo = {
-  name: "Logo",
-  title: "Logo",
-  path: "./logo512.png", // by experiment, . corresponds to /public
-};
-function HelloWorld() {
+function HelloWorld(props: {
+  person: { first: string; last: string };
+  logo: { name: string; title: string; path: string };
+}) {
+  const { first, last } = props.person;
+  const { path, title } = props.logo;
   return (
     <>
-      <img src={logo.path} alt={logo.title} />
-      Hello, {person.last}, {person.first}!
+      <img src={path} alt={title} />
+      Hello, {last}, {first}!
       <ul>
         <li>
           <a href="">a</a>
