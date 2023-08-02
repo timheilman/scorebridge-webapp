@@ -3,7 +3,7 @@ function addMinutes(date: Date, minutes: number) {
   return new Date(date.getTime() + minutes * 60000);
 }
 
-function Clock() {
+function ClockWithCleanup() {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -24,19 +24,19 @@ function Clock() {
   return (
     <div>
       <p>
-        Messy clock initially updates to true time every 5 seconds, but multiple
-        clicks causes too-frequent updates:
+        Clock with proper cleanup should update to true time any multiple of
+        five seconds after the most recent initial-render or a button press.
       </p>
       <p>{time.toLocaleTimeString()}</p>
       <button onClick={handleClick1}>
-        + 20 Minutes may fail due to react event batching (tho it also may
-        not...)
+        + 20 fake minutes may fail as +10 fake minutes instead due to react
+        event batching (tho it also may also succeed as +20 fake minutes...)
       </button>
       <button onClick={handleClick2}>
-        + 20 Minutes always succeeds via previousTime-parameterized setting
-        function
+        + 20 fake minutes always succeeds via previousTime-parameterized setting
+        function, until next 5-secondly refresh to real time
       </button>
     </div>
   );
 }
-export default Clock;
+export default ClockWithCleanup;

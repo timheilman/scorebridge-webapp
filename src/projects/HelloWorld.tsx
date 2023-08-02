@@ -1,7 +1,8 @@
 // per https://handsonreact.com/docs/react-typescript
 
 import AsynchronouslyUpdatingComponent from "./AsynchronouslyUpdatingComponent";
-import Clock from "./Clock";
+import ClockWithCleanup from "./ClockWithCleanup";
+import ComponentWithDataDependencyButNoCleanup from "./ComponentWithDataDependencyButNoCleanup";
 import SlowLoadingComponent from "./SlowLoadingComponent";
 
 export interface HelloWorldProps {
@@ -75,9 +76,10 @@ function HelloWorld({ person, logo }: HelloWorldProps) {
         </li>
       </ul>
       <Button />
-      <Clock />
+      <ClockWithCleanup />
       <AsynchronouslyUpdatingComponent />
       <SlowLoadingComponent />
+      <ComponentWithDataDependencyButNoCleanup />
     </>
   );
   // return <>Hello, world!</>;
