@@ -36,7 +36,7 @@ function ProjectForm({
     };
     let updatedProject: Project;
     setProject((p: Project) => {
-      updatedProject = Project.fromOther(p, change);
+      updatedProject = p.clone(change);
       return updatedProject;
     });
   };

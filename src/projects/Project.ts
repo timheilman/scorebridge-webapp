@@ -35,10 +35,10 @@ export class Project {
     if (initializer.budget) this.budget = initializer.budget;
     if (initializer.isActive) this.isActive = initializer.isActive;
   }
-  static fromOther(project: Project, change: ProjectInitializer): Project {
+  clone(change: ProjectInitializer): Project {
     return new Project({
-      ...project,
-      contractSignedOn: project.contractSignedOn.toISOString(),
+      ...this,
+      contractSignedOn: this.contractSignedOn.toISOString(),
       ...change,
     });
   }
