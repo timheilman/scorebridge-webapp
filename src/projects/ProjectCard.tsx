@@ -2,14 +2,19 @@ import PropTypes from "prop-types";
 
 import { Project } from "./Project";
 
+export interface ProjectProps {
+  project: Project;
+  onEdit: (projectBeingEdited: Project) => void;
+}
+
 function formatDescription(description: string): string {
   return description.substring(0, 60) + "...";
 }
 
-function ProjectCard(props: { project: Project }) {
-  const { project } = props;
-  const handleEditClick = (project: Project) => {
-    console.log(project);
+function ProjectCard(props: ProjectProps) {
+  const { project, onEdit } = props;
+  const handleEditClick = (projectBeingEdited: Project) => {
+    onEdit(projectBeingEdited);
   };
   return (
     <div className="card">

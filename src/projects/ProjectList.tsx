@@ -7,7 +7,7 @@ function ProjectList({ projects }: { projects: Project[] }) {
     <div className="row">
       {projects.map((p) => (
         <div key={p.id} className="cols-sm">
-          <ProjectCard project={p} />
+          <ProjectCard project={p} onEdit={(p: Project) => console.log(p)} />
           <ProjectForm />
         </div>
       ))}
