@@ -3,6 +3,11 @@
 import AsynchronouslyUpdatingComponent from "./AsynchronouslyUpdatingComponent";
 import ClockWithCleanup from "./ClockWithCleanup";
 import ComponentWithDataDependencyButNoCleanup from "./ComponentWithDataDependencyButNoCleanup";
+import ExampleControlledComponent from "./ExampleControlledComponent";
+import ExampleControlledComponentMultiTypes from "./ExampleControlledComponentMultiTypes";
+import ExampleControlledComponentWithSubmit from "./ExampleControlledComponentWithSubmit";
+import ExampleUncontolledComponent from "./ExampleUncontolledComponent";
+import ExampleUncontrolledFilePickingComponent from "./ExampleUncontrolledFilePickingComponent";
 import SlowLoadingComponent from "./SlowLoadingComponent";
 
 export interface HelloWorldProps {
@@ -80,6 +85,11 @@ function HelloWorld({ person, logo }: HelloWorldProps) {
       <AsynchronouslyUpdatingComponent />
       <SlowLoadingComponent />
       <ComponentWithDataDependencyButNoCleanup />
+      <ExampleControlledComponent />
+      <ExampleControlledComponentWithSubmit />
+      <ExampleControlledComponentMultiTypes />
+      <ExampleUncontolledComponent />
+      <ExampleUncontrolledFilePickingComponent />
     </>
   );
   // return <>Hello, world!</>;
