@@ -1,3 +1,14 @@
+type ProjectInitializer = {
+  id?: number;
+  name?: string;
+  description?: string;
+  imageUrl?: string;
+  contractTypeId?: number;
+  contractSignedOn?: string;
+  budget?: number;
+  isActive?: boolean;
+};
+
 export class Project {
   id: number | undefined;
   name = "";
@@ -11,16 +22,7 @@ export class Project {
     return this.id === undefined;
   }
 
-  constructor(initializer?: {
-    id?: number;
-    name?: string;
-    description?: string;
-    imageUrl?: string;
-    contractTypeId?: number;
-    contractSignedOn?: string;
-    budget?: number;
-    isActive?: boolean;
-  }) {
+  constructor(initializer?: ProjectInitializer) {
     if (!initializer) return;
     if (initializer.id) this.id = initializer.id;
     if (initializer.name) this.name = initializer.name;
@@ -32,5 +34,12 @@ export class Project {
       this.contractSignedOn = new Date(initializer.contractSignedOn);
     if (initializer.budget) this.budget = initializer.budget;
     if (initializer.isActive) this.isActive = initializer.isActive;
+  }
+  static fromOther(project: Project, change: ProjectInitializer): Project {
+    return new Project({
+      ...project,
+      contractSignedOn: project.contractSignedOn.toISOString(),
+      ...change,
+    });
   }
 }
