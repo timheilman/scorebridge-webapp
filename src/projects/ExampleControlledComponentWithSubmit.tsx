@@ -1,10 +1,10 @@
-import { FormEvent, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 
 export default function ExampleControlledComponentWithSubmit() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
     console.log(username, password);
   };

@@ -1,4 +1,4 @@
-import { FormEvent } from "react";
+import { SyntheticEvent } from "react";
 
 import { Project } from "./Project";
 
@@ -7,7 +7,7 @@ function ProjectForm(props: {
   onSave: (p: Project) => void;
 }) {
   const { onCancel, onSave } = props;
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault(); // we are taking over, in react, from browser event handling here
     onSave(new Project({ name: "Updated Project" }));
   };

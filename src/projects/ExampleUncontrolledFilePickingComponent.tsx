@@ -1,9 +1,9 @@
-import { FormEvent, useRef } from "react";
+import { SyntheticEvent, useRef } from "react";
 
 export default function ExampleUncontrolledFilePickingComponent() {
   const fileInput = useRef<HTMLInputElement | null>(null);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: SyntheticEvent) {
     event.preventDefault();
 
     console.log(fileInput.current);

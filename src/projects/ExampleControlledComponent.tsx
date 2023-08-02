@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 
 export default function ExampleControlledComponent() {
   const [value, setValue] = useState("");

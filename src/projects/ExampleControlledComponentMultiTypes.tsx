@@ -1,11 +1,11 @@
-import { FormEvent, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 
 export default function ExampleControlledComponentMultiTypes() {
   const [department, setDepartment] = useState("");
   const [message, setMessage] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: SyntheticEvent) {
     event.preventDefault();
 
     console.log("submitting", stateToString());
