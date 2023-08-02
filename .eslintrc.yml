@@ -25,9 +25,10 @@ rules:
   "simple-import-sort/exports": "error"
   # Not needed in react v18:
   "react/react-in-jsx-scope": "off"
-#  "import/first": "error",
-#  "import/newline-after-import": "error",
-#  "import/no-duplicates": "error"
+  #  "import/first": "error",
+  #  "import/newline-after-import": "error",
+  #  "import/no-duplicates": "error"
+  "@typescript-eslint/no-unused-vars": "error"
 settings:
   react:
     version: "detect"

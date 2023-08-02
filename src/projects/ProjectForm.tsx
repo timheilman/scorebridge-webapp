@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, SyntheticEvent, useState } from "react";
+import { ChangeEvent, SyntheticEvent, useState } from "react";
 
 import { Project } from "./Project";
 

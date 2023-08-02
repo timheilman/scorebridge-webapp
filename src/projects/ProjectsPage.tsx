@@ -1,12 +1,11 @@
-import { useState } from "react";
-
-import { MOCK_PROJECTS } from "./MockProjects";
 import { Project } from "./Project";
 import ProjectList from "./ProjectList";
 
-function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
-
+interface ProjectsPageParams {
+  projects: Project[];
+  setProjects: (updatedProjects: Project[]) => void;
+}
+function ProjectsPage({ projects, setProjects }: ProjectsPageParams) {
   function saveProject(project: Project) {
     console.log("Saving project:", project);
     const updatedProjects = projects.map((p: Project) => {

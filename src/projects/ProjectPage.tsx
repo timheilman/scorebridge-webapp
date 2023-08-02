@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { MOCK_PROJECTS } from "./MockProjects";
 import { Project } from "./Project";
 import ProjectDetail from "./ProjectDetail";
 
-function ProjectPage(props: any) {
+interface ProjectPageParams {
+  projects: Project[];
+}
+function ProjectPage({ projects }: ProjectPageParams) {
   const [loading, setLoading] = useState(false);
   const [project, setProject] = useState<Project | null>(null);
   const [error /*, setError*/] = useState<string | null>(null);
@@ -15,10 +17,10 @@ function ProjectPage(props: any) {
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
-      setProject(MOCK_PROJECTS[id - 1]);
+      setProject(projects[id - 1]);
       setLoading(false);
     }, 1000);
-  }, [id]);
+  }, [id, projects]);
 
   return (
     <div>

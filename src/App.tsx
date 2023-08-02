@@ -8,7 +8,7 @@ const logo = {
   title: "Logo",
   path: "./logo512.png", // by experiment, . corresponds to /public
 };
-
+import { useState } from "react";
 import {
   BrowserRouter as Router,
   NavLink,
@@ -17,9 +17,12 @@ import {
 } from "react-router-dom";
 
 import HomePage from "./home/HomePage";
+import { MOCK_PROJECTS } from "./projects/MockProjects";
+import { Project } from "./projects/Project";
 import ProjectPage from "./projects/ProjectPage";
 
 export default function App() {
+  const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
   return (
     <Router>
       <header className="sticky">
@@ -40,8 +43,16 @@ export default function App() {
       <div className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/projects" element={<ProjectsPage />} />
-          <Route path="/projects/:id" element={<ProjectPage />} />
+          <Route
+            path="/projects"
+            element={
+              <ProjectsPage projects={projects} setProjects={setProjects} />
+            }
+          />
+          <Route
+            path="/projects/:id"
+            element={<ProjectPage projects={projects} />}
+          />
           <Route
             path="/helloworld"
             element={<HelloWorld person={person} logo={logo} />}
