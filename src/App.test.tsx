@@ -1,9 +1,14 @@
 import { render, screen } from "@testing-library/react";
 
-import CounterApp from "./CounterApp";
+import App from "./App";
 
 test("renders learn react link", () => {
-  render(<CounterApp />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  render(<App />);
+  [
+    /Hello World Hands-On-React Examples/,
+    /Redux repo example counter-ts/,
+  ].forEach((navButtonTitle) => {
+    const linkElement = screen.getByText(navButtonTitle);
+    expect(linkElement).toBeInTheDocument();
+  });
 });
