@@ -1,17 +1,24 @@
 import "./index.css";
 
 import React from "react"; // this is the only place this import should be needed on v18 of react
-import ReactDOM from "react-dom/client";
+import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
 
 import App from "./App";
+import { store } from "./app/store";
 import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement,
-);
+const container = document.getElementById("root");
+if (!container) {
+  throw new Error("Cannot initialize react; no root element found.");
+}
+const root = createRoot(container);
+
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
 );
 
