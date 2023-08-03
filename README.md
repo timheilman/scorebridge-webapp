@@ -1,6 +1,57 @@
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Then handsonreact.com examples
+Then the redux repo's counter-ts example
+
+## Linting
+
+Quick notes on linting: `n`pm run tidy` will keep prettier and eslint both running as separate systems.
+eslint is improved with type-checking abilities for typescript.
+
+On that front, `@typescript-eslint/no-misused-promises` seems like it can
+help a lot with common difficult-to-diagnose (because they provide no stack
+trace) Promise-related coding errors. However, for reasons I don't want to
+rabbit-hole on, when using the `@reduxjs/toolkit` command, `createAsyncThunk`
+and the `extraReducers` field on the options to `createSlice`, this rule
+misfires, likely because that `extraReducers` implementation is not type-safe
+to express that a promise is being returned.
+
+For now, convention is simply to disable this lint rule for this condition,
+since in general the rule can save enormous headaches.
+
+Use one or the other of this kind of code to get prettier and eslint passing
+despite this gotcha needed case-by-case disablement.
+
+```typescript jsx
+<button
+  className={
+    styles.asyncButton /* eslint-disable @typescript-eslint/no-misused-promises */
+  }
+  onClick={
+    () =>
+      dispatch(
+        incrementAsync(incrementValue),
+      ) /* eslint-enable @typescript-eslint/no-misused-promises */
+  }
+>
+  Add Async
+</button>
+```
+
+Or with no preceding attribute on the element:
+
+```typescript jsx
+{/* eslint-disable @typescript-eslint/no-misused-promises */}
+<button
+  onClick={
+    () =>
+      dispatch(
+        incrementAsync(incrementValue),
+      ) /* eslint-enable @typescript-eslint/no-misused-promises */
+  }
+>
+```
 
 ## Available Scripts
 
