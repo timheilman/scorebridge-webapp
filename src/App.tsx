@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 
 import CounterApp from "./features/counter/CounterApp";
-import HelloWorld from "./features/counter/HelloWorld";
+import HelloWorld from "./features/helloworld/HelloWorld";
 import ProjectPage from "./features/projects/ProjectPage";
 import ProjectsPage from "./features/projects/ProjectsPage";
 import HomePage from "./home/HomePage";
