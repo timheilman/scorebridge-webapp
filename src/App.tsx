@@ -1,6 +1,5 @@
 import "./App.css";
 
-import { useState } from "react";
 import {
   BrowserRouter as Router,
   NavLink,
@@ -11,8 +10,6 @@ import {
 import CounterApp from "./CounterApp";
 import HomePage from "./home/HomePage";
 import HelloWorld from "./projects/HelloWorld";
-import { MOCK_PROJECTS } from "./projects/MockProjects";
-import { Project } from "./projects/Project";
 import ProjectPage from "./projects/ProjectPage";
 import ProjectsPage from "./projects/ProjectsPage";
 
@@ -24,7 +21,6 @@ const logo = {
 };
 
 export default function App() {
-  const [projects, setProjects] = useState<Project[]>(MOCK_PROJECTS);
   return (
     <Router>
       <header className="sticky">
@@ -36,7 +32,7 @@ export default function App() {
           Home
         </NavLink>
         <NavLink to="/projects" className="button rounded">
-          Projects
+          ProjectNavLink
         </NavLink>
         <NavLink to="/helloworld" className="button rounded">
           Hello World Hands-On-React Examples
@@ -48,16 +44,8 @@ export default function App() {
       <div className="container">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route
-            path="/projects"
-            element={
-              <ProjectsPage projects={projects} setProjects={setProjects} />
-            }
-          />
-          <Route
-            path="/projects/:id"
-            element={<ProjectPage projects={projects} />}
-          />
+          <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/projects/:id" element={<ProjectPage />} />
           <Route
             path="/helloworld"
             element={<HelloWorld person={person} logo={logo} />}

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import { useAppSelector } from "../app/hooks";
+import { selectProjectList } from "../features/projectList/projectListSlice";
 import { Project } from "./Project";
 import ProjectDetail from "./ProjectDetail";
 
-interface ProjectPageParams {
-  projects: Project[];
-}
-function ProjectPage({ projects }: ProjectPageParams) {
+function ProjectPage() {
+  const projects = useAppSelector(selectProjectList);
   const [loading, setLoading] = useState(false);
   const [project, setProject] = useState<Project | null>(null);
   const [error /*, setError*/] = useState<string | null>(null);
