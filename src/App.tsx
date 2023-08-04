@@ -20,6 +20,11 @@ const logo = {
   path: "./logo512.png", // by experiment, . corresponds to /public
 };
 
+// custom hooks, good idea for use case:
+// function StatusBar() {
+//   const isOnline = useOnlineStatus();
+//   return <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;
+// }
 export default function App() {
   return (
     <Router>
