@@ -34,7 +34,8 @@ function ProjectForm({
     const change = {
       [name]: updatedValue,
     };
-    setProject((p: Project) => p.clone(change));
+    console.log("setting project with change", change);
+    setProject((p: Project) => ({ ...p, ...change }));
   };
   return (
     <form className="input-group vertical" onSubmit={handleSubmit}>

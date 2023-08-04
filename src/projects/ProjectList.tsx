@@ -18,17 +18,22 @@ function ProjectList() {
   );
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
-    dispatch(loadProjectListAsync())
-      .then(() => {
-        setLoading(false);
-      })
-      .catch((reason) => {
-        console.error("problems with async project list load", reason);
-      });
-  }, [projects, dispatch, setLoading]);
+    if (projects.length === 0) {
+      dispatch(loadProjectListAsync())
+        .then(() => {
+          setLoading(false);
+        })
+        .catch((reason) => {
+          console.error("problems with async project list load", reason);
+        });
+    } else {
+      setLoading(false);
+    }
+  }, [dispatch, loading, setLoading, projects]);
 
-  function onSave() {
-    dispatch(storeProject(projectBeingEdited as Project));
+  function onSave(project: Project) {
+    dispatch(storeProject(project));
+    setProjectBeingEdited(null);
   }
   function handleEdit(project: Project) {
     setProjectBeingEdited(project);
@@ -45,9 +50,8 @@ function ProjectList() {
     <div className="row">
       {projects.map((project) => (
         <>
-          <p>within</p>
           <div key={project.id} className="cols-sm">
-            {project === projectBeingEdited ? (
+            {project.id === projectBeingEdited?.id ? (
               <ProjectForm
                 onSave={onSave}
                 onCancel={cancelEdit}
@@ -57,7 +61,6 @@ function ProjectList() {
               <ProjectCard project={project} onEdit={handleEdit} />
             )}
           </div>
-          <p>beyond</p>
         </>
       ))}
     </div>

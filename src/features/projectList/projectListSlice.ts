@@ -37,11 +37,18 @@ export const projectListSlice = createSlice({
   reducers: {
     storeProject: (state, action: PayloadAction<Project>) => {
       const queryId = action.payload.id;
+      console.log(`query id: ${queryId}`);
       // updating the value wholesale:
       const updatedProjects = state.value.map((p: Project) => {
+        console.log(p.id);
+        if (p.id === queryId) {
+          console.log("match");
+          console.log(action.payload);
+        }
         return p.id === queryId ? action.payload : p;
       });
       state.value = updatedProjects;
+      console.log("updatedProjects[0]", updatedProjects[0]);
       // I'm interested to know if this would work instead:
       // const foundProject = state.value.find((p) => p.id === queryId);
       // if (foundProject) {
@@ -64,7 +71,6 @@ export const projectListSlice = createSlice({
   },
 });
 
-// no sync actions yet...
 export const { storeProject } = projectListSlice.actions;
 
 // The function below is called a selector and allows us to select a value from

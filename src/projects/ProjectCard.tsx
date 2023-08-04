@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 import { Project } from "./Project";
@@ -21,7 +20,7 @@ function ProjectCard(props: ProjectProps) {
     <div className="card">
       <img src={project.imageUrl} alt={project.name} />
       <section className="section dark">
-        <Link to={`/projects/${project.id as number}`}>
+        <Link to={`/projects/${project.id}`}>
           <h5 className="strong">
             <strong>{project.name}</strong>
           </h5>
@@ -36,9 +35,5 @@ function ProjectCard(props: ProjectProps) {
     </div>
   );
 }
-
-ProjectCard.propTypes = {
-  project: PropTypes.instanceOf(Project).isRequired,
-};
 
 export default ProjectCard;

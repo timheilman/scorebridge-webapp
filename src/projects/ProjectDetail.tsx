@@ -16,7 +16,17 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
             <p>{project.description}</p>
             <p>Budget : {project.budget}</p>
 
-            <p>Signed: {project.contractSignedOn.toLocaleDateString()}</p>
+            {project.contractSignedOnEpochSec ? (
+              <p>
+                Signed:
+                {new Date(
+                  project.contractSignedOnEpochSec,
+                ).toLocaleDateString()}
+              </p>
+            ) : (
+              <p>No contract signature</p>
+            )}
+
             <p>
               <mark className="active">
                 {" "}

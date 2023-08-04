@@ -8,7 +8,7 @@ export default function SlowLoadingComponent() {
     setTimeout(() => {
       setLoading(false);
       setData([1, 2, 3, 4, 5]);
-    }, 10000);
+    }, 1000);
   }
 
   useEffect(loadData, []);
