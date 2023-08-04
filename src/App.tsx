@@ -7,11 +7,11 @@ import {
   Routes,
 } from "react-router-dom";
 
-import CounterApp from "./CounterApp";
+import CounterApp from "./features/counter/CounterApp";
+import HelloWorld from "./features/counter/HelloWorld";
+import ProjectPage from "./features/projects/ProjectPage";
+import ProjectsPage from "./features/projects/ProjectsPage";
 import HomePage from "./home/HomePage";
-import HelloWorld from "./projects/HelloWorld";
-import ProjectPage from "./projects/ProjectPage";
-import ProjectsPage from "./projects/ProjectsPage";
 
 const person = { first: "Tim", last: "Heilman" };
 const logo = {

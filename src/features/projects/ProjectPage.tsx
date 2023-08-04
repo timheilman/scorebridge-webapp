@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { useAppSelector } from "../app/hooks";
-import { selectProjectList } from "../features/projectList/projectListSlice";
+import { useAppSelector } from "../../app/hooks";
 import { Project } from "./Project";
 import ProjectDetail from "./ProjectDetail";
+import { selectProjectList } from "./projectListSlice";
 
 function ProjectPage() {
   const projects = useAppSelector(selectProjectList);

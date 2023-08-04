@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 
-import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { Project } from "./Project";
+import ProjectCard from "./ProjectCard";
+import ProjectForm from "./ProjectForm";
 import {
   loadProjectListAsync,
   selectProjectList,
   storeProject,
-} from "../features/projectList/projectListSlice";
-import { Project } from "./Project";
-import ProjectCard from "./ProjectCard";
-import ProjectForm from "./ProjectForm";
+} from "./projectListSlice";
 
 function ProjectList() {
   const projects = useAppSelector(selectProjectList);
