@@ -27,10 +27,14 @@ const addClub = async (
     }
   `;
   await API.graphql<GraphQLQuery<AddClubInput>>(
-    graphqlOperation(libraryQuery, myMutationArgs),
     {
-      aws_appsync_apiKey: requiredEnvVar("ADD_CLUB_API_KEY"),
+      ...graphqlOperation(libraryQuery, myMutationArgs),
+      authMode: "API_KEY",
+      authToken: requiredEnvVar("ADD_CLUB_API_KEY"),
     },
+    // { // if tht does not work maybe this will
+    //   aws_appsync_apiKey: requiredEnvVar("ADD_CLUB_API_KEY"),
+    // },
   );
 };
 
