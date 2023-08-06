@@ -18,6 +18,7 @@ Amplify.configure({
   },
   aws_appsync_graphqlEndpoint: requiredEnvVar("API_URL"),
   aws_appsync_region: requiredEnvVar("AWS_REGION"),
+  aws_appsync_apiKey: requiredEnvVar("ADD_CLUB_API_KEY"),
   // TODO: expand to this as the default and api key only for add club
   // aws_appsync_authenticationType: "API_KEY",
   // aws_appsync_authenticationType: 'AMAZON_COGNITO_USER_POOLS'
