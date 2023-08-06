@@ -1,9 +1,9 @@
 import { GraphQLQuery } from "@aws-amplify/api";
 import { API, graphqlOperation } from "aws-amplify";
-import gql from "graphql-tag";
 import { SyntheticEvent } from "react";
 
 import { AddClubInput, MutationAddClubArgs } from "../../appsync";
+import { mutationAddClub } from "../graphql/mutations";
 import requiredEnvVar from "../requiredEnvVar";
 
 const addClub = async (
@@ -18,19 +18,12 @@ const addClub = async (
 
   const myMutationArgs: MutationAddClubArgs = { input: myMutationObj };
   /* create a new club */
-  const libraryQuery = gql`
-    mutation addClub($input: AddClubInput!) {
-      addClub(input: $input) {
-        newClubId
-        newUserId
-      }
-    }
-  `;
   await API.graphql<GraphQLQuery<AddClubInput>>(
     {
-      ...graphqlOperation(libraryQuery, myMutationArgs),
+      ...graphqlOperation(mutationAddClub, myMutationArgs),
       authMode: "API_KEY",
     },
+    // TODO: try removing this line; I think it is a red herring
     { Authorization: requiredEnvVar("ADD_CLUB_API_KEY") },
   );
 };

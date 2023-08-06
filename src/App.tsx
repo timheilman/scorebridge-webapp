@@ -10,6 +10,8 @@ import {
   Routes,
 } from "react-router-dom";
 
+import { ScoreBridgeAuthenticator } from "./features/authAuth/ScoreBridgeAuthenticator";
+import { SignUpPage } from "./features/authAuth/SignUpPage";
 import CounterApp from "./features/counter/CounterApp";
 import HelloWorld from "./features/helloworld/HelloWorld";
 import ProjectPage from "./features/projects/ProjectPage";
@@ -48,8 +50,29 @@ export default function App() {
   if (!sessionRequestResolved) {
     return <p>Loading user session</p>;
   } else {
-    if (cognitoUserSession) {
-      return <p>You have successfully logged in</p>;
+    if (!cognitoUserSession) {
+      return (
+        <Router>
+          <header className="sticky">
+            <span className="logo">
+              <img src="/assets/logo-3.svg" alt="logo" width="49" height="99" />
+            </span>
+            <NavLink to="/" className="button rounded">
+              <span className="icon-home"></span>
+              Log In
+            </NavLink>
+            <NavLink to="/signup" className="button rounded">
+              Sign Up
+            </NavLink>
+          </header>
+          <div className="container">
+            <Routes>
+              <Route path="/" element={<ScoreBridgeAuthenticator />} />
+              <Route path="/signup" element={<SignUpPage />} />
+            </Routes>
+          </div>
+        </Router>
+      );
     } else {
       return (
         <Router>
