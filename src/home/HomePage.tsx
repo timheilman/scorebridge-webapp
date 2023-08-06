@@ -36,18 +36,22 @@ const addClub = async (
 
 const handleSubmit = (event: SyntheticEvent) => {
   event.preventDefault(); // we are taking over, in react, from browser event handling here
+  console.log("in handleSubmit");
   addClub()
     .then(() => {
       console.log("Add club success");
     })
     .catch((reason) => console.error("add club problem", reason));
+  console.log("exiting handleSubmit after promise invocation");
 };
 
 export default function HomePage() {
   return (
     <>
       <h2>HomePage</h2>
-      <button onSubmit={handleSubmit}>click me</button>
+      <form className="input-group vertical" onSubmit={handleSubmit}>
+        <button>click me</button>
+      </form>
     </>
   );
 }
