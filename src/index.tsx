@@ -12,12 +12,12 @@ import reportWebVitals from "./reportWebVitals";
 import requiredEnvVar from "./requiredEnvVar";
 Amplify.configure({
   Auth: {
-    region: requiredEnvVar("APPSYNC_AWS_REGION"),
+    region: requiredEnvVar("AWS_REGION"),
     userPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
     userPoolWebClientId: requiredEnvVar("COGNITO_USER_POOL_CLIENT_ID_WEB"), // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
   },
   aws_appsync_graphqlEndpoint: requiredEnvVar("API_URL"),
-  aws_appsync_region: requiredEnvVar("APPSYNC_AWS_REGION"),
+  aws_appsync_region: requiredEnvVar("AWS_REGION"),
   // TODO: expand to this as the default and api key only for add club
   // aws_appsync_authenticationType: "API_KEY",
   // aws_appsync_authenticationType: 'AMAZON_COGNITO_USER_POOLS'

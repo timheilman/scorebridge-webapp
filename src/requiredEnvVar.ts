@@ -1,8 +1,7 @@
 export default function requiredEnvVar(key: string): string {
-  if (!process.env[key]) {
-    throw new Error(
-      `Please set ${key} in env vars. (Did you export vars for your env to .env?)`,
-    );
+  const trueKey = `REACT_APP_${key}`;
+  if (!process.env[trueKey]) {
+    throw new Error(`Please set ${trueKey} in env vars.`);
   }
-  return process.env[key] as string;
+  return process.env[trueKey] as string;
 }
