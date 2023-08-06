@@ -10,7 +10,6 @@ import App from "./App";
 import { store } from "./app/store";
 import reportWebVitals from "./reportWebVitals";
 import requiredEnvVar from "./requiredEnvVar";
-
 Amplify.configure({
   Auth: {
     region: requiredEnvVar("APPSYNC_AWS_REGION"),
