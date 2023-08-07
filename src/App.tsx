@@ -2,8 +2,8 @@ import "./App.css";
 
 import { translations as amplifyUiReactTranslations } from "@aws-amplify/ui-react";
 import { CognitoUserSession } from "amazon-cognito-identity-js";
-import { Auth } from "aws-amplify";
-import { I18n as amplifyI18n } from "aws-amplify";
+import { Auth, I18n as amplifyI18n } from "aws-amplify";
+import { getLangCodeList, getLangNameFromCode } from "language-name-map";
 import { mergeDeepRight } from "ramda";
 import { useState } from "react";
 import {
@@ -22,15 +22,23 @@ import ProjectPage from "./features/projects/ProjectPage";
 import ProjectsPage from "./features/projects/ProjectsPage";
 import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
 import HomePage from "./home/HomePage";
-import { strings } from "./strings";
+import { translationStrings } from "./translationStrings";
 
-const languageOptions = [
-  { value: "en", label: "English" },
-  { value: "de", label: "Deutsch" },
-];
+const langCodeList = getLangCodeList();
+const languageOptions = Object.keys(amplifyUiReactTranslations)
+  .filter((amplifyUiReactXlationLangCode) =>
+    langCodeList.includes(amplifyUiReactXlationLangCode),
+  )
+  .map((amplifyUiReactXlationLangCode) => {
+    return {
+      value: amplifyUiReactXlationLangCode,
+      // type safety of this cast is ostensibly guaranteed by the filter and the library
+      label: getLangNameFromCode(amplifyUiReactXlationLangCode)?.name as string,
+    };
+  });
 
 amplifyI18n.putVocabularies(
-  mergeDeepRight(amplifyUiReactTranslations, strings),
+  mergeDeepRight(amplifyUiReactTranslations, translationStrings),
 );
 const person = { first: "Tim", last: "Heilman" };
 const logo = {
@@ -56,6 +64,7 @@ export default function App() {
     })
     .catch((reason) => {
       setSessionRequestResolved(true);
+      console.log("amplifyUiReactTranslations", amplifyUiReactTranslations);
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       if (!`${reason}`.match(/No current user/)) {
         console.error(`problem loading cognitoUserSession`, reason);
@@ -68,6 +77,7 @@ export default function App() {
       return (
         <>
           <SelectedLanguage options={languageOptions} />
+          <p>{amplifyI18n.get("customI18nString")}</p>
           {/*<div>{amplifyI18n.get("appTitle1")}</div>*/}
           {/*<div>{amplifyI18n.get("appTitle2")}</div>*/}
           <Router>
