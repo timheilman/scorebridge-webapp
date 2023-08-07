@@ -5,7 +5,7 @@ import { CognitoUserSession } from "amazon-cognito-identity-js";
 import { Auth, I18n as amplifyI18n } from "aws-amplify";
 import { getLangCodeList, getLangNameFromCode } from "language-name-map";
 import { mergeDeepRight } from "ramda";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   NavLink,
@@ -13,6 +13,7 @@ import {
   Routes,
 } from "react-router-dom";
 
+import { useAppSelector } from "./app/hooks";
 // import Select, { ActionMeta } from "react-select";
 import { ScoreBridgeAuthenticator } from "./features/authAuth/ScoreBridgeAuthenticator";
 import { SignUpPage } from "./features/authAuth/SignUpPage";
@@ -21,6 +22,7 @@ import HelloWorld from "./features/helloworld/HelloWorld";
 import ProjectPage from "./features/projects/ProjectPage";
 import ProjectsPage from "./features/projects/ProjectsPage";
 import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
+import { selectLanguage } from "./features/selectedLanguage/selectedLanguageSlice";
 import HomePage from "./home/HomePage";
 import { translationStrings } from "./translationStrings";
 
@@ -56,20 +58,23 @@ export default function App() {
   const [cognitoUserSession, setCognitoUserSession] =
     useState<CognitoUserSession | null>(null);
   const [sessionRequestResolved, setSessionRequestResolved] = useState(false);
-  Auth.currentSession()
-    .then((session) => {
-      setSessionRequestResolved(true);
-      console.log(`Got session ${JSON.stringify(session, null, 2)}`);
-      setCognitoUserSession(session);
-    })
-    .catch((reason) => {
-      setSessionRequestResolved(true);
-      console.log("amplifyUiReactTranslations", amplifyUiReactTranslations);
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      if (!`${reason}`.match(/No current user/)) {
-        console.error(`problem loading cognitoUserSession`, reason);
-      }
-    });
+  useEffect(() => {
+    Auth.currentSession()
+      .then((session) => {
+        setSessionRequestResolved(true);
+        console.log(`Got session ${JSON.stringify(session, null, 2)}`);
+        setCognitoUserSession(session);
+      })
+      .catch((reason) => {
+        setSessionRequestResolved(true);
+        // console.log("amplifyUiReactTranslations", amplifyUiReactTranslations);
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        if (!`${reason}`.match(/No current user/)) {
+          console.error(`problem loading cognitoUserSession`, reason);
+        }
+      });
+  });
+  const languageCode = useAppSelector(selectLanguage);
   if (!sessionRequestResolved) {
     return <p>Loading user session</p>;
   } else {
@@ -77,7 +82,10 @@ export default function App() {
       return (
         <>
           <SelectedLanguage options={languageOptions} />
-          <p>{amplifyI18n.get("customI18nString")}</p>
+          <p>app selector selectLanguage:</p>
+          <p>{languageCode}</p>
+          {/*<p>amplify 18n on it:</p>*/}
+          {/*<p>{amplifyI18n.get("customI18nString")}</p>*/}
           {/*<div>{amplifyI18n.get("appTitle1")}</div>*/}
           {/*<div>{amplifyI18n.get("appTitle2")}</div>*/}
           <Router>
