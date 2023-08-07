@@ -1,10 +1,11 @@
 import "./index.css";
 import "@aws-amplify/ui-react";
 
+// import { Authenticator } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
 import React from "react"; // this is the only place this import should be needed on v18 of react
 import { createRoot } from "react-dom/client";
-import { Provider } from "react-redux";
+import { Provider as ReactReduxProvider } from "react-redux";
 
 import App from "./App";
 import { store } from "./app/store";
@@ -32,9 +33,11 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
+    <ReactReduxProvider store={store}>
+      {/*<Authenticator.Provider>*/}
       <App />
-    </Provider>
+      {/*</Authenticator.Provider>*/}
+    </ReactReduxProvider>
   </React.StrictMode>,
 );
 

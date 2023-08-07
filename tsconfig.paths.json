@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@features/*": ["src/features/*"],
-      "@app/*": ["src/app/*"]
-    }
-  }
-}

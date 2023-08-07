@@ -1,7 +1,10 @@
 import "./App.css";
 
+import { translations as amplifyUiReactTranslations } from "@aws-amplify/ui-react";
 import { CognitoUserSession } from "amazon-cognito-identity-js";
 import { Auth } from "aws-amplify";
+import { I18n as amplifyI18n } from "aws-amplify";
+import { mergeDeepRight } from "ramda";
 import { useState } from "react";
 import {
   BrowserRouter as Router,
@@ -10,14 +13,25 @@ import {
   Routes,
 } from "react-router-dom";
 
+// import Select, { ActionMeta } from "react-select";
 import { ScoreBridgeAuthenticator } from "./features/authAuth/ScoreBridgeAuthenticator";
 import { SignUpPage } from "./features/authAuth/SignUpPage";
 import CounterApp from "./features/counter/CounterApp";
 import HelloWorld from "./features/helloworld/HelloWorld";
 import ProjectPage from "./features/projects/ProjectPage";
 import ProjectsPage from "./features/projects/ProjectsPage";
+import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
 import HomePage from "./home/HomePage";
+import { strings } from "./strings";
 
+const languageOptions = [
+  { value: "en", label: "English" },
+  { value: "de", label: "Deutsch" },
+];
+
+amplifyI18n.putVocabularies(
+  mergeDeepRight(amplifyUiReactTranslations, strings),
+);
 const person = { first: "Tim", last: "Heilman" };
 const logo = {
   name: "Logo",
@@ -52,26 +66,36 @@ export default function App() {
   } else {
     if (!cognitoUserSession) {
       return (
-        <Router>
-          <header className="sticky">
-            <span className="logo">
-              <img src="/assets/logo-3.svg" alt="logo" width="49" height="99" />
-            </span>
-            <NavLink to="/" className="button rounded">
-              <span className="icon-home"></span>
-              Log In
-            </NavLink>
-            <NavLink to="/signup" className="button rounded">
-              Sign Up
-            </NavLink>
-          </header>
-          <div className="container">
-            <Routes>
-              <Route path="/" element={<ScoreBridgeAuthenticator />} />
-              <Route path="/signup" element={<SignUpPage />} />
-            </Routes>
-          </div>
-        </Router>
+        <>
+          <SelectedLanguage options={languageOptions} />
+          {/*<div>{amplifyI18n.get("appTitle1")}</div>*/}
+          {/*<div>{amplifyI18n.get("appTitle2")}</div>*/}
+          <Router>
+            <header className="sticky">
+              <span className="logo">
+                <img
+                  src="/assets/logo-3.svg"
+                  alt="logo"
+                  width="49"
+                  height="99"
+                />
+              </span>
+              <NavLink to="/" className="button rounded">
+                <span className="icon-home"></span>
+                Log In
+              </NavLink>
+              <NavLink to="/signup" className="button rounded">
+                Sign Up
+              </NavLink>
+            </header>
+            <div className="container">
+              <Routes>
+                <Route path="/" element={<ScoreBridgeAuthenticator />} />
+                <Route path="/signup" element={<SignUpPage />} />
+              </Routes>
+            </div>
+          </Router>
+        </>
       );
     } else {
       return (
