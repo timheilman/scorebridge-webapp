@@ -60,8 +60,8 @@ export default function App() {
   const [cognitoUserSession, setCognitoUserSession] =
     useState<CognitoUserSession | null>(null);
   const [sessionRequestResolved, setSessionRequestResolved] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const { t } = useTranslation("translation");
+  // complicated types situation with react-i18next makes eslint confused about t
+  const t = useTranslation("translation").t as (s: string) => string;
   useEffect(() => {
     Auth.currentSession()
       .then((session) => {
@@ -95,7 +95,6 @@ export default function App() {
     return (
       <>
         <SelectedLanguage options={languageOptions} />
-        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
         <p>{t("helloWorld")}</p>
         <Router>
           <header className="sticky">
