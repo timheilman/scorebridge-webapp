@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 import { useAppSelector } from "../../app/hooks";
 import { selectLanguage } from "../selectedLanguage/selectedLanguageSlice";
+import styles from "./ScoreBridgeAuthenticator.module.css";
 
 function randomLargeInt() {
   return Math.floor(Math.random() * 1000000000);
@@ -22,8 +23,12 @@ export function ScoreBridgeAuthenticator() {
     setForceRerenderKey(randomLargeInt());
   }, [langCode]);
   return (
-    <>
-      <Authenticator key={forceRerenderKey} hideSignUp={true}>
+    <div>
+      <Authenticator
+        key={forceRerenderKey}
+        hideSignUp={true}
+        className={styles.myFirstCssClass}
+      >
         {({ signOut, user }) => (
           <>
             <p>contrived dependency within Authenticator</p>
@@ -36,6 +41,6 @@ export function ScoreBridgeAuthenticator() {
           </>
         )}
       </Authenticator>
-    </>
+    </div>
   );
 }
