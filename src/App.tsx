@@ -84,10 +84,11 @@ export default function App() {
               <img src="/assets/logo-3.svg" alt="logo" width="49" height="99" />
             </span>
             <NavLink to="/" className="button rounded">
-              <span className="icon-home"></span>
-              Log In
+              <span className="icon-user"></span>
+              Sign In
             </NavLink>
             <NavLink to="/signup" className="button rounded">
+              <span className="icon-info"></span>
               Sign Up
             </NavLink>
           </header>
