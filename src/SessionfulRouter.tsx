@@ -10,7 +10,6 @@ import CounterApp from "./features/counter/CounterApp";
 import ProjectPage from "./features/projects/ProjectPage";
 import ProjectsPage from "./features/projects/ProjectsPage";
 import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
-import HomePage from "./home/HomePage";
 import TypesafeTranslationT from "./TypesafeTranslationT";
 export interface SessionfulRouterProps {
   languageOptions: { label: string; value: string }[];
@@ -37,7 +36,6 @@ export function SessionfulRouter({ languageOptions }: SessionfulRouterProps) {
       </header>
       <div className="container">
         <Routes>
-          <Route path="/" element={<HomePage />} />
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/projects/:id" element={<ProjectPage />} />
           <Route path="/counter" element={<CounterApp />} />

@@ -6,8 +6,8 @@ import {
   Routes,
 } from "react-router-dom";
 
+import SignUpForm from "./features/addClub/SignUpForm";
 import { ScoreBridgeAuthenticator } from "./features/authAuth/ScoreBridgeAuthenticator";
-import { SignUpPage } from "./features/authAuth/SignUpPage";
 import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
 import TypesafeTranslationT from "./TypesafeTranslationT";
 export interface SessionlessRouterProps {
@@ -35,7 +35,7 @@ export default function SessionlessRouter({
       <div className="container">
         <Routes>
           <Route path="/" element={<ScoreBridgeAuthenticator />} />
-          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/signup" element={<SignUpForm />} />
         </Routes>
       </div>
     </Router>
