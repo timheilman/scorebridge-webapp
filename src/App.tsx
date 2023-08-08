@@ -100,7 +100,7 @@ export default function App() {
             </NavLink>
             <NavLink to="/signup" className="button rounded">
               <span className="icon-info"></span>
-              Sign Up
+              {t("signUp")}
             </NavLink>
             <span>
               <SelectedLanguage options={languageOptions} />
