@@ -46,9 +46,15 @@ const SelectedLanguage: FC<SelectProps> = ({ options }) => {
     dispatch(setLanguage(newValue));
   };
 
+  const maybeAddSelectLanguage = () => {
+    if (!selectedLanguage) {
+      return <option value="">Select a language</option>;
+    }
+    return "";
+  };
   return (
     <select value={selectedLanguage} onChange={handleSelectChange}>
-      <option value="">Select a language</option>
+      {maybeAddSelectLanguage()}
       {options.map((option) => (
         <option key={option.value} value={option.value}>
           {option.label}
