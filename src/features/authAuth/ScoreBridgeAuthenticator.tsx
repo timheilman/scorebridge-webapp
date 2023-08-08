@@ -31,8 +31,6 @@ export function ScoreBridgeAuthenticator() {
       >
         {({ signOut, user }) => (
           <>
-            <p>contrived dependency within Authenticator</p>
-            <p>{langCode}</p>
             <p>
               OMG a user: <pre>{JSON.stringify(user, null, 2)}</pre>
               And signout:
