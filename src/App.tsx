@@ -23,8 +23,8 @@ import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
 import HomePage from "./home/HomePage";
 
 const langCodeList = getLangCodeList();
-const languageOptions = ["en", "fr", "de", "zh", "he"]
-  .filter((langCode) => langCodeList.includes(langCode))
+const languageOptions = ["en", "fr", "zh", "he"]
+  .filter((langCode) => langCodeList.includes(langCode)) // should be all true; just for safety
   .map((amplifyUiReactXlationLangCode) => {
     return {
       value: amplifyUiReactXlationLangCode,
@@ -89,11 +89,9 @@ export default function App() {
   } else if (!cognitoUserSession) {
     return (
       <>
+        <h2>{t("noSessionPageTitle")}</h2>
         <Router>
           <header className="sticky">
-            <span className="logo">
-              <img src="/assets/logo-3.svg" alt="logo" width="49" height="99" />
-            </span>
             <NavLink to="/" className="button rounded">
               <span className="icon-user"></span>
               {t("signIn")}
@@ -117,38 +115,38 @@ export default function App() {
     );
   } else {
     return (
-      <Router>
-        <header className="sticky">
-          <span className="logo">
-            <img src="/assets/logo-3.svg" alt="logo" width="49" height="99" />
-          </span>
-          <NavLink to="/" className="button rounded">
-            <span className="icon-home"></span>
-            Home
-          </NavLink>
-          <NavLink to="/projects" className="button rounded">
-            ProjectNavLink
-          </NavLink>
-          <NavLink to="/helloworld" className="button rounded">
-            Hello World Hands-On-React Examples
-          </NavLink>
-          <NavLink to="/counter" className="button rounded">
-            Redux repo example counter-ts
-          </NavLink>
-        </header>
-        <div className="container">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/projects/:id" element={<ProjectPage />} />
-            <Route
-              path="/helloworld"
-              element={<HelloWorld person={person} logo={logo} />}
-            />
-            <Route path="/counter" element={<CounterApp />} />
-          </Routes>
-        </div>
-      </Router>
+      <>
+        <h2>Duplicate Bridge Scoring Admin Portal</h2>
+        <Router>
+          <header className="sticky">
+            <NavLink to="/" className="button rounded">
+              <span className="icon-home"></span>
+              Home
+            </NavLink>
+            <NavLink to="/projects" className="button rounded">
+              ProjectNavLink
+            </NavLink>
+            <NavLink to="/helloworld" className="button rounded">
+              Hello World Hands-On-React Examples
+            </NavLink>
+            <NavLink to="/counter" className="button rounded">
+              Redux repo example counter-ts
+            </NavLink>
+          </header>
+          <div className="container">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/projects" element={<ProjectsPage />} />
+              <Route path="/projects/:id" element={<ProjectPage />} />
+              <Route
+                path="/helloworld"
+                element={<HelloWorld person={person} logo={logo} />}
+              />
+              <Route path="/counter" element={<CounterApp />} />
+            </Routes>
+          </div>
+        </Router>
+      </>
     );
   }
 }
