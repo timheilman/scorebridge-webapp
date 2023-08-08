@@ -19,14 +19,28 @@ const SelectedLanguage: FC<SelectProps> = ({ options }) => {
   const { i18n } = useTranslation();
   useEffect(() => {
     if (selectedLanguage) {
+      console.log(
+        `truthy selectedLanguage so setting i18n to it ${selectedLanguage}; redux caused this event`,
+      );
       i18n.changeLanguage(selectedLanguage).then(
         () => console.log(`change good to ${selectedLanguage}`),
         (r) => console.error(`change bad to ${selectedLanguage}`, r),
       );
+      console.log(`i18n setting dispatched...`);
+    } else if (i18n.resolvedLanguage) {
+      console.log(
+        `falsy selectedLanguage, truthy i18next-resolved language so setting redux to resolved ${i18n.resolvedLanguage}`,
+      );
+      dispatch(setLanguage(i18n.resolvedLanguage));
+      console.log(
+        `redux setting dispatched, should rerun this useEffect w/truthy selectedLanguage...`,
+      );
     } else {
-      console.log(`falsy selectedLanguage`);
+      console.log(
+        `falsy selectedLanguage, falsy resolved language; simply leaving unset`,
+      );
     }
-  }, [selectedLanguage, i18n]);
+  }, [selectedLanguage, i18n, dispatch]);
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const newValue = event.target.value;
     dispatch(setLanguage(newValue));

@@ -81,6 +81,10 @@ export default function App() {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         if (!`${reason}`.match(/No current user/)) {
           console.error(`cognitoUserSession request failed`, reason);
+        } else {
+          console.log(
+            `cognitoUserSession expected case: no user yet logged in`,
+          );
         }
       });
     console.log("cognitoUserSession request issued...");
