@@ -7,22 +7,22 @@ import { useEffect, useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectLanguage } from "../selectedLanguage/selectedLanguageSlice";
 
+function randomLargeInt() {
+  return Math.floor(Math.random() * 1000000000);
+}
+
 // The Authenticator component does not seem to reliably get re-rendered when amplifyI18n.setLanguage
 // gets called.  So, let's break a rule and force update when it does:
 
 export function ScoreBridgeAuthenticator() {
   const langCode = useAppSelector(selectLanguage);
-  const [forceRerenderKey, setForceRerenderKey] = useState(
-    new Date().toISOString(),
-  );
+  const [forceRerenderKey, setForceRerenderKey] = useState(randomLargeInt());
   useEffect(() => {
     amplifyI18n.setLanguage(langCode);
-    setForceRerenderKey(new Date().toISOString());
+    setForceRerenderKey(randomLargeInt());
   }, [langCode]);
   return (
     <>
-      <p>contrived dependency before Authenticator</p>
-      <p>{langCode}</p>
       <Authenticator key={forceRerenderKey} hideSignUp={true}>
         {({ signOut, user }) => (
           <>

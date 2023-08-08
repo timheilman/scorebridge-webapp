@@ -3,11 +3,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 
 export interface SelectedLanguageState {
-  value: string;
+  value: string | undefined;
 }
 
 const initialState: SelectedLanguageState = {
-  value: "en",
+  value: undefined, // TODO: use a library to determine the browser's default language
 };
 
 export const selectedLanguageSlice = createSlice({

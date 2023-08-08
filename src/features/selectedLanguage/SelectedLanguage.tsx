@@ -22,17 +22,14 @@ const SelectedLanguage: FC<SelectProps> = ({ options }) => {
   };
 
   return (
-    <div>
-      <select value={selectedLanguage} onChange={handleSelectChange}>
-        <option value="">Select a language</option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
-      <p>Selected language: {selectedLanguage}</p>
-    </div>
+    <select value={selectedLanguage} onChange={handleSelectChange}>
+      <option value="">Select a language</option>
+      {options.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
   );
 };
 

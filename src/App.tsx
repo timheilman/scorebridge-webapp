@@ -13,8 +13,6 @@ import {
   Routes,
 } from "react-router-dom";
 
-import { useAppSelector } from "./app/hooks";
-// import Select, { ActionMeta } from "react-select";
 import { ScoreBridgeAuthenticator } from "./features/authAuth/ScoreBridgeAuthenticator";
 import { SignUpPage } from "./features/authAuth/SignUpPage";
 import CounterApp from "./features/counter/CounterApp";
@@ -22,7 +20,6 @@ import HelloWorld from "./features/helloworld/HelloWorld";
 import ProjectPage from "./features/projects/ProjectPage";
 import ProjectsPage from "./features/projects/ProjectsPage";
 import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
-import { selectLanguage } from "./features/selectedLanguage/selectedLanguageSlice";
 import HomePage from "./home/HomePage";
 import { translationStrings } from "./translationStrings";
 
@@ -75,20 +72,12 @@ export default function App() {
         }
       });
   });
-  const languageCode = useAppSelector(selectLanguage);
   if (!sessionRequestResolved) {
     return <p>Loading user session</p>;
   } else if (!cognitoUserSession) {
     return (
       <>
         <SelectedLanguage options={languageOptions} />
-        <p>app selector selectLanguage:</p>
-        <p>{languageCode}</p>
-        <p>amplify 18n on it:</p>
-        {/*this is a fail w/out means to refresh:*/}
-        <p>{amplifyI18n.get("customI18nString")}</p>
-        {/*<div>{amplifyI18n.get("appTitle1")}</div>*/}
-        {/*<div>{amplifyI18n.get("appTitle2")}</div>*/}
         <Router>
           <header className="sticky">
             <span className="logo">
