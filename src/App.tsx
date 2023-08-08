@@ -34,7 +34,10 @@ const languageOptions = Object.keys(amplifyUiReactTranslations)
       // type safety of this cast is ostensibly guaranteed by the filter and the library
       label: getLangNameFromCode(amplifyUiReactXlationLangCode)?.name as string,
     };
-  });
+  })
+  .sort((vl1, vl2) =>
+    vl1.label < vl2.label ? -1 : vl1.label === vl2.label ? 0 : 1,
+  );
 
 amplifyI18n.putVocabularies(
   // TODO: have react-i18next take over translationStrings
