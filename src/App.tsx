@@ -40,6 +40,7 @@ const languageOptions = Object.keys(amplifyUiReactTranslations)
   });
 
 amplifyI18n.putVocabularies(
+  // TODO: have react-i18next take over translationStrings
   mergeDeepRight(amplifyUiReactTranslations, translationStrings),
 );
 const person = { first: "Tim", last: "Heilman" };
@@ -77,46 +78,16 @@ export default function App() {
   const languageCode = useAppSelector(selectLanguage);
   if (!sessionRequestResolved) {
     return <p>Loading user session</p>;
-  } else {
-    if (!cognitoUserSession) {
-      return (
-        <>
-          <SelectedLanguage options={languageOptions} />
-          <p>app selector selectLanguage:</p>
-          <p>{languageCode}</p>
-          {/*<p>amplify 18n on it:</p>*/}
-          {/*<p>{amplifyI18n.get("customI18nString")}</p>*/}
-          {/*<div>{amplifyI18n.get("appTitle1")}</div>*/}
-          {/*<div>{amplifyI18n.get("appTitle2")}</div>*/}
-          <Router>
-            <header className="sticky">
-              <span className="logo">
-                <img
-                  src="/assets/logo-3.svg"
-                  alt="logo"
-                  width="49"
-                  height="99"
-                />
-              </span>
-              <NavLink to="/" className="button rounded">
-                <span className="icon-home"></span>
-                Log In
-              </NavLink>
-              <NavLink to="/signup" className="button rounded">
-                Sign Up
-              </NavLink>
-            </header>
-            <div className="container">
-              <Routes>
-                <Route path="/" element={<ScoreBridgeAuthenticator />} />
-                <Route path="/signup" element={<SignUpPage />} />
-              </Routes>
-            </div>
-          </Router>
-        </>
-      );
-    } else {
-      return (
+  } else if (!cognitoUserSession) {
+    return (
+      <>
+        <SelectedLanguage options={languageOptions} />
+        <p>app selector selectLanguage:</p>
+        <p>{languageCode}</p>
+        <p>amplify 18n on it:</p>
+        <p>{amplifyI18n.get("customI18nString")}</p>
+        {/*<div>{amplifyI18n.get("appTitle1")}</div>*/}
+        {/*<div>{amplifyI18n.get("appTitle2")}</div>*/}
         <Router>
           <header className="sticky">
             <span className="logo">
@@ -124,32 +95,55 @@ export default function App() {
             </span>
             <NavLink to="/" className="button rounded">
               <span className="icon-home"></span>
-              Home
+              Log In
             </NavLink>
-            <NavLink to="/projects" className="button rounded">
-              ProjectNavLink
-            </NavLink>
-            <NavLink to="/helloworld" className="button rounded">
-              Hello World Hands-On-React Examples
-            </NavLink>
-            <NavLink to="/counter" className="button rounded">
-              Redux repo example counter-ts
+            <NavLink to="/signup" className="button rounded">
+              Sign Up
             </NavLink>
           </header>
           <div className="container">
             <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/projects" element={<ProjectsPage />} />
-              <Route path="/projects/:id" element={<ProjectPage />} />
-              <Route
-                path="/helloworld"
-                element={<HelloWorld person={person} logo={logo} />}
-              />
-              <Route path="/counter" element={<CounterApp />} />
+              <Route path="/" element={<ScoreBridgeAuthenticator />} />
+              <Route path="/signup" element={<SignUpPage />} />
             </Routes>
           </div>
         </Router>
-      );
-    }
+      </>
+    );
+  } else {
+    return (
+      <Router>
+        <header className="sticky">
+          <span className="logo">
+            <img src="/assets/logo-3.svg" alt="logo" width="49" height="99" />
+          </span>
+          <NavLink to="/" className="button rounded">
+            <span className="icon-home"></span>
+            Home
+          </NavLink>
+          <NavLink to="/projects" className="button rounded">
+            ProjectNavLink
+          </NavLink>
+          <NavLink to="/helloworld" className="button rounded">
+            Hello World Hands-On-React Examples
+          </NavLink>
+          <NavLink to="/counter" className="button rounded">
+            Redux repo example counter-ts
+          </NavLink>
+        </header>
+        <div className="container">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/:id" element={<ProjectPage />} />
+            <Route
+              path="/helloworld"
+              element={<HelloWorld person={person} logo={logo} />}
+            />
+            <Route path="/counter" element={<CounterApp />} />
+          </Routes>
+        </div>
+      </Router>
+    );
   }
 }
