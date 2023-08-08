@@ -85,6 +85,7 @@ export default function App() {
         <p>app selector selectLanguage:</p>
         <p>{languageCode}</p>
         <p>amplify 18n on it:</p>
+        {/*this is a fail w/out means to refresh:*/}
         <p>{amplifyI18n.get("customI18nString")}</p>
         {/*<div>{amplifyI18n.get("appTitle1")}</div>*/}
         {/*<div>{amplifyI18n.get("appTitle2")}</div>*/}
