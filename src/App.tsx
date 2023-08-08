@@ -4,9 +4,8 @@ import { translations as amplifyUiReactTranslations } from "@aws-amplify/ui-reac
 import { CognitoUserSession } from "amazon-cognito-identity-js";
 import { Auth, I18n as amplifyI18n } from "aws-amplify";
 import { getLangCodeList, getLangNameFromCode } from "language-name-map";
-import { mergeDeepRight } from "ramda";
 import { useEffect, useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
   BrowserRouter as Router,
   NavLink,
@@ -22,28 +21,24 @@ import ProjectPage from "./features/projects/ProjectPage";
 import ProjectsPage from "./features/projects/ProjectsPage";
 import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
 import HomePage from "./home/HomePage";
-import { translationStrings } from "./translationStrings";
 
 const langCodeList = getLangCodeList();
-const languageOptions = Object.keys(amplifyUiReactTranslations)
-  .filter((amplifyUiReactXlationLangCode) =>
-    langCodeList.includes(amplifyUiReactXlationLangCode),
-  )
+const languageOptions = ["en", "fr", "de", "zh", "he"]
+  .filter((langCode) => langCodeList.includes(langCode))
   .map((amplifyUiReactXlationLangCode) => {
     return {
       value: amplifyUiReactXlationLangCode,
       // type safety of this cast is ostensibly guaranteed by the filter and the library
-      label: getLangNameFromCode(amplifyUiReactXlationLangCode)?.name as string,
+      label: getLangNameFromCode(amplifyUiReactXlationLangCode)
+        ?.native as string,
     };
   })
   .sort((vl1, vl2) =>
     vl1.label < vl2.label ? -1 : vl1.label === vl2.label ? 0 : 1,
   );
 
-amplifyI18n.putVocabularies(
-  // TODO: have react-i18next take over translationStrings
-  mergeDeepRight(amplifyUiReactTranslations, translationStrings),
-);
+// TODO: customize the Authenticator component to use our own i18n w/these translations and remove this:
+amplifyI18n.putVocabularies(amplifyUiReactTranslations);
 const person = { first: "Tim", last: "Heilman" };
 const logo = {
   name: "Logo",
@@ -94,10 +89,6 @@ export default function App() {
   } else if (!cognitoUserSession) {
     return (
       <>
-        <SelectedLanguage options={languageOptions} />
-        <Trans i18nKey="weirdstuff">
-          a<pre>booga</pre>ooga
-        </Trans>
         <p>{t("helloWorld")}</p>
         <Router>
           <header className="sticky">
@@ -112,6 +103,9 @@ export default function App() {
               <span className="icon-info"></span>
               Sign Up
             </NavLink>
+            <span>
+              <SelectedLanguage options={languageOptions} />
+            </span>
           </header>
           <div className="container">
             <Routes>
