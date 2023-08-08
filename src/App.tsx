@@ -6,6 +6,7 @@ import { Auth, I18n as amplifyI18n } from "aws-amplify";
 import { getLangCodeList, getLangNameFromCode } from "language-name-map";
 import { mergeDeepRight } from "ramda";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   BrowserRouter as Router,
   NavLink,
@@ -59,11 +60,19 @@ export default function App() {
   const [cognitoUserSession, setCognitoUserSession] =
     useState<CognitoUserSession | null>(null);
   const [sessionRequestResolved, setSessionRequestResolved] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { t } = useTranslation("translation");
   useEffect(() => {
     Auth.currentSession()
       .then((session) => {
         setSessionRequestResolved(true);
-        console.log(`Got session ${JSON.stringify(session, null, 2)}`);
+        console.log(
+          `cognitoUserSession request success: ${JSON.stringify(
+            session,
+            null,
+            2,
+          )}`,
+        );
         setCognitoUserSession(session);
       })
       .catch((reason) => {
@@ -71,9 +80,10 @@ export default function App() {
         // console.log("amplifyUiReactTranslations", amplifyUiReactTranslations);
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         if (!`${reason}`.match(/No current user/)) {
-          console.error(`problem loading cognitoUserSession`, reason);
+          console.error(`cognitoUserSession request failed`, reason);
         }
       });
+    console.log("cognitoUserSession request issued...");
   });
   if (!sessionRequestResolved) {
     return <p>Loading user session</p>;
@@ -81,6 +91,8 @@ export default function App() {
     return (
       <>
         <SelectedLanguage options={languageOptions} />
+        {/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
+        <p>{t("helloWorld")}</p>
         <Router>
           <header className="sticky">
             <span className="logo">

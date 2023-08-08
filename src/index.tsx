@@ -1,5 +1,6 @@
 import "./index.css";
 import "@aws-amplify/ui-react";
+import "./i18n";
 
 // import { Authenticator } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
@@ -35,7 +36,9 @@ root.render(
   <React.StrictMode>
     <ReactReduxProvider store={store}>
       {/*<Authenticator.Provider>*/}
-      <App />
+      <React.Suspense fallback="loading translations...">
+        <App />
+      </React.Suspense>
       {/*</Authenticator.Provider>*/}
     </ReactReduxProvider>
   </React.StrictMode>,

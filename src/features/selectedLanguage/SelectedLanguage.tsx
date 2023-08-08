@@ -1,4 +1,5 @@
-import { ChangeEvent, FC } from "react";
+import { ChangeEvent, FC, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectLanguage, setLanguage } from "./selectedLanguageSlice";
@@ -15,7 +16,17 @@ interface SelectProps {
 const SelectedLanguage: FC<SelectProps> = ({ options }) => {
   const selectedLanguage = useAppSelector(selectLanguage);
   const dispatch = useAppDispatch();
-
+  const { i18n } = useTranslation();
+  useEffect(() => {
+    if (selectedLanguage) {
+      i18n.changeLanguage(selectedLanguage).then(
+        () => console.log(`change good to ${selectedLanguage}`),
+        (r) => console.error(`change bad to ${selectedLanguage}`, r),
+      );
+    } else {
+      console.log(`falsy selectedLanguage`);
+    }
+  }, [selectedLanguage, i18n]);
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const newValue = event.target.value;
     dispatch(setLanguage(newValue));
