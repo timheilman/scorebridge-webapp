@@ -6,7 +6,7 @@ import { Auth, I18n as amplifyI18n } from "aws-amplify";
 import { getLangCodeList, getLangNameFromCode } from "language-name-map";
 import { mergeDeepRight } from "ramda";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import {
   BrowserRouter as Router,
   NavLink,
@@ -95,6 +95,9 @@ export default function App() {
     return (
       <>
         <SelectedLanguage options={languageOptions} />
+        <Trans i18nKey="weirdstuff">
+          a<pre>booga</pre>ooga
+        </Trans>
         <p>{t("helloWorld")}</p>
         <Router>
           <header className="sticky">
