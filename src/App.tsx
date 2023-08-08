@@ -89,7 +89,6 @@ export default function App() {
   } else if (!cognitoUserSession) {
     return (
       <>
-        <p>{t("helloWorld")}</p>
         <Router>
           <header className="sticky">
             <span className="logo">
@@ -97,7 +96,7 @@ export default function App() {
             </span>
             <NavLink to="/" className="button rounded">
               <span className="icon-user"></span>
-              Sign In
+              {t("signIn")}
             </NavLink>
             <NavLink to="/signup" className="button rounded">
               <span className="icon-info"></span>
