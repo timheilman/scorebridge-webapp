@@ -13,11 +13,10 @@ function d(s: string): string {
 }
 describe("initial load of page", () => {
   it("Handles language detection then override after reload", () => {
-    // -- inside and outside Authenticator component
     cy.visit("http://localhost:3000");
     // language en is forced for Electron launch regardless of test running machine's locale
-    cy.contains("Admin Portal");
-    cy.contains("Username");
+    cy.contains("Admin Portal"); // outside Authenticator component
+    cy.contains("Username"); // inside Authenticator component
     cy.get(d("languageSelectorDropdown")).find(":selected").contains("English");
     cy.get(d("languageSelectorDropdown")).select("Français");
     cy.contains("Portail D'administration");
