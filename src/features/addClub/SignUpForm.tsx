@@ -66,8 +66,13 @@ export default function SignUpForm() {
             data-test-id="formAddClubEmailAddress"
           />
           <p>Club&apos;s name:</p>
-          <input type="text" value={clubName} onChange={handleChangeName} />
-          <button>Send me an email</button>
+          <input
+            type="text"
+            value={clubName}
+            onChange={handleChangeName}
+            data-test-id="formAddClubClubName"
+          />
+          <button data-test-id="formAddClubSubmit">Send me an email</button>
         </form>
       )}
     </>
