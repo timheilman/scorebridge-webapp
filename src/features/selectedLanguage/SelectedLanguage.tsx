@@ -66,7 +66,11 @@ const SelectedLanguage: FC<SelectProps> = () => {
     return "";
   };
   return (
-    <select value={selectedLanguage} onChange={handleSelectChange}>
+    <select
+      value={selectedLanguage}
+      onChange={handleSelectChange}
+      data-test-id="languageSelectorDropdown"
+    >
       {maybeAddSelectLanguage()}
       {options.map((option) => (
         <option key={option.value} value={option.value}>

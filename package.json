@@ -38,7 +38,7 @@
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0 --fix",
     "format": "prettier --write .",
     "tidy": "npm run lint; npm run format",
-    "cypress:open": "cypress open"
+    "cypress:open": "ELECTRON_EXTRA_LAUNCH_ARGS=--lang=en cypress open"
   },
   "eslintConfig": {
     "extends": [

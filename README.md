@@ -53,6 +53,12 @@ Or with no preceding attribute on the element:
 >
 ```
 
+## Testing
+
+use `npm start` in one terminal, then `npm run cypress:open` and/or (for language-detection and override testing only),
+`npm run cypress:open-fr`.  The Cypress application takes over the driving of the tests beneath
+`cypress`.
+
 ## Available Scripts
 
 In the project directory, you can run:

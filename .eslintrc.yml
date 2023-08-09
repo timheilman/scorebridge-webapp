@@ -34,7 +34,6 @@ rules:
   #  "import/no-duplicates": "error"
   "@typescript-eslint/no-unused-vars": "error"
   "cypress/assertion-before-screenshot": "error"
-  "cypress/require-data-selectors": "error"
 settings:
   react:
     version: "detect"
