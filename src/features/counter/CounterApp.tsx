@@ -1,10 +1,16 @@
 import "../../App.css";
 
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import React from "react";
+import { Navigate } from "react-router-dom";
 
 import { Counter } from "./Counter";
 
 function CounterApp() {
+  const { authStatus } = useAuthenticator();
+  if (authStatus !== "authenticated") {
+    return <Navigate to="/" />;
+  }
   return (
     <div className="App">
       <header className="App-header">

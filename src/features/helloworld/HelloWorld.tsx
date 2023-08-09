@@ -1,5 +1,8 @@
 // per https://handsonreact.com/docs/react-typescript
 
+import { useAuthenticator } from "@aws-amplify/ui-react";
+import { Navigate } from "react-router-dom";
+
 import AsynchronouslyUpdatingComponent from "./AsynchronouslyUpdatingComponent";
 import ClockWithCleanup from "./ClockWithCleanup";
 import ComponentWithDataDependencyButNoCleanup from "./ComponentWithDataDependencyButNoCleanup";
@@ -62,6 +65,10 @@ function handleClick() {
 }
 
 function HelloWorld({ person, logo }: HelloWorldProps) {
+  const { authStatus } = useAuthenticator();
+  if (authStatus !== "authenticated") {
+    return <Navigate to="/" />;
+  }
   const { first, last } = person;
   const { path, title } = logo;
   return (

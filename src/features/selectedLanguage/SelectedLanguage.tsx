@@ -1,3 +1,5 @@
+import { SelectProps } from "@aws-amplify/ui-react/dist/types/primitives/types/select";
+import { getLangCodeList, getLangNameFromCode } from "language-name-map";
 import { ChangeEvent, FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -9,11 +11,22 @@ interface Option {
   label: string;
 }
 
-interface SelectProps {
-  options: Option[];
-}
+const langCodeList = getLangCodeList();
+const options: Option[] = ["en", "fr", "zh", "he"]
+  .filter((langCode) => langCodeList.includes(langCode)) // should be all true; just for safety
+  .map((amplifyUiReactXlationLangCode) => {
+    return {
+      value: amplifyUiReactXlationLangCode,
+      // type safety of this cast is ostensibly guaranteed by the filter and the library
+      label: getLangNameFromCode(amplifyUiReactXlationLangCode)
+        ?.native as string,
+    };
+  })
+  .sort((vl1, vl2) =>
+    vl1.label < vl2.label ? -1 : vl1.label === vl2.label ? 0 : 1,
+  );
 
-const SelectedLanguage: FC<SelectProps> = ({ options }) => {
+const SelectedLanguage: FC<SelectProps> = () => {
   const selectedLanguage = useAppSelector(selectLanguage);
   const dispatch = useAppDispatch();
   const { i18n } = useTranslation();

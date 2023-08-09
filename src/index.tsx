@@ -2,7 +2,7 @@ import "./index.css";
 import "@aws-amplify/ui-react";
 import "./i18n";
 
-// import { Authenticator } from "@aws-amplify/ui-react";
+import { Authenticator } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
 import React from "react"; // this is the only place this import should be needed on v18 of react
 import { createRoot } from "react-dom/client";
@@ -35,11 +35,11 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <ReactReduxProvider store={store}>
-      {/*<Authenticator.Provider>*/}
-      <React.Suspense fallback="loading translations...">
-        <App />
-      </React.Suspense>
-      {/*</Authenticator.Provider>*/}
+      <Authenticator.Provider>
+        <React.Suspense fallback="loading translations...">
+          <App />
+        </React.Suspense>
+      </Authenticator.Provider>
     </ReactReduxProvider>
   </React.StrictMode>,
 );
