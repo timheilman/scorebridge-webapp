@@ -4,6 +4,7 @@
 // TODO: fix that the signUp page is too wide
 // TODO: verify using the ethereal email service that the email contains the verbiage we want (it doesn't yet; TDD)
 // TODO: rename club to organization
+// TODO: validate input parameters to addClub form
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
