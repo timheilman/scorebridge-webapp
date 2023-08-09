@@ -26,4 +26,6 @@ describe("sign up tab", () => {
   // then, test switching language w/switcher to English
   // -- immediately inside & outside Authenticator component
   // -- after browser reload, despite default still French
+  // TODO: fix that re-signing-up the same email address gives an error
+  // TODO: verify that the error (e.g. the one making re-sign-up the same email address) shows on-screen
 });
