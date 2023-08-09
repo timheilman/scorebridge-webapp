@@ -59,7 +59,12 @@ export default function SignUpForm() {
       ) : (
         <form className="input-group vertical" onSubmit={handleSubmit}>
           <p>Email address:</p>
-          <input type="text" value={email} onChange={handleChangeEmail} />
+          <input
+            type="text"
+            value={email}
+            onChange={handleChangeEmail}
+            data-test-id="formAddClubEmailAddress"
+          />
           <p>Club&apos;s name:</p>
           <input type="text" value={clubName} onChange={handleChangeName} />
           <button>Send me an email</button>

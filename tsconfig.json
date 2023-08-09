@@ -14,9 +14,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["node", "cypress"]
   },
-  "include": ["src", "./appsync.d.ts"],
+  "include": ["src", "appsync.d.ts", "cypress", "cypress.config.ts"],
   "exclude": ["node_modules/**/*"],
   "typeAcquisition": { "include": ["jest"] }
 }

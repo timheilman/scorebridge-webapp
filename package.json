@@ -37,7 +37,8 @@
     "eject": "echo react-scripts eject is disabled since it is irreversible and I am a n00b",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0 --fix",
     "format": "prettier --write .",
-    "tidy": "npm run lint; npm run format"
+    "tidy": "npm run lint; npm run format",
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -61,14 +62,18 @@
     "@aws-amplify/ui-react": "^5.0.7",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/language-name-map": "^0.3.0",
+    "@types/nodemailer": "^6.4.9",
     "aws-amplify": "^5.3.6",
     "cypress": "^12.17.3",
     "eslint": "^8.45.0",
+    "eslint-plugin-chai-friendly": "^0.7.2",
+    "eslint-plugin-cypress": "^2.14.0",
     "eslint-plugin-react": "^7.33.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "graphql": "^16.7.1",
     "graphql-tag": "^2.12.6",
+    "nodemailer": "^6.9.4",
     "prettier": "^3.0.0"
   }
 }

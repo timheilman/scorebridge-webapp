@@ -7,6 +7,8 @@ extends:
   - plugin:@typescript-eslint/recommended-requiring-type-checking
   - plugin:react/recommended
   - plugin:react-hooks/recommended
+  - plugin:cypress/recommended
+  - plugin:chai-friendly/recommended
 parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: latest
@@ -19,6 +21,8 @@ plugins:
   - "simple-import-sort"
   - react
   - react-hooks
+  - cypress
+  - chai-friendly
 rules:
   "sort-imports": "off"
   "simple-import-sort/imports": "error"
@@ -29,6 +33,8 @@ rules:
   #  "import/newline-after-import": "error",
   #  "import/no-duplicates": "error"
   "@typescript-eslint/no-unused-vars": "error"
+  "cypress/assertion-before-screenshot": "error"
+  "cypress/require-data-selectors": "error"
 settings:
   react:
     version: "detect"

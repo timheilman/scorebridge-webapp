@@ -12,7 +12,7 @@ export default function SessionlessRouterHeader() {
         {t("signIn")}
       </NavLink>
       <NavLink to="/signup" className="button rounded">
-        <span className="icon-info"></span>
+        <span data-test-id="signUpTab" className="icon-info"></span>
         {t("signUp")}
       </NavLink>
       <span>
