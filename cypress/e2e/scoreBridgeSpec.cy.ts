@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 
-// TODO: verify that the error (e.g. the one making re-sign-up the same email address) shows on-screen
 // TODO: fix that re-signing-up the same email address gives an error
 // TODO: fix that the signUp page is too wide
 // TODO: verify using the ethereal email service that the email contains the verbiage we want (it doesn't yet; TDD)
+// TODO: rename club to organization
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -42,7 +42,7 @@ describe("initial load of page", () => {
     // you can work around it by explicitly configuring integration with their email
     // service, but I would rather not.  Tested once manually.
     //
-    // cy.get(d("formAddClubSubmit")).click();
-    // cy.contains("email sent!");
+    cy.get(d("formAddClubSubmit")).click();
+    cy.contains("email sent!");
   });
 });

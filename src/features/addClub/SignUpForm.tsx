@@ -20,22 +20,51 @@ const addClub = async (newAdminEmail: string, newClubName: string) => {
     authMode: "API_KEY",
   });
 };
+interface AfterSubmitElementProps {
+  addClubDone: boolean;
+  addClubError: string;
+}
+function AfterSubmitElement({
+  addClubDone,
+  addClubError,
+}: AfterSubmitElementProps) {
+  if (!addClubDone) {
+    return <p>sending email...</p>;
+  }
+  if (addClubError) {
+    return (
+      <>
+        <p>Problem:</p> <pre>{addClubError}</pre>
+      </>
+    );
+  }
+}
 
 export default function SignUpForm() {
   const [email, setEmail] = useState("");
   const [clubName, setClubName] = useState("");
   const [submitPressed, setSubmitPressed] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
+  const [addClubDone, setAddClubDone] = useState(false);
+  const [addClubError, setAddClubError] = useState("");
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault(); // we are taking over, in react, from browser event handling here
     setSubmitPressed(true);
     console.log("in handleSubmit");
     addClub(email, clubName)
       .then(() => {
-        setEmailSent(true);
+        setAddClubDone(true);
         console.log("Add club success");
       })
       .catch((reason) => {
+        setAddClubDone(true);
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        if (process.env.REACT_APP_STAGE !== "prod") {
+          setAddClubError(JSON.stringify(reason, null, 2));
+        } else {
+          setAddClubError(
+            "There was a problem signing you up.\nPlease see the developer console of your browser for more information.\nPerhaps try again later.",
+          );
+        }
         console.error("add club problem", reason);
       });
     console.log("exiting handleSubmit after promise invocation");
@@ -51,11 +80,7 @@ export default function SignUpForm() {
     <>
       <h2>Sign Up to administer your club&apos;s duplicate bridge games:</h2>
       {submitPressed ? (
-        emailSent ? (
-          <p>email sent!</p>
-        ) : (
-          <p>sending email...</p>
-        )
+        AfterSubmitElement({ addClubDone, addClubError })
       ) : (
         <form className="input-group vertical" onSubmit={handleSubmit}>
           <p>Email address:</p>
