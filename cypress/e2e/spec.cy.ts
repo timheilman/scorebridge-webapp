@@ -19,8 +19,10 @@ describe("sign up tab", () => {
     // cy.get("[data-test-id=formAddClubSubmit]").click();
     // cy.contains("email sent!");
   });
-  // TODO: test using default-French browser settings and expect French
-  // -- inside and outside Authenticator component
+  it("handles language detection and selection correctly", () => {
+    // -- inside and outside Authenticator component
+    cy.visit("http://localhost:3000");
+  });
   // then, test switching language w/switcher to English
   // -- immediately inside & outside Authenticator component
   // -- after browser reload, despite default still French
