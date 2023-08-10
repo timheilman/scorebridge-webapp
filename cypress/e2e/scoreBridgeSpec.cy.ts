@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 
-// TODO: fix that re-signing-up the same email address gives an error
+// TODO: change API response for addClub to indicate 3 prongs: created user & club, reinvited user & updated club name, or try "forgot password" instead
 // TODO: fix that the signUp page is too wide
 // TODO: verify using the ethereal email service that the email contains the verbiage we want (it doesn't yet; TDD)
 // TODO: rename club to organization
 // TODO: validate input parameters to addClub form
-// TODO: change API response for addClub to indicate 3 prongs: created user & club, reinvited user & updated club name, or try "forgot password" instead
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
