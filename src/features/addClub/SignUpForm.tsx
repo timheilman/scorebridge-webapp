@@ -2,20 +2,20 @@ import { GraphQLQuery } from "@aws-amplify/api";
 import { API, graphqlOperation } from "aws-amplify";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 
-import { AddClubInput, MutationAddClubArgs } from "../../../appsync";
+import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
 import { mutationAddClub } from "../../graphql/mutations";
 
 const addClub = async (newAdminEmail: string, newClubName: string) => {
   // TODO: verify these now-user inputs!
-  const myMutationObj: AddClubInput = {
-    newAdminEmail,
-    newClubName,
-    suppressInvitationEmail: false,
+  const myMutationArgs: MutationAddClubArgs = {
+    input: {
+      newAdminEmail,
+      newClubName,
+      suppressInvitationEmail: false,
+    },
   };
-
-  const myMutationArgs: MutationAddClubArgs = { input: myMutationObj };
   /* create a new club */
-  await API.graphql<GraphQLQuery<AddClubInput>>({
+  return API.graphql<GraphQLQuery<AddClubResponse>>({
     ...graphqlOperation(mutationAddClub, myMutationArgs),
     authMode: "API_KEY",
   });
@@ -32,11 +32,7 @@ function AfterSubmitElement({
     return <p>sending email...</p>;
   }
   if (addClubError) {
-    return (
-      <>
-        <p>Problem:</p> <pre>{addClubError}</pre>
-      </>
-    );
+    return <p>{addClubError}</p>;
   } else {
     return <p>email sent!</p>;
   }
@@ -53,22 +49,30 @@ export default function SignUpForm() {
     setSubmitPressed(true);
     console.log("in handleSubmit");
     addClub(email, clubName)
-      .then(() => {
+      .then((result) => {
         setAddClubDone(true);
-        console.log("Add club success");
+        console.log(`Add club success: ${JSON.stringify(result, null, 2)}`);
       })
-      .catch((reason) => {
-        setAddClubDone(true);
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        if (process.env.REACT_APP_STAGE !== "prod") {
-          setAddClubError(JSON.stringify(reason, null, 2));
-        } else {
-          setAddClubError(
-            "There was a problem signing you up.\nPlease see the developer console of your browser for more information.\nPerhaps try again later.",
-          );
-        }
-        console.error("add club problem", reason);
-      });
+      .catch(
+        (reason: { errors?: { errorType: string; message: string }[] }) => {
+          setAddClubDone(true);
+          if (
+            reason.errors &&
+            Array.isArray(reason.errors) &&
+            reason.errors.length > 0 &&
+            reason.errors[0]?.errorType === "UserAlreadyExistsError"
+          ) {
+            setAddClubError(reason.errors[0].message);
+          } else if (process.env.REACT_APP_STAGE !== "prod") {
+            setAddClubError(JSON.stringify(reason, null, 2));
+          } else {
+            setAddClubError(
+              "There was a problem signing you up.\nPlease see the developer console of your browser for more information.\nPerhaps try again later.",
+            );
+          }
+          console.error("add club problem", reason);
+        },
+      );
     console.log("exiting handleSubmit after promise invocation");
   };
   const handleChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {

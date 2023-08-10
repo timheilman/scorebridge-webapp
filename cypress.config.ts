@@ -3,7 +3,8 @@ import { createTestAccount } from "nodemailer";
 
 export default defineConfig({
   e2e: {
-    setupNodeEvents(on, config) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    setupNodeEvents(on, _config) {
       on("task", {
         log(message) {
           console.log(message);
