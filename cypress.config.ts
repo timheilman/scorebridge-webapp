@@ -1,6 +1,8 @@
 import { defineConfig } from "cypress";
-import { log } from "./cypress/tasks/log";
+
 import { createTempEmailAccount } from "./cypress/tasks/createTempEmailAccount";
+import { fetchLatestEmail } from "./cypress/tasks/fetchLatestEmail";
+import { log } from "./cypress/tasks/log";
 
 export default defineConfig({
   e2e: {
@@ -9,6 +11,7 @@ export default defineConfig({
       on("task", {
         ...log,
         ...createTempEmailAccount,
+        ...fetchLatestEmail,
       });
     },
   },
