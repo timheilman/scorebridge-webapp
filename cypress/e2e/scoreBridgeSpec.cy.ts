@@ -35,7 +35,7 @@ describe("initial load of page", () => {
     cy.get(d("formAddClubEmailAddress")).type(
       "tdh+scoreBridge-first-cypress-email@stanfordalumni.org",
     );
-    cy.get(d("formAddClubClubName")).type("definitely updated name");
+    cy.get(d("formAddClubClubName")).type("definitely re-renamed name");
     // WARNING!  The following actually-sends an email, and there is a daily quota with cognito
     // you can work around it by explicitly configuring integration with their email
     // service, but I would rather not.  Tested once manually.

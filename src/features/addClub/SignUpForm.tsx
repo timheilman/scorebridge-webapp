@@ -37,6 +37,8 @@ function AfterSubmitElement({
         <p>Problem:</p> <pre>{addClubError}</pre>
       </>
     );
+  } else {
+    return <p>email sent!</p>;
   }
 }
 
