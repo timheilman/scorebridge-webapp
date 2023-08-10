@@ -73,6 +73,7 @@
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "graphql": "^16.7.1",
     "graphql-tag": "^2.12.6",
+    "imap": "^0.8.19",
     "nodemailer": "^6.9.4",
     "prettier": "^3.0.0"
   }
