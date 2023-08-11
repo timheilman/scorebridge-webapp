@@ -53,10 +53,36 @@ Or with no preceding attribute on the element:
 >
 ```
 
+## Updating TypeScript Types for GQL Types
+
+When changes occur in the cloud gql api, they need to be refreshed here:
+
+* `cp ../scorebridge-cloud/appsync.d.ts .`
+
+Or use the `scorebridge-cloud` facility:
+
+* `export SCOREBRIDGE_WEBAPP_CLONE_LOCATION=../scorebridge-webapp`
+* `npm run codegen-gql-types # this creates/updates appsync.d.ts`
+* `npm run provideGqlTypesToWebapp # this copies appsync.d.ts to SCOREBRIDGE_WEBAPP_CLONE_LOCATION`
+
 ## Testing
 
-use `npm start` in one terminal, then `npm run cypress:open` and/or (for language-detection and override testing only),
-`npm run cypress:open-fr`.  The Cypress application takes over the driving of the tests beneath
+Testing requires some environment variable and TypeScript type setup.  Files are checked in locally but need to
+be copied into `.env`:
+
+* `cp ./.env.dev.env ./.env`
+
+Or updating from within a `scorebridge-cloud` clone into this repo's clone:
+
+* `export SCOREBRIDGE_WEBAPP_CLONE_LOCATION=../scorebridge-webapp`
+* `npm run provideEnvEntriesToWebapp # this prefixes vars with REACT_APP_ and copies them to .env`
+* `cp .env .env.dev.env # .env is not checked in to git, but .env.dev.env is`
+
+React automatically honors `.env` but only for env variables prefixed `REACT_APP`.
+
+`tsconfig.json` imports `appsync.d.ts`
+
+use `npm start` in one terminal, then `npm run cypress:open`. The Cypress application takes over the driving of the tests beneath
 `cypress`.
 
 ## Available Scripts

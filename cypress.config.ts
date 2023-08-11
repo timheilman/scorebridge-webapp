@@ -1,8 +1,12 @@
 import { defineConfig } from "cypress";
 
 import { createTempEmailAccount } from "./cypress/tasks/createTempEmailAccount";
-import { fetchLatestEmail } from "./cypress/tasks/fetchLatestEmail";
+import {
+  fetchLatestEmail,
+  fetchEmailsExpectingNone,
+} from "./cypress/tasks/fetchLatestEmail";
 import { log } from "./cypress/tasks/log";
+import { setNewPasswordViaAdmin } from "./cypress/tasks/setNewPasswordViaAdmin";
 
 export default defineConfig({
   e2e: {
@@ -12,6 +16,8 @@ export default defineConfig({
         ...log,
         ...createTempEmailAccount,
         ...fetchLatestEmail,
+        ...setNewPasswordViaAdmin,
+        ...fetchEmailsExpectingNone,
       });
     },
   },

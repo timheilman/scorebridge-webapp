@@ -2,6 +2,22 @@ import Imap from "imap";
 
 import { TempEmailAccount } from "./createTempEmailAccount";
 
+export const fetchEmailsExpectingNone = {
+  async fetchEmailsExpectingNone(tempEmailAccount: TempEmailAccount) {
+    let latestEmail;
+    try {
+      latestEmail = await fetchLatestEmail.fetchLatestEmail(tempEmailAccount);
+    } catch (e: any) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (e?.message === "Nothing to fetch") {
+        return null;
+      }
+    }
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    throw new Error(`Expected nothing to fetch but fetched ${latestEmail}`);
+  },
+};
+
 export const fetchLatestEmail = {
   async fetchLatestEmail(tempEmailAccount: TempEmailAccount) {
     // Create an instance of the Imap class
@@ -11,16 +27,28 @@ export const fetchLatestEmail = {
       imapObj.once("ready", () => {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         imapObj.openBox("INBOX", true, (err, _box) => {
-          if (err) rej(err);
+          if (err) {
+            rej(err);
+            return;
+          }
 
           // Search for the latest email
           imapObj.search(["UNSEEN"], (searchErr, results) => {
-            if (searchErr) rej(searchErr);
+            if (searchErr) {
+              rej(searchErr);
+              return;
+            }
 
             const latestEmailUID = results[0];
 
             // Fetch the latest email
-            const f = imapObj.fetch(latestEmailUID, { bodies: "" });
+            let f: Imap.ImapFetch;
+            try {
+              f = imapObj.fetch(latestEmailUID, { bodies: "" });
+            } catch (e) {
+              rej(e);
+              return;
+            }
 
             f.on("message", (msg, seqno) => {
               console.log(`Message #${seqno}`);
@@ -46,7 +74,10 @@ export const fetchLatestEmail = {
               msg.once("attributes", (attrs) => {
                 // Mark the email as read (optional)
                 imapObj.addFlags(latestEmailUID, "Seen", (markErr) => {
-                  if (markErr) rej(markErr);
+                  if (markErr) {
+                    rej(markErr);
+                    return;
+                  }
                   console.log("Email marked as read.");
                 });
               });
