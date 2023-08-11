@@ -6,6 +6,7 @@ import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 // TODO: use better verbiage for signup email (cypress test addClubSpec will break!)
 // TODO: validate input parameters to addClub form
 // TODO: get disciplined about translations
+// TODO: expect a generic error message and request to look in console if testing env target is prod
 
 describe("initial load of page", () => {
   it("Handles language detection then override after reload", () => {
