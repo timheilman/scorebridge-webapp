@@ -1,4 +1,9 @@
-.myFirstCssClass {
-  display: flex;
-  justify-content: left;
-}
+/*goal was to align both the authenticator with mini.css sufficiently for them to seem the same*/
+/* could not modify onHover coloring of amplify component buttons though */
+/* punting for now */
+/*[data-amplify-authenticator] {*/
+/*  --amplify-components-button-primary-color: var(--amplify-colors-blue-10);*/
+/*  --amplify-components-button-primary-background-color: var(--amplify-colors-blue-90);*/
+/*  --amplify-components-button-focus-color: var(--amplify-colors-red-80);*/
+/*  --amplify-components-button-focus-background-color: var(--amplify-colors-red-20);*/
+/*}*/

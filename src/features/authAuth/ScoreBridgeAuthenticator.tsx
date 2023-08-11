@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 
 import { useAppSelector } from "../../app/hooks";
 import { selectLanguage } from "../selectedLanguage/selectedLanguageSlice";
-import styles from "./ScoreBridgeAuthenticator.module.css";
 
 function randomLargeInt() {
   return Math.floor(Math.random() * 1000000000);
@@ -23,22 +22,16 @@ export function ScoreBridgeAuthenticator() {
     setForceRerenderKey(randomLargeInt());
   }, [langCode]);
   return (
-    <div>
-      <Authenticator
-        key={forceRerenderKey}
-        hideSignUp={true}
-        className={styles.myFirstCssClass}
-      >
-        {({ signOut, user }) => (
-          <>
-            <p>
-              OMG a user: <pre>{JSON.stringify(user, null, 2)}</pre>
-              And signout:
-              <button onClick={signOut}>Sign Out</button>
-            </p>
-          </>
-        )}
-      </Authenticator>
-    </div>
+    <Authenticator key={forceRerenderKey} hideSignUp={true}>
+      {({ signOut, user }) => (
+        <>
+          <p>
+            OMG a user: <pre>{JSON.stringify(user, null, 2)}</pre>
+            And signout:
+            <button onClick={signOut}>Sign Out</button>
+          </p>
+        </>
+      )}
+    </Authenticator>
   );
 }

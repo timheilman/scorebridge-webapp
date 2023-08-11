@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 
-// TODO: fix that the signUp page is too wide
 // TODO: complete exhaustive testing of all addClub, including 1) unexpected error, 2) happy path, 3) happy remind path, 4) already-confirmed error path
 // TODO: use better verbiage for signup email (cypress test addClubSpec will break!)
 // TODO: validate input parameters to addClub form
@@ -12,6 +11,8 @@ import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 // TODO: point to "forgot password" when addClub invoked on pre-existing confirmed email
 // TODO: look into test coverage; otherwise manually verify coverage
 // TODO: learn to write the task to, if too fast, retry within a timeout, rather than cy.wait()
+// TODO: write a logging system w/categories like log4j and cleanup the logging chatter
+// TODO: increase the refresh token expiration to 10 years only for tableTablets
 describe("initial load of page", () => {
   it("Handles language detection then override after reload", () => {
     cy.task("log", "Hi Mom!  gnu11");

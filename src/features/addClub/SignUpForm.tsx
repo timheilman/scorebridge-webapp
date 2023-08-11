@@ -4,7 +4,8 @@ import { ChangeEvent, SyntheticEvent, useState } from "react";
 
 import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
 import { mutationAddClub } from "../../graphql/mutations";
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import styles from "./SignUpForm.module.css";
 const addClub = async (newAdminEmail: string, newClubName: string) => {
   // TODO: verify these now-user inputs!
   const myMutationArgs: MutationAddClubArgs = {
@@ -82,30 +83,66 @@ export default function SignUpForm() {
     setClubName(event.target.value);
   };
 
+  // <form>
+  //   <fieldset>
+  //     <legend>Simple form</legend>
+  //     <div className="row">
+  //       <div className="col-sm-12 col-md-6">
+  //         <label htmlFor="username">Username</label>
+  //         <input type="text" id="Username" placeholder="Username"/>
+  //       </div>
+  //       <div className="col-sm-12 col-md-6">
+  //         <label htmlFor="password">Password</label>
+  //         <input type="password" id="password" placeholder="Password"/>
+  //       </div>
+  //     </div>
+  //   </fieldset>
+  // </form>
+
   return (
-    <>
-      <h2>Sign Up to administer your club&apos;s duplicate bridge games:</h2>
+    <div>
       {submitPressed ? (
         AfterSubmitElement({ addClubDone, addClubError })
       ) : (
         <form className="input-group vertical" onSubmit={handleSubmit}>
-          <p>Email address:</p>
-          <input
-            type="text"
-            value={email}
-            onChange={handleChangeEmail}
-            data-test-id="formAddClubEmailAddress"
-          />
-          <p>Club&apos;s name:</p>
-          <input
-            type="text"
-            value={clubName}
-            onChange={handleChangeName}
-            data-test-id="formAddClubClubName"
-          />
-          <button data-test-id="formAddClubSubmit">Send me an email</button>
+          <fieldset>
+            <legend>
+              Sign Up to administer your club&apos;s duplicate bridge games
+            </legend>
+            <div className="row">
+              <div className="col-sm-12 col-md-6">
+                <label htmlFor="email">Email address</label>
+                <input
+                  style={{ width: "70%" }}
+                  type="text"
+                  id="email"
+                  placeholder="email"
+                  onChange={handleChangeEmail}
+                  data-test-id="formAddClubEmailAddress"
+                />
+              </div>
+              <div className="col-sm-12 col-md-6">
+                <label htmlFor="clubName">Club&apos;s name:</label>
+                <input
+                  style={{ width: "70%" }}
+                  type="password"
+                  id="clubName"
+                  placeholder="My Bridge Club"
+                  onChange={handleChangeName}
+                  data-test-id="formAddClubClubName"
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-sm">
+                <button className="primary" data-test-id="formAddClubSubmit">
+                  Send me an email
+                </button>
+              </div>
+            </div>
+          </fieldset>
         </form>
       )}
-    </>
+    </div>
   );
 }
