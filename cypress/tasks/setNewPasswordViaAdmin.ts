@@ -1,6 +1,6 @@
 import { AdminSetUserPasswordCommand } from "@aws-sdk/client-cognito-identity-provider";
 
-import createCognitoIdentityProviderClient from "../support/createCognitoIdentityProviderClient";
+import createCognitoIdentityProviderClient from "./lib/createCognitoIdentityProviderClient";
 
 export interface SetNewPasswordViaAdminParams {
   awsRegion: string;

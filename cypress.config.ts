@@ -2,6 +2,7 @@ import { defineConfig } from "cypress";
 
 import { cleanupUser } from "./cypress/tasks/cleanupUser";
 import { createTempEmailAccount } from "./cypress/tasks/createTempEmailAccount";
+import { expectClubName } from "./cypress/tasks/expectClubName";
 import {
   fetchEmailsExpectingNone,
   fetchLatestEmail,
@@ -19,6 +20,7 @@ export default defineConfig({
         ...fetchLatestEmail,
         ...setNewPasswordViaAdmin,
         ...fetchEmailsExpectingNone,
+        ...expectClubName,
         ...cleanupUser,
       });
     },

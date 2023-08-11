@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 
-// TODO: verify that club name is and isn't updated in club table
 // TODO: fix that the signUp page is too wide
 // TODO: complete exhaustive testing of all addClub, including 1) unexpected error, 2) happy path, 3) happy remind path, 4) already-confirmed error path
 // TODO: use better verbiage for signup email (cypress test addClubSpec will break!)

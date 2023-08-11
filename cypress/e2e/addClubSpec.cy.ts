@@ -2,8 +2,8 @@
 import chance from "chance";
 
 import { dataTestIdSelector as d } from "../support/data-test-id-selector";
-import requiredEnvVar from "../support/requiredEnvVar";
 import { TempEmailAccount } from "../tasks/createTempEmailAccount";
+import requiredEnvVar from "../tasks/lib/requiredEnvVar";
 // WARNING!  The following actually-sends emails, and there is a daily quota with cognito
 // you can work around it by explicitly configuring integration with their email
 // service, but I would rather not.
@@ -23,17 +23,21 @@ function refreshSignupTab() {
   cy.get(d("signUpTab")).click();
 }
 
+const provideFromEnv = {
+  profile: requiredEnvVar("SB_TEST_AWS_CLI_PROFILE"),
+  awsRegion: requiredEnvVar("AWS_REGION"),
+  poolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+  userTableName: requiredEnvVar("USERS_TABLE"),
+  clubTableName: requiredEnvVar("CLUBS_TABLE"),
+};
+
 describe("submit button behavior on addClub form", () => {
   beforeEach(() => {
     cy.task<TempEmailAccount>("createTempEmailAccount")
       .then((tempEmailAccount: TempEmailAccount) => {
         cy.task("cleanupUser", {
-          profile: requiredEnvVar("SB_TEST_AWS_CLI_PROFILE"),
-          awsRegion: requiredEnvVar("AWS_REGION"),
-          poolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+          ...provideFromEnv,
           email: tempEmailAccount.user,
-          userTableName: requiredEnvVar("USERS_TABLE"),
-          clubTableName: requiredEnvVar("CLUBS_TABLE"),
         });
 
         return Promise.resolve(tempEmailAccount);
@@ -59,6 +63,11 @@ describe("submit button behavior on addClub form", () => {
         "include",
         `Your username is ${tempEmailAccount.user} and temporary password is`,
       );
+      cy.task("expectClubName", {
+        ...provideFromEnv,
+        email: tempEmailAccount.user,
+        expectedClubName: originalClubName,
+      });
       refreshSignupTab();
       cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
       cy.get(d("formAddClubClubName")).type(updatedClubName);
@@ -70,14 +79,15 @@ describe("submit button behavior on addClub form", () => {
         "include",
         `Your username is ${tempEmailAccount.user} and temporary password is`,
       );
-
-      cy.task("fetchEmailsExpectingNone", tempEmailAccount);
+      cy.task("expectClubName", {
+        ...provideFromEnv,
+        email: tempEmailAccount.user,
+        expectedClubName: updatedClubName,
+      });
 
       const newPassword = randomPassword();
       cy.task("setNewPasswordViaAdmin", {
-        profile: requiredEnvVar("SB_TEST_AWS_CLI_PROFILE"),
-        awsRegion: requiredEnvVar("AWS_REGION"),
-        poolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+        ...provideFromEnv,
         email: tempEmailAccount.user,
         newPassword,
       });
@@ -89,6 +99,12 @@ describe("submit button behavior on addClub form", () => {
       cy.contains(
         `An account has already been registered under this email address: ${tempEmailAccount.user}.`,
       );
+      cy.task("fetchEmailsExpectingNone", tempEmailAccount);
+      cy.task("expectClubName", {
+        ...provideFromEnv,
+        email: tempEmailAccount.user,
+        expectedClubName: updatedClubName, // NOT failedClubName
+      });
     });
   });
 });
