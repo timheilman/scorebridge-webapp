@@ -1,45 +1,32 @@
 import { GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
-import { CleanupUserParams } from "./cleanupUser";
 import { createDynamoDbClient } from "./lib/createDynamoDbClient";
-import { fetchNullableUser } from "./lib/fetchNullableUser";
 
-export interface ExpectClubNameParams extends CleanupUserParams {
+export interface ExpectClubNameParams {
+  awsRegion: string;
+  profile: string;
+  clubId: string;
+  clubTableName: string;
   expectedClubName: string;
 }
 export const expectClubName = {
   async expectClubName({
     awsRegion,
     profile,
-    email,
+    clubId,
     expectedClubName,
     clubTableName,
-    poolId,
-    userTableName,
   }: ExpectClubNameParams) {
-    const user = await fetchNullableUser({
-      userTableName,
-      poolId,
-      email,
-      awsRegion,
-      profile,
-    });
-    if (!user) {
-      throw new Error(`No user found for email ${email}`);
-    }
-
     const ddbClient = createDynamoDbClient(awsRegion, profile);
     const actual = await ddbClient.send(
       new GetItemCommand({
         TableName: clubTableName,
-        Key: marshall({ id: user.clubId }),
+        Key: marshall({ id: clubId }),
       }),
     );
     if (!actual.Item) {
-      throw new Error(
-        `No club found for club id.  email: ${email} userId: ${user.userId} clubId: ${user.clubId}`,
-      );
+      throw new Error(`No club found for club id.  clubId: ${clubId}`);
     }
     const actualClubName = unmarshall(actual.Item).name as string;
     if (actualClubName !== expectedClubName) {

@@ -63,47 +63,61 @@ describe("submit button behavior on addClub form", () => {
         "include",
         `Your username is ${tempEmailAccount.user} and temporary password is`,
       );
-      cy.task("expectClubName", {
+      cy.task<{ userId: string; clubId: string }>("fetchNullableUser", {
         ...provideFromEnv,
         email: tempEmailAccount.user,
-        expectedClubName: originalClubName,
-      });
-      refreshSignupTab();
-      cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
-      cy.get(d("formAddClubClubName")).type(updatedClubName);
-      cy.get(d("formAddClubSubmit")).click();
-      cy.contains("email sent!");
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
-      cy.task("fetchLatestEmail", tempEmailAccount).should(
-        "include",
-        `Your username is ${tempEmailAccount.user} and temporary password is`,
-      );
-      cy.task("expectClubName", {
-        ...provideFromEnv,
-        email: tempEmailAccount.user,
-        expectedClubName: updatedClubName,
-      });
+      }).then((user) => {
+        if (!user) {
+          throw new Error(`No user found for email ${tempEmailAccount.user}`);
+        }
+        cy.task("fetchGroupsForUser", {
+          ...provideFromEnv,
+          userId: user.userId,
+        }).then((groupNames) => {
+          expect(groupNames).to.contain("adminClub");
+        });
+        cy.task("expectClubName", {
+          ...provideFromEnv,
+          userId: user.clubId,
+          expectedClubName: originalClubName,
+        });
+        refreshSignupTab();
+        cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
+        cy.get(d("formAddClubClubName")).type(updatedClubName);
+        cy.get(d("formAddClubSubmit")).click();
+        cy.contains("email sent!");
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(500);
+        cy.task("fetchLatestEmail", tempEmailAccount).should(
+          "include",
+          `Your username is ${tempEmailAccount.user} and temporary password is`,
+        );
+        cy.task("expectClubName", {
+          ...provideFromEnv,
+          clubId: user.clubId,
+          expectedClubName: updatedClubName,
+        });
 
-      const newPassword = randomPassword();
-      cy.task("setNewPasswordViaAdmin", {
-        ...provideFromEnv,
-        email: tempEmailAccount.user,
-        newPassword,
-      });
+        const newPassword = randomPassword();
+        cy.task("setNewPasswordViaAdmin", {
+          ...provideFromEnv,
+          email: tempEmailAccount.user,
+          newPassword,
+        });
 
-      refreshSignupTab();
-      cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
-      cy.get(d("formAddClubClubName")).type(failedClubName);
-      cy.get(d("formAddClubSubmit")).click();
-      cy.contains(
-        `An account has already been registered under this email address: ${tempEmailAccount.user}.`,
-      );
-      cy.task("fetchEmailsExpectingNone", tempEmailAccount);
-      cy.task("expectClubName", {
-        ...provideFromEnv,
-        email: tempEmailAccount.user,
-        expectedClubName: updatedClubName, // NOT failedClubName
+        refreshSignupTab();
+        cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
+        cy.get(d("formAddClubClubName")).type(failedClubName);
+        cy.get(d("formAddClubSubmit")).click();
+        cy.contains(
+          `An account has already been registered under this email address: ${tempEmailAccount.user}.`,
+        );
+        cy.task("fetchEmailsExpectingNone", tempEmailAccount);
+        cy.task("expectClubName", {
+          ...provideFromEnv,
+          clubId: user.clubId,
+          expectedClubName: updatedClubName, // NOT failedClubName
+        });
       });
     });
   });

@@ -3,7 +3,7 @@ import {
   UserNotFoundException,
 } from "@aws-sdk/client-cognito-identity-provider";
 
-import createCognitoIdentityProviderClient from "./createCognitoIdentityProviderClient";
+import createCognitoIdentityProviderClient from "./lib/createCognitoIdentityProviderClient";
 
 export interface FetchNullableUserParams {
   awsRegion: string;
@@ -36,6 +36,7 @@ export const fetchNullableUser = async ({
 
   const userId = adminGetUserCommandOutput.Username as string;
   if (adminGetUserCommandOutput.UserAttributes) {
+    console.log(`AllOutput: ${JSON.stringify(adminGetUserCommandOutput)}`);
     const foundClub = adminGetUserCommandOutput.UserAttributes.find(
       (v) => v.Name === "custom:tenantId",
     );

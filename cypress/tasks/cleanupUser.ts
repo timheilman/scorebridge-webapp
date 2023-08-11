@@ -10,7 +10,7 @@ import { createDynamoDbClient } from "./lib/createDynamoDbClient";
 import {
   fetchNullableUser,
   FetchNullableUserParams,
-} from "./lib/fetchNullableUser";
+} from "./fetchNullableUser";
 
 export interface CleanupUserParams extends FetchNullableUserParams {
   clubTableName: string;
