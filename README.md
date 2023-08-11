@@ -68,19 +68,21 @@ Or use the `scorebridge-cloud` facility:
 ## Testing
 
 Testing requires some environment variable and TypeScript type setup.  Files are checked in locally but need to
-be copied into `.env`:
+be copied:
 
 * `cp ./.env.dev.env ./.env`
+* `cp ./cypress.env.dev.json ./cypress.env.json`
 
 Or updating from within a `scorebridge-cloud` clone into this repo's clone:
 
 * `export SCOREBRIDGE_WEBAPP_CLONE_LOCATION=../scorebridge-webapp`
-* `npm run provideEnvEntriesToWebapp # this prefixes vars with REACT_APP_ and copies them to .env`
-* `cp .env .env.dev.env # .env is not checked in to git, but .env.dev.env is`
+* `npm run refreshDetailsToWebapp`
 
-React automatically honors `.env` but only for env variables prefixed `REACT_APP`.
+React automatically honors `.env` but only for env variables prefixed `REACT_APP`.  Cypress does not use these.
 
-`tsconfig.json` imports `appsync.d.ts`
+Cypress honors cypress.env.json.
+
+`tsconfig.json` imports `appsync.d.ts` which also gets copied over.
 
 use `npm start` in one terminal, then `npm run cypress:open`. The Cypress application takes over the driving of the tests beneath
 `cypress`.

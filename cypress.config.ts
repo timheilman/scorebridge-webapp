@@ -1,9 +1,10 @@
 import { defineConfig } from "cypress";
 
+import { cleanupUser } from "./cypress/tasks/cleanupUser";
 import { createTempEmailAccount } from "./cypress/tasks/createTempEmailAccount";
 import {
-  fetchLatestEmail,
   fetchEmailsExpectingNone,
+  fetchLatestEmail,
 } from "./cypress/tasks/fetchLatestEmail";
 import { log } from "./cypress/tasks/log";
 import { setNewPasswordViaAdmin } from "./cypress/tasks/setNewPasswordViaAdmin";
@@ -18,6 +19,7 @@ export default defineConfig({
         ...fetchLatestEmail,
         ...setNewPasswordViaAdmin,
         ...fetchEmailsExpectingNone,
+        ...cleanupUser,
       });
     },
   },

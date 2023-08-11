@@ -1,8 +1,6 @@
 import { AdminSetUserPasswordCommand } from "@aws-sdk/client-cognito-identity-provider";
 
 import createCognitoIdentityProviderClient from "../support/createCognitoIdentityProviderClient";
-import requiredEnvVar from "../support/requiredEnvVar"; // ES Modules import
-// const { CognitoIdentityProviderClient, AdminSetUserPasswordCommand } = require("@aws-sdk/client-cognito-identity-provider"); // CommonJS import
 
 export interface SetNewPasswordViaAdminParams {
   awsRegion: string;
