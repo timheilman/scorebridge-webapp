@@ -17,6 +17,12 @@ const randomPassword = () => {
     pool,
   });
 };
+
+function refreshSignupTab() {
+  cy.get(d("signInTab")).click();
+  cy.get(d("signUpTab")).click();
+}
+
 describe("submit button behavior on addClub form", () => {
   beforeEach(() => {
     cy.task<TempEmailAccount>("createTempEmailAccount")
@@ -35,30 +41,31 @@ describe("submit button behavior on addClub form", () => {
       .as("tempEmailAccount");
   });
   it("new address=>sends email; FORCE_RESET_PASSWORD address=>sends email; confirmed address=>already registered", () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    const originalClubName =
+      "original club name should be created in club table";
+    const updatedClubName = "updated name should be stored in club table";
+    const failedClubName =
+      "name should not be updated in club table upon invocation by confirmed user";
     cy.get<TempEmailAccount>("@tempEmailAccount").then((tempEmailAccount) => {
       cy.visit("http://localhost:3000");
       cy.get(d("signUpTab")).click();
       cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
-      cy.get(d("formAddClubClubName")).type("original name");
+      cy.get(d("formAddClubClubName")).type(originalClubName);
       cy.get(d("formAddClubSubmit")).click();
       cy.contains("email sent!");
       // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500); // TODO: learn to write the task to, if too fast, retry within a timeout, rather than this
+      cy.wait(500);
       cy.task("fetchLatestEmail", tempEmailAccount).should(
         "include",
         `Your username is ${tempEmailAccount.user} and temporary password is`,
       );
-
-      cy.get(d("signInTab")).click();
-      cy.get(d("signUpTab")).click();
+      refreshSignupTab();
       cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
-      cy.get(d("formAddClubClubName")).type("original name");
+      cy.get(d("formAddClubClubName")).type(updatedClubName);
       cy.get(d("formAddClubSubmit")).click();
       cy.contains("email sent!");
       // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500); // TODO: learn to write the task to, if too fast, retry within a timeout, rather than this
+      cy.wait(500);
       cy.task("fetchLatestEmail", tempEmailAccount).should(
         "include",
         `Your username is ${tempEmailAccount.user} and temporary password is`,
@@ -75,10 +82,9 @@ describe("submit button behavior on addClub form", () => {
         newPassword,
       });
 
-      cy.get(d("signInTab")).click();
-      cy.get(d("signUpTab")).click();
+      refreshSignupTab();
       cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
-      cy.get(d("formAddClubClubName")).type("original name");
+      cy.get(d("formAddClubClubName")).type(failedClubName);
       cy.get(d("formAddClubSubmit")).click();
       cy.contains(
         `An account has already been registered under this email address: ${tempEmailAccount.user}.`,
