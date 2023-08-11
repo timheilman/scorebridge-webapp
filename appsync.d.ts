@@ -49,6 +49,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   addClub: AddClubResponse;
   removeClubAndAdmin: RemoveClubAndAdminResponse;
+  unexpectedError: UnexpectedErrorResponse;
 };
 
 
@@ -79,4 +80,9 @@ export type RemoveClubAndAdminInput = {
 export type RemoveClubAndAdminResponse = {
   __typename?: 'RemoveClubAndAdminResponse';
   status: Scalars['String']['output'];
+};
+
+export type UnexpectedErrorResponse = {
+  __typename?: 'UnexpectedErrorResponse';
+  neverGetsReturned: Scalars['String']['output'];
 };

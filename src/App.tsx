@@ -13,12 +13,13 @@ import {
   Routes,
 } from "react-router-dom";
 
+import TableTabletsPage from "./features/./tableTablets/TableTabletsPage";
 import SignUpForm from "./features/addClub/SignUpForm";
 import { ScoreBridgeAuthenticator } from "./features/authAuth/ScoreBridgeAuthenticator";
 import CounterApp from "./features/counter/CounterApp";
 import ProjectPage from "./features/projects/ProjectPage";
 import ProjectsPage from "./features/projects/ProjectsPage";
-import TableTabletsPage from "./features/tabletTablets/TableTabletsPage";
+import UnexpectedErrors from "./features/unexpectedErrors/UnexpectedErrors";
 import { SessionfulRouterHeader } from "./SessionfulRouterHeader";
 import SessionlessRouterHeader from "./SessionlessRouterHeader";
 import TypesafeTranslationT from "./TypesafeTranslationT";
@@ -63,6 +64,7 @@ export default function App() {
             <Route path="/projects/:id" element={<ProjectPage />} />
             <Route path="/counter" element={<CounterApp />} />
             <Route path="/table_tablets" element={<TableTabletsPage />} />
+            <Route path="/unexpected_error" element={<UnexpectedErrors />} />
           </Routes>
         </div>
       </Router>

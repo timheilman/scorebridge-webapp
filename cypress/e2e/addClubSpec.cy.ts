@@ -7,7 +7,6 @@ import { TempEmailAccount } from "../tasks/createTempEmailAccount";
 
 describe("sign up tab", () => {
   it("sends an email when a new email address is entered ", () => {
-    cy.task("log", "Output me to the terminal");
     cy.task("createTempEmailAccount").then(
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
@@ -15,7 +14,7 @@ describe("sign up tab", () => {
         cy.visit("http://localhost:3000");
         cy.get(d("signUpTab")).click();
         cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
-        cy.get(d("formAddClubClubName")).type("definitely re-renamed name");
+        cy.get(d("formAddClubClubName")).type("original name");
         cy.get(d("formAddClubSubmit")).click();
         cy.contains("email sent!");
         // eslint-disable-next-line cypress/no-unnecessary-waiting
@@ -24,6 +23,27 @@ describe("sign up tab", () => {
           "include",
           `Your username is ${tempEmailAccount.user} and temporary password is`,
         );
+
+        cy.get(d("signInTab")).click();
+        cy.get(d("signUpTab")).click();
+        cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
+        cy.get(d("formAddClubClubName")).type("original name");
+        cy.get(d("formAddClubSubmit")).click();
+        cy.contains("email sent!");
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(500);
+        cy.task("fetchLatestEmail", tempEmailAccount).should(
+          "include",
+          `Your username is ${tempEmailAccount.user} and temporary password is`,
+        );
+        cy.task("setNewPasswordViaAdmin");
+
+        cy.get(d("signInTab")).click();
+        cy.get(d("signUpTab")).click();
+        cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
+        cy.get(d("formAddClubClubName")).type("original name");
+        cy.get(d("formAddClubSubmit")).click();
+        cy.contains("email sent!"); // this should fail w/ the already done message, copy it in
       },
     );
   });

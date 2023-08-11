@@ -8,7 +8,7 @@ export default function SessionlessRouterHeader() {
   return (
     <header className="sticky">
       <NavLink to="/" className="button rounded">
-        <span className="icon-user"></span>
+        <span data-test-id="signInTab" className="icon-user"></span>
         {t("signIn")}
       </NavLink>
       <NavLink to="/signup" className="button rounded">

@@ -8,3 +8,11 @@ export const mutationAddClub = gql`
     }
   }
 `;
+
+export const mutationUnexpectedError = gql`
+  mutation unexpectedError {
+    unexpectedError {
+      neverGetsReturned
+    }
+  }
+`;
