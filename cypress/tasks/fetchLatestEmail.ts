@@ -1,8 +1,7 @@
 import Imap from "imap";
 
 import { TempEmailAccount } from "./createTempEmailAccount";
-
-export const fetchEmailsExpectingNone = {
+export const fetchLatestEmail = {
   async fetchEmailsExpectingNone(tempEmailAccount: TempEmailAccount) {
     let latestEmail;
     try {
@@ -16,9 +15,7 @@ export const fetchEmailsExpectingNone = {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`Expected nothing to fetch but fetched ${latestEmail}`);
   },
-};
 
-export const fetchLatestEmail = {
   async fetchLatestEmail(tempEmailAccount: TempEmailAccount) {
     // Create an instance of the Imap class
     const imapObj = new Imap(tempEmailAccount);

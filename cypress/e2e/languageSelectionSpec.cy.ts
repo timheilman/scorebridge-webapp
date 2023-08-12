@@ -14,6 +14,7 @@ import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 // TODO: write a logging system w/categories like log4j and cleanup the logging chatter
 // TODO: increase the refresh token expiration to 10 years only for tableTablets
 // TODO: rename tableTablets to tableDevices
+// TODO: right to be forgotten: UI for it, starting with removeClubAndUser
 describe("initial load of page", () => {
   it("Handles language detection then override after reload", () => {
     cy.task("log", "Hi Mom!  gnu11");

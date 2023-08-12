@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 import chance from "chance";
 
+import { addrs } from "../support/awsSesSandbox";
 import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 import { TempEmailAccount } from "../tasks/createTempEmailAccount";
-import requiredEnvVar from "../tasks/lib/requiredEnvVar";
+import { targetTestEnvDetailsFromEnv } from "../tasks/lib/targetTestEnvDetailsFromEnv";
 // WARNING!  The following actually-sends emails, and there is a daily quota with cognito
 // you can work around it by explicitly configuring integration with their email
 // service, but I would rather not.
@@ -23,26 +24,44 @@ function refreshSignupTab() {
   cy.get(d("signUpTab")).click();
 }
 
-const provideFromEnv = {
-  profile: requiredEnvVar("SB_TEST_AWS_CLI_PROFILE"),
-  awsRegion: requiredEnvVar("AWS_REGION"),
-  poolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-  userTableName: requiredEnvVar("USERS_TABLE"),
-  clubTableName: requiredEnvVar("CLUBS_TABLE"),
-};
+function verifyReceivedEmail(tempEmailAccount: TempEmailAccount) {
+  if (targetTestEnvDetailsFromEnv.stage === "prod") {
+    cy.task("fetchLatestEmail", tempEmailAccount).should(
+      "include",
+      `Your username is ${tempEmailAccount.user} and temporary password is`,
+    );
+  } else {
+    cy.task("receiveMessageFromSqs", {
+      ...targetTestEnvDetailsFromEnv,
+      queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
+    }).should(
+      "include",
+      `Your username is ${tempEmailAccount.user} and temporary password is`,
+    );
+  }
+}
 
 describe("submit button behavior on addClub form", () => {
   beforeEach(() => {
-    cy.task<TempEmailAccount>("createTempEmailAccount")
-      .then((tempEmailAccount: TempEmailAccount) => {
-        cy.task("cleanupUser", {
-          ...provideFromEnv,
-          email: tempEmailAccount.user,
-        });
+    if (targetTestEnvDetailsFromEnv.stage === "prod") {
+      cy.task<TempEmailAccount>("createTempEmailAccount")
+        .then((tempEmailAccount: TempEmailAccount) => {
+          cy.task("cleanupUser", {
+            ...targetTestEnvDetailsFromEnv,
+            email: tempEmailAccount.user,
+          });
 
-        return Promise.resolve(tempEmailAccount);
+          return Promise.resolve(tempEmailAccount);
+        })
+        .as("tempEmailAccount");
+    } else {
+      cy.task<TempEmailAccount>("cleanupUser", {
+        ...targetTestEnvDetailsFromEnv,
+        email: addrs.success,
       })
-      .as("tempEmailAccount");
+        .then(() => Promise.resolve({ user: addrs.success }))
+        .as("tempEmailAccount");
+    }
   });
   it("new address=>sends email; FORCE_RESET_PASSWORD address=>sends email; confirmed address=>already registered", () => {
     const originalClubName =
@@ -59,25 +78,22 @@ describe("submit button behavior on addClub form", () => {
       cy.contains("email sent!");
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(500);
-      cy.task("fetchLatestEmail", tempEmailAccount).should(
-        "include",
-        `Your username is ${tempEmailAccount.user} and temporary password is`,
-      );
+      verifyReceivedEmail(tempEmailAccount);
       cy.task<{ userId: string; clubId: string }>("fetchNullableUser", {
-        ...provideFromEnv,
+        ...targetTestEnvDetailsFromEnv,
         email: tempEmailAccount.user,
       }).then((user) => {
         if (!user) {
           throw new Error(`No user found for email ${tempEmailAccount.user}`);
         }
         cy.task("fetchGroupsForUser", {
-          ...provideFromEnv,
+          ...targetTestEnvDetailsFromEnv,
           userId: user.userId,
         }).then((groupNames) => {
           expect(groupNames).to.contain("adminClub");
         });
         cy.task("expectClubName", {
-          ...provideFromEnv,
+          ...targetTestEnvDetailsFromEnv,
           userId: user.clubId,
           expectedClubName: originalClubName,
         });
@@ -88,19 +104,16 @@ describe("submit button behavior on addClub form", () => {
         cy.contains("email sent!");
         // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(500);
-        cy.task("fetchLatestEmail", tempEmailAccount).should(
-          "include",
-          `Your username is ${tempEmailAccount.user} and temporary password is`,
-        );
+        verifyReceivedEmail(tempEmailAccount);
         cy.task("expectClubName", {
-          ...provideFromEnv,
+          ...targetTestEnvDetailsFromEnv,
           clubId: user.clubId,
           expectedClubName: updatedClubName,
         });
 
         const newPassword = randomPassword();
         cy.task("setNewPasswordViaAdmin", {
-          ...provideFromEnv,
+          ...targetTestEnvDetailsFromEnv,
           email: tempEmailAccount.user,
           newPassword,
         });
@@ -112,9 +125,13 @@ describe("submit button behavior on addClub form", () => {
         cy.contains(
           `An account has already been registered under this email address: ${tempEmailAccount.user}.`,
         );
-        cy.task("fetchEmailsExpectingNone", tempEmailAccount);
+        if (targetTestEnvDetailsFromEnv.stage === "prod") {
+          cy.task("fetchEmailsExpectingNone", tempEmailAccount);
+        } else {
+          cy.task("receiveMessagesFromSqsExpectingNone", tempEmailAccount);
+        }
         cy.task("expectClubName", {
-          ...provideFromEnv,
+          ...targetTestEnvDetailsFromEnv,
           clubId: user.clubId,
           expectedClubName: updatedClubName, // NOT failedClubName
         });

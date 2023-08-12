@@ -4,13 +4,11 @@ import { cleanupUser } from "./cypress/tasks/cleanupUser";
 import { createTempEmailAccount } from "./cypress/tasks/createTempEmailAccount";
 import { expectClubName } from "./cypress/tasks/expectClubName";
 import { fetchGroupsForUser } from "./cypress/tasks/fetchGroupsForUser";
-import {
-  fetchEmailsExpectingNone,
-  fetchLatestEmail,
-} from "./cypress/tasks/fetchLatestEmail";
+import { fetchLatestEmail } from "./cypress/tasks/fetchLatestEmail";
 import { fetchNullableUser } from "./cypress/tasks/fetchNullableUser";
 import { log } from "./cypress/tasks/log";
 import { setNewPasswordViaAdmin } from "./cypress/tasks/setNewPasswordViaAdmin";
+import { receiveMessageFromSqs } from "./cypress/tasks/receiveMessageFromSqs";
 
 export default defineConfig({
   e2e: {
@@ -21,11 +19,11 @@ export default defineConfig({
         ...createTempEmailAccount,
         ...fetchLatestEmail,
         ...setNewPasswordViaAdmin,
-        ...fetchEmailsExpectingNone,
         ...fetchNullableUser,
         ...fetchGroupsForUser,
         ...expectClubName,
         ...cleanupUser,
+        ...receiveMessageFromSqs,
       });
     },
   },
