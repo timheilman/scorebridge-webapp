@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 
+// TODO: de-hardcode the "from" email address to be per-env
 // TODO: use better verbiage for signup email (cypress test addClubSpec will break!)
 // TODO: validate input parameters to addClub form
 // TODO: get disciplined about translations
@@ -12,6 +13,7 @@ import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 // TODO: learn to write the task to, if too fast, retry within a timeout, rather than cy.wait()
 // TODO: write a logging system w/categories like log4j and cleanup the logging chatter
 // TODO: increase the refresh token expiration to 10 years only for tableTablets
+// TODO: rename tableTablets to tableDevices
 describe("initial load of page", () => {
   it("Handles language detection then override after reload", () => {
     cy.task("log", "Hi Mom!  gnu11");
