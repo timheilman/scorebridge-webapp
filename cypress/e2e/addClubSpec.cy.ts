@@ -26,17 +26,20 @@ function refreshSignupTab() {
 
 function verifyReceivedEmail(tempEmailAccount: TempEmailAccount) {
   if (targetTestEnvDetailsFromEnv.stage === "prod") {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(500);
     cy.task("fetchLatestEmail", tempEmailAccount).should(
       "include",
       `Your username is ${tempEmailAccount.user} and temporary password is`,
     );
   } else {
-    cy.task<string>("receiveMessageFromSqs", {
+    cy.task<string[]>("receiveMessagesFromSqs", {
       ...targetTestEnvDetailsFromEnv,
       queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
-    }).then((parsedSqs: string) => {
+    }).then((unparsedSqses: string[]) => {
+      expect(unparsedSqses.length).to.equal(1);
       const parsedMessage = JSON.parse(
-        JSON.parse(parsedSqs).Message as string,
+        JSON.parse(unparsedSqses[0]).Message as string,
       ) as {
         mail: { headers: { name: string; value: string }[] };
       };
@@ -88,8 +91,6 @@ describe("submit button behavior on addClub form", () => {
       cy.get(d("formAddClubClubName")).type(originalClubName);
       cy.get(d("formAddClubSubmit")).click();
       cy.contains("email sent!");
-      // eslint-disable-next-line cypress/no-unnecessary-waiting
-      cy.wait(500);
       verifyReceivedEmail(tempEmailAccount);
       cy.task<{ userId: string; clubId: string }>("fetchNullableUser", {
         ...targetTestEnvDetailsFromEnv,
@@ -115,8 +116,6 @@ describe("submit button behavior on addClub form", () => {
         cy.get(d("formAddClubClubName")).type(updatedClubName);
         cy.get(d("formAddClubSubmit")).click();
         cy.contains("email sent!");
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(500);
         verifyReceivedEmail(tempEmailAccount);
         cy.task("expectClubName", {
           ...targetTestEnvDetailsFromEnv,
@@ -141,10 +140,10 @@ describe("submit button behavior on addClub form", () => {
         if (targetTestEnvDetailsFromEnv.stage === "prod") {
           cy.task("fetchEmailsExpectingNone", tempEmailAccount);
         } else {
-          cy.task("receiveMessagesExpectingNone", {
+          cy.task("receiveMessagesFromSqs", {
             ...targetTestEnvDetailsFromEnv,
             queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
-          });
+          }).should("be.empty");
         }
         cy.task("expectClubName", {
           ...targetTestEnvDetailsFromEnv,

@@ -8,7 +8,7 @@ import { fetchLatestEmail } from "./cypress/tasks/fetchLatestEmail";
 import { fetchNullableUser } from "./cypress/tasks/fetchNullableUser";
 import { log } from "./cypress/tasks/log";
 import { purgeSqsQueue } from "./cypress/tasks/purgeSqsQueue";
-import { receiveMessageFromSqs } from "./cypress/tasks/receiveMessageFromSqs";
+import { receiveMessagesFromSqs } from "./cypress/tasks/receiveMessagesFromSqs";
 import { setNewPasswordViaAdmin } from "./cypress/tasks/setNewPasswordViaAdmin";
 
 export default defineConfig({
@@ -25,7 +25,7 @@ export default defineConfig({
         ...fetchGroupsForUser,
         ...expectClubName,
         ...cleanupUser,
-        ...receiveMessageFromSqs,
+        ...receiveMessagesFromSqs,
         ...purgeSqsQueue,
       });
     },

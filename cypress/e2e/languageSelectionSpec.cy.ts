@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 
-// TODO: rename provider.environment to custom.settings
-// TODO: de-hardcode the "from" email address to be per-env
+// TODO: cache the cypress task clients in their files
 // TODO: use better verbiage for signup email (cypress test addClubSpec will break!)
+// TODO: email edge cases from ses sandbox handled
 // TODO: validate input parameters to addClub form
 // TODO: get disciplined about translations
 // TODO: expect a generic error message and request to look in console if testing env target is prod
