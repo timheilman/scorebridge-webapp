@@ -1,6 +1,6 @@
 import { AdminListGroupsForUserCommand } from "@aws-sdk/client-cognito-identity-provider";
 
-import createCognitoIdentityProviderClient from "./lib/createCognitoIdentityProviderClient";
+import cachedCognitoIdpClient from "./lib/cachedCognitoIdpClient";
 
 export interface FetchGroupsForUserParams {
   awsRegion: string;
@@ -15,8 +15,7 @@ export const fetchGroupsForUser = {
     poolId,
     userId,
   }: FetchGroupsForUserParams): Promise<string[]> {
-    const cogClient = createCognitoIdentityProviderClient(awsRegion, profile);
-    const result = await cogClient.send(
+    const result = await cachedCognitoIdpClient(awsRegion, profile).send(
       new AdminListGroupsForUserCommand({
         UserPoolId: poolId,
         Username: userId,

@@ -1,7 +1,7 @@
 import { GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 
-import { createDynamoDbClient } from "./lib/createDynamoDbClient";
+import { cachedDynamoDbClient } from "./lib/cachedDynamoDbClient";
 
 export interface ExpectClubNameParams {
   awsRegion: string;
@@ -18,8 +18,7 @@ export const expectClubName = {
     expectedClubName,
     clubTableName,
   }: ExpectClubNameParams) {
-    const ddbClient = createDynamoDbClient(awsRegion, profile);
-    const actual = await ddbClient.send(
+    const actual = await cachedDynamoDbClient(awsRegion, profile).send(
       new GetItemCommand({
         TableName: clubTableName,
         Key: marshall({ id: clubId }),

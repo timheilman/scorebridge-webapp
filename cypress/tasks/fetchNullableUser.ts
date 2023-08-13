@@ -3,7 +3,7 @@ import {
   UserNotFoundException,
 } from "@aws-sdk/client-cognito-identity-provider";
 
-import createCognitoIdentityProviderClient from "./lib/createCognitoIdentityProviderClient";
+import cachedCognitoIdpClient from "./lib/cachedCognitoIdpClient";
 
 export interface FetchNullableUserParams {
   awsRegion: string;
@@ -20,10 +20,12 @@ export const fetchNullableUser = {
     awsRegion,
     profile,
   }: FetchNullableUserParams) {
-    const cogClient = createCognitoIdentityProviderClient(awsRegion, profile);
     let adminGetUserCommandOutput;
     try {
-      adminGetUserCommandOutput = await cogClient.send(
+      adminGetUserCommandOutput = await cachedCognitoIdpClient(
+        awsRegion,
+        profile,
+      ).send(
         new AdminGetUserCommand({
           UserPoolId: poolId,
           Username: email,

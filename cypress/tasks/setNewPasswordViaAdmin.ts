@@ -1,6 +1,6 @@
 import { AdminSetUserPasswordCommand } from "@aws-sdk/client-cognito-identity-provider";
 
-import createCognitoIdentityProviderClient from "./lib/createCognitoIdentityProviderClient";
+import cachedCognitoIdpClient from "./lib/cachedCognitoIdpClient";
 
 export interface SetNewPasswordViaAdminParams {
   awsRegion: string;
@@ -17,7 +17,6 @@ export const setNewPasswordViaAdmin = {
     email,
     newPassword,
   }: SetNewPasswordViaAdminParams) {
-    const client = createCognitoIdentityProviderClient(awsRegion, profile);
     const input = {
       UserPoolId: poolId,
       Username: email,
@@ -25,6 +24,6 @@ export const setNewPasswordViaAdmin = {
       Permanent: true,
     };
     const command = new AdminSetUserPasswordCommand(input);
-    return client.send(command);
+    return cachedCognitoIdpClient(awsRegion, profile).send(command);
   },
 };

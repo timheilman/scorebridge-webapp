@@ -6,8 +6,8 @@ import {
   fetchNullableUser as fnuContainer,
   FetchNullableUserParams,
 } from "./fetchNullableUser";
-import createCognitoIdentityProviderClient from "./lib/createCognitoIdentityProviderClient";
-import { createDynamoDbClient } from "./lib/createDynamoDbClient";
+import cachedCognitoIdpClient from "./lib/cachedCognitoIdpClient";
+import { cachedDynamoDbClient } from "./lib/cachedDynamoDbClient";
 export interface CleanupUserParams extends FetchNullableUserParams {
   clubTableName: string;
 }
@@ -22,7 +22,6 @@ export const cleanupUser = {
     clubTableName,
   }: CleanupUserParams) {
     console.log(`Cleaning up user ${email}`);
-    const cogClient = createCognitoIdentityProviderClient(awsRegion, profile);
     const poolAndName = {
       UserPoolId: poolId,
       Username: email,
@@ -39,12 +38,13 @@ export const cleanupUser = {
     }
     const promises: Promise<unknown>[] = [];
     promises.push(
-      cogClient.send(new AdminDeleteUserCommand({ ...poolAndName })),
+      cachedCognitoIdpClient(awsRegion, profile).send(
+        new AdminDeleteUserCommand({ ...poolAndName }),
+      ),
     );
     if (user.clubId) {
-      const ddbClient = createDynamoDbClient(awsRegion, profile);
       promises.push(
-        ddbClient.send(
+        cachedDynamoDbClient(awsRegion, profile).send(
           new DeleteItemCommand({
             TableName: clubTableName,
             Key: marshall({ id: user.clubId }),

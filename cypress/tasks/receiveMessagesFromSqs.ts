@@ -1,10 +1,9 @@
 import {
   DeleteMessageCommand,
   ReceiveMessageCommand,
-  SQSClient,
 } from "@aws-sdk/client-sqs";
 
-import { createSqsClient } from "./lib/createSqsClient";
+import { cachedSqsClient } from "./lib/cachedSqsClient";
 
 export interface ReceiveMessagesFromSqsParams {
   awsRegion: string;
@@ -12,12 +11,20 @@ export interface ReceiveMessagesFromSqsParams {
   profile: string;
 }
 
-async function deleteMessage(
-  queueUrl: string,
-  message: { ReceiptHandle?: string | undefined },
-  sqsClient: SQSClient,
-) {
-  await sqsClient.send(
+interface DeleteMessageParams {
+  queueUrl: string;
+  message: { ReceiptHandle?: string | undefined };
+  awsRegion: string;
+  profile: string;
+}
+
+async function deleteMessage({
+  queueUrl,
+  message,
+  awsRegion,
+  profile,
+}: DeleteMessageParams) {
+  await cachedSqsClient(awsRegion, profile).send(
     new DeleteMessageCommand({
       QueueUrl: queueUrl,
       ReceiptHandle: message.ReceiptHandle,
@@ -31,8 +38,6 @@ export const receiveMessagesFromSqs = {
     awsRegion,
     profile,
   }: ReceiveMessagesFromSqsParams): Promise<(string | null)[]> {
-    const sqsClient = createSqsClient(awsRegion, profile);
-
     const receiveMessageParams = {
       QueueUrl: queueUrl,
       MaxNumberOfMessages: 10,
@@ -43,7 +48,9 @@ export const receiveMessagesFromSqs = {
       receiveMessageParams,
     );
 
-    const data = await sqsClient.send(receiveMessageCommand);
+    const data = await cachedSqsClient(awsRegion, profile).send(
+      receiveMessageCommand,
+    );
     console.log(`Found data: ${JSON.stringify(data, null, 2)}`);
     const promises: Promise<unknown>[] = [];
     if (!data.Messages) {
@@ -56,7 +63,14 @@ export const receiveMessagesFromSqs = {
       "Successfully validated SNS topic for Amazon SES event publishing.";
     const validationMessage = data.Messages.find(valMsgPred);
     if (validationMessage) {
-      promises.push(deleteMessage(queueUrl, validationMessage, sqsClient));
+      promises.push(
+        deleteMessage({
+          queueUrl,
+          message: validationMessage,
+          awsRegion,
+          profile,
+        }),
+      );
     }
     const messageBodies = data.Messages.filter((m) => !valMsgPred(m)).map(
       (message) => {
@@ -64,7 +78,7 @@ export const receiveMessagesFromSqs = {
         if (!messageBody) {
           return null;
         }
-        promises.push(deleteMessage(queueUrl, message, sqsClient));
+        promises.push(deleteMessage({ queueUrl, message, awsRegion, profile }));
         return messageBody;
       },
     );

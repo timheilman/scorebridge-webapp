@@ -4,7 +4,7 @@ import {
   PurgeQueueInProgress,
 } from "@aws-sdk/client-sqs";
 
-import { createSqsClient } from "./lib/createSqsClient";
+import { cachedSqsClient } from "./lib/cachedSqsClient";
 
 export interface PurgeSqsQueueParams {
   awsRegion: string;
@@ -17,16 +17,12 @@ export const purgeSqsQueue = {
     queueUrl,
     profile,
   }: PurgeSqsQueueParams): Promise<PurgeQueueCommandOutput> {
-    const sqsClient = createSqsClient(awsRegion, profile);
-
-    const purgeQueueParams = {
+    const purgeQueueCommand = new PurgeQueueCommand({
       QueueUrl: queueUrl,
-    };
-
-    const purgeQueueCommand = new PurgeQueueCommand(purgeQueueParams);
+    });
 
     try {
-      return await sqsClient.send(purgeQueueCommand);
+      return await cachedSqsClient(awsRegion, profile).send(purgeQueueCommand);
     } catch (e) {
       console.log("Message of the error");
       console.log(e);
