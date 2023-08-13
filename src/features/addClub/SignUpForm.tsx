@@ -125,7 +125,7 @@ export default function SignUpForm() {
                 <label htmlFor="clubName">Club&apos;s name:</label>
                 <input
                   style={{ width: "70%" }}
-                  type="password"
+                  type="text"
                   id="clubName"
                   placeholder="My Bridge Club"
                   onChange={handleChangeName}

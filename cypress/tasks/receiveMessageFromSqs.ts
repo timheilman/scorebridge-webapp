@@ -7,6 +7,8 @@ export interface ReceiveMessageFromSqsParams {
   queueUrl: string;
   profile: string;
 }
+
+const noSqsMessagesToFetch = "No messages received from the SQS queue.";
 export const receiveMessageFromSqs = {
   async receiveMessagesExpectingNone({
     awsRegion,
@@ -22,7 +24,7 @@ export const receiveMessageFromSqs = {
       });
     } catch (e: any) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (e?.message === "Nothing to fetch") {
+      if (e?.message === noSqsMessagesToFetch) {
         return null;
       }
       throw e;
@@ -47,27 +49,31 @@ export const receiveMessageFromSqs = {
       receiveMessageParams,
     );
 
-    return new Promise<string>((resolve, reject) => {
-      sqsClient
-        .send(receiveMessageCommand)
-        .then((data) => {
-          console.log(`Found data: ${JSON.stringify(data, null, 2)}`);
-          if (data.Messages && data.Messages.length > 0) {
-            console.log(`Messages length: ${data.Messages.length}`);
-            const message = data.Messages[0];
-            if (!message.Body) {
-              reject(new Error("No message body"));
-              return;
-            }
-            console.log("Resolving message body");
-            resolve(message.Body);
-          } else {
-            reject(new Error("No messages received from the SQS queue."));
-          }
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+    const data = await sqsClient.send(receiveMessageCommand);
+    console.log(`Found data: ${JSON.stringify(data, null, 2)}`);
+    if (data.Messages && data.Messages.length > 0) {
+      console.log(`Messages length: ${data.Messages.length}`);
+      const messageBody = data.Messages.find((message) => {
+        if (!message.Body) {
+          return true;
+        }
+        if (
+          message.Body ===
+          "Successfully validated SNS topic for Amazon SES event publishing."
+        ) {
+          // this is a message involved in verification of the SES ConfigSet EventDestination
+          // it only occurs once upon deployment of that EventDestination and can be disregarded
+          return false;
+        }
+        return true;
+      })?.Body;
+      if (!messageBody) {
+        throw new Error("Message found without message body");
+      }
+      console.log("Resolving message body");
+      return messageBody;
+    } else {
+      throw new Error(noSqsMessagesToFetch);
+    }
   },
 };

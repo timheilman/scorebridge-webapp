@@ -7,10 +7,12 @@ import { fetchGroupsForUser } from "./cypress/tasks/fetchGroupsForUser";
 import { fetchLatestEmail } from "./cypress/tasks/fetchLatestEmail";
 import { fetchNullableUser } from "./cypress/tasks/fetchNullableUser";
 import { log } from "./cypress/tasks/log";
+import { purgeSqsQueue } from "./cypress/tasks/purgeSqsQueue";
 import { receiveMessageFromSqs } from "./cypress/tasks/receiveMessageFromSqs";
 import { setNewPasswordViaAdmin } from "./cypress/tasks/setNewPasswordViaAdmin";
 
 export default defineConfig({
+  defaultCommandTimeout: 10000,
   e2e: {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setupNodeEvents(on, _config) {
@@ -24,6 +26,7 @@ export default defineConfig({
         ...expectClubName,
         ...cleanupUser,
         ...receiveMessageFromSqs,
+        ...purgeSqsQueue,
       });
     },
   },

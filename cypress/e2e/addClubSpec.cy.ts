@@ -31,18 +31,30 @@ function verifyReceivedEmail(tempEmailAccount: TempEmailAccount) {
       `Your username is ${tempEmailAccount.user} and temporary password is`,
     );
   } else {
-    // cy.task("receiveMessageFromSqs", {
-    //   ...targetTestEnvDetailsFromEnv,
-    //   queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
-    // }).should(
-    //   "include",
-    //   `Your username is ${tempEmailAccount.user} and temporary password is`,
-    // );
+    cy.task<string>("receiveMessageFromSqs", {
+      ...targetTestEnvDetailsFromEnv,
+      queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
+    }).then((parsedSqs: string) => {
+      const parsedMessage = JSON.parse(
+        JSON.parse(parsedSqs).Message as string,
+      ) as {
+        mail: { headers: { name: string; value: string }[] };
+      };
+      expect(
+        parsedMessage.mail.headers.find((h) => h?.name === "Subject")?.value,
+      ).to.match(/Your temporary password/);
+    });
   }
 }
 
 describe("submit button behavior on addClub form", () => {
-  beforeEach(() => {
+  it("new address=>sends email; FORCE_RESET_PASSWORD address=>sends email; confirmed address=>already registered", () => {
+    const originalClubName =
+      "original club name should be created in club table";
+    const updatedClubName = "updated name should be stored in club table";
+    const failedClubName =
+      "name should not be updated in club table upon invocation by confirmed user";
+    // BEGIN_WORKAROUND_BEFORE_BLOCK cypress runs before blocks twice if they're async :(
     if (targetTestEnvDetailsFromEnv.stage === "prod") {
       cy.task<TempEmailAccount>("createTempEmailAccount")
         .then((tempEmailAccount: TempEmailAccount) => {
@@ -55,20 +67,20 @@ describe("submit button behavior on addClub form", () => {
         })
         .as("tempEmailAccount");
     } else {
-      cy.task<TempEmailAccount>("cleanupUser", {
+      cy.task("purgeSqsQueue", {
+        queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
+        ...targetTestEnvDetailsFromEnv,
+      });
+      cy.task("cleanupUser", {
         ...targetTestEnvDetailsFromEnv,
         email: addrs.success,
       })
-        .then(() => Promise.resolve({ user: addrs.success }))
+        .then(() => {
+          return Promise.resolve({ user: addrs.success });
+        })
         .as("tempEmailAccount");
     }
-  });
-  it("new address=>sends email; FORCE_RESET_PASSWORD address=>sends email; confirmed address=>already registered", () => {
-    const originalClubName =
-      "original club name should be created in club table";
-    const updatedClubName = "updated name should be stored in club table";
-    const failedClubName =
-      "name should not be updated in club table upon invocation by confirmed user";
+    // END_WORKAROUND_BEFORE_BLOCK
     cy.get<TempEmailAccount>("@tempEmailAccount").then((tempEmailAccount) => {
       cy.visit("http://localhost:3000");
       cy.get(d("signUpTab")).click();
@@ -92,11 +104,12 @@ describe("submit button behavior on addClub form", () => {
         }).then((groupNames) => {
           expect(groupNames).to.contain("adminClub");
         });
-        cy.task("expectClubName", {
+        const arg = {
           ...targetTestEnvDetailsFromEnv,
-          userId: user.userId,
+          clubId: user.clubId,
           expectedClubName: originalClubName,
-        });
+        };
+        cy.task("expectClubName", arg);
         refreshSignupTab();
         cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
         cy.get(d("formAddClubClubName")).type(updatedClubName);
@@ -128,7 +141,10 @@ describe("submit button behavior on addClub form", () => {
         if (targetTestEnvDetailsFromEnv.stage === "prod") {
           cy.task("fetchEmailsExpectingNone", tempEmailAccount);
         } else {
-          // cy.task("receiveMessagesFromSqsExpectingNone", tempEmailAccount);
+          cy.task("receiveMessagesExpectingNone", {
+            ...targetTestEnvDetailsFromEnv,
+            queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
+          });
         }
         cy.task("expectClubName", {
           ...targetTestEnvDetailsFromEnv,

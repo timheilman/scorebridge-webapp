@@ -17,7 +17,6 @@ import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 // TODO: right to be forgotten: UI for it, starting with removeClubAndUser
 describe("initial load of page", () => {
   it("Handles language detection then override after reload", () => {
-    cy.task("log", "Hi Mom!  gnu11");
     cy.visit("http://localhost:3000");
     // language en is forced for Electron launch regardless of test running machine's locale
     cy.contains("Admin Portal"); // outside Authenticator component

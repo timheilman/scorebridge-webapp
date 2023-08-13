@@ -22,6 +22,9 @@ export const fetchGroupsForUser = {
         Username: userId,
       }),
     );
+    console.log(
+      `fetchGroupsForUserCognitoResult ${JSON.stringify(result, null, 2)}`,
+    );
     if (result.NextToken) {
       throw new Error("More than one page of groups found; unhandled");
     }
