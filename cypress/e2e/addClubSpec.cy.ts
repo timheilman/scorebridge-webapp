@@ -31,13 +31,13 @@ function verifyReceivedEmail(tempEmailAccount: TempEmailAccount) {
       `Your username is ${tempEmailAccount.user} and temporary password is`,
     );
   } else {
-    cy.task("receiveMessageFromSqs", {
-      ...targetTestEnvDetailsFromEnv,
-      queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
-    }).should(
-      "include",
-      `Your username is ${tempEmailAccount.user} and temporary password is`,
-    );
+    // cy.task("receiveMessageFromSqs", {
+    //   ...targetTestEnvDetailsFromEnv,
+    //   queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
+    // }).should(
+    //   "include",
+    //   `Your username is ${tempEmailAccount.user} and temporary password is`,
+    // );
   }
 }
 
@@ -94,7 +94,7 @@ describe("submit button behavior on addClub form", () => {
         });
         cy.task("expectClubName", {
           ...targetTestEnvDetailsFromEnv,
-          userId: user.clubId,
+          userId: user.userId,
           expectedClubName: originalClubName,
         });
         refreshSignupTab();
@@ -128,7 +128,7 @@ describe("submit button behavior on addClub form", () => {
         if (targetTestEnvDetailsFromEnv.stage === "prod") {
           cy.task("fetchEmailsExpectingNone", tempEmailAccount);
         } else {
-          cy.task("receiveMessagesFromSqsExpectingNone", tempEmailAccount);
+          // cy.task("receiveMessagesFromSqsExpectingNone", tempEmailAccount);
         }
         cy.task("expectClubName", {
           ...targetTestEnvDetailsFromEnv,

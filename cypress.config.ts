@@ -7,8 +7,8 @@ import { fetchGroupsForUser } from "./cypress/tasks/fetchGroupsForUser";
 import { fetchLatestEmail } from "./cypress/tasks/fetchLatestEmail";
 import { fetchNullableUser } from "./cypress/tasks/fetchNullableUser";
 import { log } from "./cypress/tasks/log";
-import { setNewPasswordViaAdmin } from "./cypress/tasks/setNewPasswordViaAdmin";
 import { receiveMessageFromSqs } from "./cypress/tasks/receiveMessageFromSqs";
+import { setNewPasswordViaAdmin } from "./cypress/tasks/setNewPasswordViaAdmin";
 
 export default defineConfig({
   e2e: {

@@ -12,40 +12,43 @@ export interface FetchNullableUserParams {
   email: string;
   userTableName: string;
 }
-export const fetchNullableUser = async ({
-  poolId,
-  email,
-  awsRegion,
-  profile,
-}: FetchNullableUserParams) => {
-  const cogClient = createCognitoIdentityProviderClient(awsRegion, profile);
-  let adminGetUserCommandOutput;
-  try {
-    adminGetUserCommandOutput = await cogClient.send(
-      new AdminGetUserCommand({
-        UserPoolId: poolId,
-        Username: email,
-      }),
-    );
-  } catch (e) {
-    if (e instanceof UserNotFoundException) {
-      return null;
-    }
-    throw e;
-  }
 
-  const userId = adminGetUserCommandOutput.Username as string;
-  if (adminGetUserCommandOutput.UserAttributes) {
-    console.log(`AllOutput: ${JSON.stringify(adminGetUserCommandOutput)}`);
-    const foundClub = adminGetUserCommandOutput.UserAttributes.find(
-      (v) => v.Name === "custom:tenantId",
-    );
-    if (foundClub) {
-      return { userId, clubId: foundClub.Value as string };
-    } else {
-      throw new Error("No custom:tenantId attribute found");
+export const fetchNullableUser = {
+  async fetchNullableUser({
+    poolId,
+    email,
+    awsRegion,
+    profile,
+  }: FetchNullableUserParams) {
+    const cogClient = createCognitoIdentityProviderClient(awsRegion, profile);
+    let adminGetUserCommandOutput;
+    try {
+      adminGetUserCommandOutput = await cogClient.send(
+        new AdminGetUserCommand({
+          UserPoolId: poolId,
+          Username: email,
+        }),
+      );
+    } catch (e) {
+      if (e instanceof UserNotFoundException) {
+        return null;
+      }
+      throw e;
     }
-  } else {
-    throw new Error("No userAttributes found");
-  }
+
+    const userId = adminGetUserCommandOutput.Username as string;
+    if (adminGetUserCommandOutput.UserAttributes) {
+      console.log(`AllOutput: ${JSON.stringify(adminGetUserCommandOutput)}`);
+      const foundClub = adminGetUserCommandOutput.UserAttributes.find(
+        (v) => v.Name === "custom:tenantId",
+      );
+      if (foundClub) {
+        return { userId, clubId: foundClub.Value as string };
+      } else {
+        return { userId };
+      }
+    } else {
+      throw new Error("No userAttributes found");
+    }
+  },
 };

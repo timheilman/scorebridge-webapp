@@ -1,17 +1,13 @@
-import {
-  AdminDeleteUserCommand,
-  UserNotFoundException,
-} from "@aws-sdk/client-cognito-identity-provider";
+import { AdminDeleteUserCommand } from "@aws-sdk/client-cognito-identity-provider";
 import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 
-import createCognitoIdentityProviderClient from "./lib/createCognitoIdentityProviderClient";
-import { createDynamoDbClient } from "./lib/createDynamoDbClient";
 import {
-  fetchNullableUser,
+  fetchNullableUser as fnuContainer,
   FetchNullableUserParams,
 } from "./fetchNullableUser";
-
+import createCognitoIdentityProviderClient from "./lib/createCognitoIdentityProviderClient";
+import { createDynamoDbClient } from "./lib/createDynamoDbClient";
 export interface CleanupUserParams extends FetchNullableUserParams {
   clubTableName: string;
 }
@@ -31,7 +27,7 @@ export const cleanupUser = {
       UserPoolId: poolId,
       Username: email,
     };
-    const user = await fetchNullableUser({
+    const user = await fnuContainer.fetchNullableUser({
       awsRegion,
       profile,
       userTableName,
@@ -41,22 +37,22 @@ export const cleanupUser = {
     if (!user) {
       return null;
     }
-    const ddbClient = createDynamoDbClient(awsRegion, profile);
-    await Promise.all([
+    const promises: Promise<unknown>[] = [];
+    promises.push(
       cogClient.send(new AdminDeleteUserCommand({ ...poolAndName })),
-      ddbClient.send(
-        new DeleteItemCommand({
-          TableName: userTableName,
-          Key: marshall({ id: user.userId }),
-        }),
-      ),
-      ddbClient.send(
-        new DeleteItemCommand({
-          TableName: clubTableName,
-          Key: marshall({ id: user.clubId }),
-        }),
-      ),
-    ]);
+    );
+    if (user.clubId) {
+      const ddbClient = createDynamoDbClient(awsRegion, profile);
+      promises.push(
+        ddbClient.send(
+          new DeleteItemCommand({
+            TableName: clubTableName,
+            Key: marshall({ id: user.clubId }),
+          }),
+        ),
+      );
+    }
+    await Promise.all(promises);
     return null;
   },
 };
