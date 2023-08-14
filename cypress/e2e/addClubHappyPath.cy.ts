@@ -3,6 +3,8 @@ import chance from "chance";
 
 import { addrs } from "../support/awsSesSandbox";
 import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
+import { envTask } from "../support/envTask";
+import { refreshSignupTab } from "../support/refreshSignupTab";
 import { targetTestEnvDetailsFromEnv } from "../support/targetTestEnvDetailsFromEnv";
 import { TempEmailAccount } from "../tasks/createTempEmailAccount";
 
@@ -15,18 +17,6 @@ const randomPassword = () => {
     pool,
   });
 };
-
-function refreshSignupTab() {
-  cy.get(d("signInTab")).click();
-  cy.get(d("signUpTab")).click();
-}
-
-function envTask<T>(
-  taskName: string,
-  addlProps: { [s: string]: unknown },
-): Cypress.Chainable<T> {
-  return cy.task<T>(taskName, { ...targetTestEnvDetailsFromEnv, ...addlProps });
-}
 
 function verifyReceivedEmail(
   tempEmailAccount: TempEmailAccount | { user: string },
