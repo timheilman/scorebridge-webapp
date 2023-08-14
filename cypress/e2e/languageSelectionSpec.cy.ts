@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 
-// TODO: use better verbiage for signup email (cypress test addClubSpec will break!)
 // TODO: email edge cases from ses sandbox handled
 // TODO: validate input parameters to addClub form
 // TODO: get disciplined about translations
@@ -15,6 +14,7 @@ import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 // TODO: increase the refresh token expiration to 10 years only for tableTablets
 // TODO: rename tableTablets to tableDevices
 // TODO: right to be forgotten: UI for it, starting with removeClubAndUser
+// TODO: tests for authorization code beneath the mapping templates in cloud
 describe("initial load of page", () => {
   it("Handles language detection then override after reload", () => {
     cy.visit("http://localhost:3000");

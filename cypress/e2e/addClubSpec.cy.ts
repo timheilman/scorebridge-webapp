@@ -5,9 +5,6 @@ import { addrs } from "../support/awsSesSandbox";
 import { dataTestIdSelector as d } from "../support/data-test-id-selector";
 import { TempEmailAccount } from "../tasks/createTempEmailAccount";
 import { targetTestEnvDetailsFromEnv } from "../tasks/lib/targetTestEnvDetailsFromEnv";
-// WARNING!  The following actually-sends emails, and there is a daily quota with cognito
-// you can work around it by explicitly configuring integration with their email
-// service, but I would rather not.
 
 const randomPassword = () => {
   const pool =
@@ -45,7 +42,15 @@ function verifyReceivedEmail(tempEmailAccount: TempEmailAccount) {
       };
       expect(
         parsedMessage.mail.headers.find((h) => h?.name === "Subject")?.value,
-      ).to.match(/Your temporary password/);
+      ).to.match(
+        new RegExp(
+          `Welcome to the ScoreBridge${
+            targetTestEnvDetailsFromEnv.stage === "prod"
+              ? ""
+              : `-${targetTestEnvDetailsFromEnv.stage}`
+          } App`,
+        ),
+      );
     });
   }
 }
