@@ -5,6 +5,7 @@ import { addrs } from "../support/awsSesSandbox";
 import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
 import { envTask } from "../support/envTask";
 import { refreshSignupTab } from "../support/refreshSignupTab";
+import requiredEnvVar from "../support/requiredEnvVar";
 import { targetTestEnvDetailsFromEnv } from "../support/targetTestEnvDetailsFromEnv";
 import { TempEmailAccount } from "../tasks/createTempEmailAccount";
 
@@ -18,34 +19,74 @@ const randomPassword = () => {
   });
 };
 
+function verifyReceivedEmailProd(
+  tempEmailAccount: TempEmailAccount | { user: string },
+) {
+  // eslint-disable-next-line cypress/no-unnecessary-waiting
+  cy.wait(500);
+  cy.task("fetchLatestEmail", tempEmailAccount).then((latestEmail) => {
+    expect(latestEmail).to.include(`Welcome to the ScoreBridge Admin Portal`);
+    expect(latestEmail).to.include(
+      `You are receiving this email because your address was submitted for registration with this portal.`,
+    );
+    expect(latestEmail).to.include(`Username: ${tempEmailAccount.user}`);
+    expect(latestEmail).to.include(/Password: [^ ]{8}/);
+    expect(latestEmail).to.include(
+      `<a href="${requiredEnvVar("PORTAL_URL")}">${requiredEnvVar(
+        "PORTAL_URL",
+      )}</a>`,
+    );
+  });
+}
+interface VerifyReceivedEmailNonProdParams {
+  user: string;
+}
+function verifyReceivedEmailNonProd({
+  user,
+}: VerifyReceivedEmailNonProdParams) {
+  envTask<string[]>("receiveMessagesFromSqs", {
+    queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
+  }).then((unparsedSqses: string[]) => {
+    expect(unparsedSqses.length).to.equal(1);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const parsedMessage = JSON.parse(
+      JSON.parse(unparsedSqses[0]).Message as string,
+    );
+    // cy.task("log", {
+    //   message: `Full received message: ${JSON.stringify(
+    //     parsedMessage,
+    //     null,
+    //     2,
+    //   )}`,
+    // });
+    expect(parsedMessage.eventType).to.match(/^Delivery$/);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const ch = parsedMessage.commonHeaders;
+    expect(ch.from.length).to.equal(1);
+    expect(ch.from[0]).to.equal(
+      `ScoreBridge Admin Portal <scorebridge8+${requiredEnvVar(
+        "STAGE",
+      )}@gmail.com>`,
+    );
+    expect(ch.replyTo.length).to.equal(1);
+    expect(ch.replyTo[0]).to.equal(
+      `scorebridge8+${requiredEnvVar("STAGE")}-do-not-reply@gmail.com`,
+    );
+    expect(ch.to.length).to.equal(1);
+    expect(ch.to[0]).to.equal(user);
+    expect(ch.subject).to.equal(
+      `Welcome to the ScoreBridge-${requiredEnvVar("STAGE")} App`,
+    );
+  });
+}
+
 function verifyReceivedEmail(
   tempEmailAccount: TempEmailAccount | { user: string },
 ) {
   if (targetTestEnvDetailsFromEnv.stage === "prod") {
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
-    cy.task("fetchLatestEmail", tempEmailAccount).should(
-      "include",
-      `Your username is ${tempEmailAccount.user} and temporary password is`,
-    );
+    verifyReceivedEmailProd(tempEmailAccount);
   } else {
-    envTask<string[]>("receiveMessagesFromSqs", {
-      queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
-    }).then((unparsedSqses: string[]) => {
-      expect(unparsedSqses.length).to.equal(1);
-      const parsedMessage = JSON.parse(
-        JSON.parse(unparsedSqses[0]).Message as string,
-      ) as {
-        mail: { headers: { name: string; value: string }[] };
-      };
-      expect(
-        parsedMessage.mail.headers.find((h) => h?.name === "Subject")?.value,
-      ).to.match(
-        new RegExp(
-          `Welcome to the ScoreBridge-${targetTestEnvDetailsFromEnv.stage} App`,
-        ),
-      );
-    });
+    verifyReceivedEmailNonProd(tempEmailAccount);
   }
 }
 
