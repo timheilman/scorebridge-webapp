@@ -74,6 +74,12 @@ function runAddClubHappyPath(
     }).then((groupNames) => {
       expect(groupNames).to.contain("adminClub");
     });
+    envTask("expectUserDetails", {
+      userId: user.userId,
+      expectedUserDetails: {
+        email: tempEmailAccount.user,
+      },
+    });
     envTask("expectClubName", {
       clubId: user.clubId,
       expectedClubName: originalClubName,
@@ -84,6 +90,12 @@ function runAddClubHappyPath(
     cy.get(d("formAddClubSubmit")).click();
     cy.contains("email sent!");
     verifyReceivedEmail(tempEmailAccount);
+    envTask("expectUserDetails", {
+      userId: user.userId,
+      expectedUserDetails: {
+        email: tempEmailAccount.user,
+      },
+    });
     envTask("expectClubName", {
       clubId: user.clubId,
       expectedClubName: updatedClubName,
@@ -109,6 +121,12 @@ function runAddClubHappyPath(
         queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
       }).should("be.empty");
     }
+    envTask("expectUserDetails", {
+      userId: user.userId,
+      expectedUserDetails: {
+        email: tempEmailAccount.user,
+      },
+    });
     envTask("expectClubName", {
       clubId: user.clubId,
       expectedClubName: updatedClubName, // NOT failedClubName
