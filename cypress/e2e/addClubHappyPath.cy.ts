@@ -21,6 +21,13 @@ function refreshSignupTab() {
   cy.get(d("signUpTab")).click();
 }
 
+function envTask<T>(
+  taskName: string,
+  addlProps: { [s: string]: unknown },
+): Cypress.Chainable<T> {
+  return cy.task<T>(taskName, { ...targetTestEnvDetailsFromEnv, ...addlProps });
+}
+
 function verifyReceivedEmail(tempEmailAccount: TempEmailAccount) {
   if (targetTestEnvDetailsFromEnv.stage === "prod") {
     // eslint-disable-next-line cypress/no-unnecessary-waiting
@@ -30,8 +37,7 @@ function verifyReceivedEmail(tempEmailAccount: TempEmailAccount) {
       `Your username is ${tempEmailAccount.user} and temporary password is`,
     );
   } else {
-    cy.task<string[]>("receiveMessagesFromSqs", {
-      ...targetTestEnvDetailsFromEnv,
+    envTask<string[]>("receiveMessagesFromSqs", {
       queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
     }).then((unparsedSqses: string[]) => {
       expect(unparsedSqses.length).to.equal(1);
@@ -66,26 +72,19 @@ describe("submit button behavior on addClub form", () => {
     if (targetTestEnvDetailsFromEnv.stage === "prod") {
       cy.task<TempEmailAccount>("createTempEmailAccount")
         .then((tempEmailAccount: TempEmailAccount) => {
-          cy.task("cleanupUser", {
-            ...targetTestEnvDetailsFromEnv,
-            email: tempEmailAccount.user,
-          });
+          envTask("cleanupUser", { email: tempEmailAccount.user });
 
-          return Promise.resolve(tempEmailAccount);
+          return tempEmailAccount;
         })
         .as("tempEmailAccount");
     } else {
-      cy.task("purgeSqsQueue", {
+      envTask("purgeSqsQueue", {
         queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
-        ...targetTestEnvDetailsFromEnv,
       });
-      cy.task("cleanupUser", {
-        ...targetTestEnvDetailsFromEnv,
+      envTask("cleanupUser", {
         email: addrs.success,
       })
-        .then(() => {
-          return Promise.resolve({ user: addrs.success });
-        })
+        .then(() => ({ user: addrs.success }))
         .as("tempEmailAccount");
     }
     // END_WORKAROUND_BEFORE_BLOCK
@@ -97,40 +96,34 @@ describe("submit button behavior on addClub form", () => {
       cy.get(d("formAddClubSubmit")).click();
       cy.contains("email sent!");
       verifyReceivedEmail(tempEmailAccount);
-      cy.task<{ userId: string; clubId: string }>("fetchNullableUser", {
-        ...targetTestEnvDetailsFromEnv,
+      envTask<{ userId: string; clubId: string }>("fetchNullableUser", {
         email: tempEmailAccount.user,
       }).then((user) => {
         if (!user) {
           throw new Error(`No user found for email ${tempEmailAccount.user}`);
         }
-        cy.task("fetchGroupsForUser", {
-          ...targetTestEnvDetailsFromEnv,
+        envTask("fetchGroupsForUser", {
           userId: user.userId,
         }).then((groupNames) => {
           expect(groupNames).to.contain("adminClub");
         });
-        const arg = {
-          ...targetTestEnvDetailsFromEnv,
+        envTask("expectClubName", {
           clubId: user.clubId,
           expectedClubName: originalClubName,
-        };
-        cy.task("expectClubName", arg);
+        });
         refreshSignupTab();
         cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
         cy.get(d("formAddClubClubName")).type(updatedClubName);
         cy.get(d("formAddClubSubmit")).click();
         cy.contains("email sent!");
         verifyReceivedEmail(tempEmailAccount);
-        cy.task("expectClubName", {
-          ...targetTestEnvDetailsFromEnv,
+        envTask("expectClubName", {
           clubId: user.clubId,
           expectedClubName: updatedClubName,
         });
 
         const newPassword = randomPassword();
-        cy.task("setNewPasswordViaAdmin", {
-          ...targetTestEnvDetailsFromEnv,
+        envTask("setNewPasswordViaAdmin", {
           email: tempEmailAccount.user,
           newPassword,
         });
@@ -145,13 +138,11 @@ describe("submit button behavior on addClub form", () => {
         if (targetTestEnvDetailsFromEnv.stage === "prod") {
           cy.task("fetchEmailsExpectingNone", tempEmailAccount);
         } else {
-          cy.task("receiveMessagesFromSqs", {
-            ...targetTestEnvDetailsFromEnv,
+          envTask("receiveMessagesFromSqs", {
             queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
           }).should("be.empty");
         }
-        cy.task("expectClubName", {
-          ...targetTestEnvDetailsFromEnv,
+        envTask("expectClubName", {
           clubId: user.clubId,
           expectedClubName: updatedClubName, // NOT failedClubName
         });
