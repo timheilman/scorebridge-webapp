@@ -2,8 +2,8 @@ import { defineConfig } from "cypress";
 
 import { cleanupUser } from "./cypress/tasks/cleanupUser";
 import { createTempEmailAccount } from "./cypress/tasks/createTempEmailAccount";
-import { expectClubName } from "./cypress/tasks/expectClubName";
-import { expectUserDetails } from "./cypress/tasks/expectUserDetails";
+import { expectDdbClubDetails } from "./cypress/tasks/expectDdbClubDetails";
+import { expectDdbUserDetails } from "./cypress/tasks/expectDdbUserDetails";
 import { fetchGroupsForUser } from "./cypress/tasks/fetchGroupsForUser";
 import { fetchLatestEmail } from "./cypress/tasks/fetchLatestEmail";
 import { fetchNullableUser } from "./cypress/tasks/fetchNullableUser";
@@ -24,8 +24,8 @@ export default defineConfig({
         ...setNewPasswordViaAdmin,
         ...fetchNullableUser,
         ...fetchGroupsForUser,
-        ...expectClubName,
-        ...expectUserDetails,
+        ...expectDdbClubDetails,
+        ...expectDdbUserDetails,
         ...cleanupUser,
         ...receiveMessagesFromSqs,
         ...purgeSqsQueue,

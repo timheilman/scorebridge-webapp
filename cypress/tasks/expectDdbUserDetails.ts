@@ -11,10 +11,10 @@ export interface ExpectUserDetailsParams {
   profile: string;
   userId: string;
   userTableName: string;
-  expectedUserDetails: ExpectedUserDetails;
+  expectedUserDetails: ExpectedUserDetails | null;
 }
-export const expectUserDetails = {
-  async expectUserDetails({
+export const expectDdbUserDetails = {
+  async expectDdbUserDetails({
     awsRegion,
     profile,
     expectedUserDetails,
@@ -28,12 +28,26 @@ export const expectUserDetails = {
       }),
     );
     if (!actual.Item) {
-      throw new Error(`No user found for user id.  userId: ${userId}`);
+      if (expectedUserDetails === null) {
+        return null;
+      }
+      throw new Error(
+        `No user found for user id, but was expecting details ${JSON.stringify(
+          expectedUserDetails,
+          null,
+          2,
+        )}. userId: ${userId}`,
+      );
+    }
+    if (expectedUserDetails === null) {
+      throw new Error(
+        `User found for user id, but was expecting nonexistence. userId: ${userId}`,
+      );
     }
     const actualUserEmail = unmarshall(actual.Item).email as string;
     if (actualUserEmail !== expectedUserDetails.email) {
       throw new Error(
-        `task-based equality expectation failure. Expected: ${expectedUserDetails.email} Actual: ${actualUserEmail}`,
+        `Expected user detail email: ${expectedUserDetails.email} Actual: ${actualUserEmail}`,
       );
     }
     return null;

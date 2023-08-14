@@ -52,8 +52,10 @@ function verifyReceivedEmail(
 function runAddClubHappyPath(
   tempEmailAccount: TempEmailAccount | { user: string },
 ) {
-  const originalClubName = "original club name should be created in club table";
-  const updatedClubName = "updated name should be stored in club table";
+  const originalClubName =
+    "original club name should be created only ever as cognito user attr";
+  const updatedClubName =
+    "updated name should be stored in both cognito user attr and ddb club table";
   const failedClubName =
     "name should not be updated in club table upon invocation by confirmed user";
 
@@ -74,15 +76,13 @@ function runAddClubHappyPath(
     }).then((groupNames) => {
       expect(groupNames).to.contain("adminClub");
     });
-    envTask("expectUserDetails", {
+    envTask("expectDdbUserDetails", {
       userId: user.userId,
-      expectedUserDetails: {
-        email: tempEmailAccount.user,
-      },
+      expectedUserDetails: null,
     });
-    envTask("expectClubName", {
+    envTask("expectDdbClubDetails", {
       clubId: user.clubId,
-      expectedClubName: originalClubName,
+      expectedClubDetails: null,
     });
     refreshSignupTab();
     cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
@@ -92,19 +92,31 @@ function runAddClubHappyPath(
     verifyReceivedEmail(tempEmailAccount);
     envTask("expectUserDetails", {
       userId: user.userId,
+      expectedUserDetails: null,
+    });
+    envTask("expectClubDetails", {
+      clubId: user.clubId,
+      expectedClubDetails: null,
+    });
+
+    const newPassword = randomPassword();
+
+    // beyond confirm is where the DDB objects ought to be created:
+    envTask("setNewPasswordViaAdmin", {
+      email: tempEmailAccount.user,
+      newPassword,
+    });
+    envTask("expectUserDetails", {
+      userId: user.userId,
       expectedUserDetails: {
         email: tempEmailAccount.user,
       },
     });
-    envTask("expectClubName", {
+    envTask("expectClubDetails", {
       clubId: user.clubId,
-      expectedClubName: updatedClubName,
-    });
-
-    const newPassword = randomPassword();
-    envTask("setNewPasswordViaAdmin", {
-      email: tempEmailAccount.user,
-      newPassword,
+      expectedClubDetails: {
+        name: updatedClubName, // NOT originalClubName
+      },
     });
 
     refreshSignupTab();
@@ -127,9 +139,11 @@ function runAddClubHappyPath(
         email: tempEmailAccount.user,
       },
     });
-    envTask("expectClubName", {
+    envTask("expectClubDetails", {
       clubId: user.clubId,
-      expectedClubName: updatedClubName, // NOT failedClubName
+      expectedClubDetails: {
+        name: updatedClubName, // NOT failedClubName nor originalClubName
+      },
     });
   });
 }
