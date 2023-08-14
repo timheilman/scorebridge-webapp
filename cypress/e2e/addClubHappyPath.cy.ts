@@ -52,10 +52,8 @@ function verifyReceivedEmail(
 function runAddClubHappyPath(
   tempEmailAccount: TempEmailAccount | { user: string },
 ) {
-  const originalClubName =
-    "original club name should be created only ever as cognito user attr";
-  const updatedClubName =
-    "updated name should be stored in both cognito user attr and ddb club table";
+  const originalClubName = "original club name should be created in club table";
+  const updatedClubName = "updated name should be stored in club table";
   const failedClubName =
     "name should not be updated in club table upon invocation by confirmed user";
 
@@ -65,7 +63,7 @@ function runAddClubHappyPath(
   cy.get(d("formAddClubSubmit")).click();
   cy.contains("email sent!");
   verifyReceivedEmail(tempEmailAccount);
-  envTask<{ userId: string; clubId: string }>("fetchNullableUser", {
+  envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {
     email: tempEmailAccount.user,
   }).then((user) => {
     if (!user) {
@@ -78,11 +76,13 @@ function runAddClubHappyPath(
     });
     envTask("expectDdbUserDetails", {
       userId: user.userId,
-      expectedUserDetails: null,
+      expectedUserDetails: {
+        email: tempEmailAccount.user,
+      },
     });
-    envTask("expectDdbClubDetails", {
+    envTask("expectClubDetails", {
       clubId: user.clubId,
-      expectedClubDetails: null,
+      expectedClubDetails: { name: originalClubName },
     });
     refreshSignupTab();
     cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
@@ -90,33 +90,19 @@ function runAddClubHappyPath(
     cy.get(d("formAddClubSubmit")).click();
     cy.contains("email sent!");
     verifyReceivedEmail(tempEmailAccount);
-    envTask("expectUserDetails", {
+    envTask("expectDdbUserDetails", {
       userId: user.userId,
-      expectedUserDetails: null,
+      expectedUserDetails: { email: tempEmailAccount.user },
     });
     envTask("expectClubDetails", {
       clubId: user.clubId,
-      expectedClubDetails: null,
+      expectedClubDetails: { name: updatedClubName },
     });
 
     const newPassword = randomPassword();
-
-    // beyond confirm is where the DDB objects ought to be created:
     envTask("setNewPasswordViaAdmin", {
       email: tempEmailAccount.user,
       newPassword,
-    });
-    envTask("expectUserDetails", {
-      userId: user.userId,
-      expectedUserDetails: {
-        email: tempEmailAccount.user,
-      },
-    });
-    envTask("expectClubDetails", {
-      clubId: user.clubId,
-      expectedClubDetails: {
-        name: updatedClubName, // NOT originalClubName
-      },
     });
 
     refreshSignupTab();
@@ -133,7 +119,7 @@ function runAddClubHappyPath(
         queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
       }).should("be.empty");
     }
-    envTask("expectUserDetails", {
+    envTask("expectDdbUserDetails", {
       userId: user.userId,
       expectedUserDetails: {
         email: tempEmailAccount.user,
@@ -141,9 +127,7 @@ function runAddClubHappyPath(
     });
     envTask("expectClubDetails", {
       clubId: user.clubId,
-      expectedClubDetails: {
-        name: updatedClubName, // NOT failedClubName nor originalClubName
-      },
+      expectedClubDetails: { name: updatedClubName }, // NOT failedClubName
     });
   });
 }

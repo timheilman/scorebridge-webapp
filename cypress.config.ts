@@ -2,11 +2,11 @@ import { defineConfig } from "cypress";
 
 import { cleanupUser } from "./cypress/tasks/cleanupUser";
 import { createTempEmailAccount } from "./cypress/tasks/createTempEmailAccount";
-import { expectDdbClubDetails } from "./cypress/tasks/expectDdbClubDetails";
+import { expectClubDetails } from "./cypress/tasks/expectClubDetails";
 import { expectDdbUserDetails } from "./cypress/tasks/expectDdbUserDetails";
 import { fetchGroupsForUser } from "./cypress/tasks/fetchGroupsForUser";
 import { fetchLatestEmail } from "./cypress/tasks/fetchLatestEmail";
-import { fetchNullableUser } from "./cypress/tasks/fetchNullableUser";
+import { fetchNullableCogUser } from "./cypress/tasks/fetchNullableCogUser";
 import { log } from "./cypress/tasks/log";
 import { purgeSqsQueue } from "./cypress/tasks/purgeSqsQueue";
 import { receiveMessagesFromSqs } from "./cypress/tasks/receiveMessagesFromSqs";
@@ -22,9 +22,9 @@ export default defineConfig({
         ...createTempEmailAccount,
         ...fetchLatestEmail,
         ...setNewPasswordViaAdmin,
-        ...fetchNullableUser,
+        ...fetchNullableCogUser,
         ...fetchGroupsForUser,
-        ...expectDdbClubDetails,
+        ...expectClubDetails,
         ...expectDdbUserDetails,
         ...cleanupUser,
         ...receiveMessagesFromSqs,

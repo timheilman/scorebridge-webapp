@@ -5,21 +5,20 @@ import {
 
 import cachedCognitoIdpClient from "./lib/cachedCognitoIdpClient";
 
-export interface FetchNullableUserParams {
+export interface fetchNullableCogUserParams {
   awsRegion: string;
   profile: string;
   poolId: string;
   email: string;
-  userTableName: string;
 }
 
-export const fetchNullableUser = {
-  async fetchNullableUser({
+export const fetchNullableCogUser = {
+  async fetchNullableCogUser({
     poolId,
     email,
     awsRegion,
     profile,
-  }: FetchNullableUserParams) {
+  }: fetchNullableCogUserParams) {
     let adminGetUserCommandOutput;
     try {
       adminGetUserCommandOutput = await cachedCognitoIdpClient(

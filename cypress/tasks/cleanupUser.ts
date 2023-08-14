@@ -3,13 +3,14 @@ import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 
 import {
-  fetchNullableUser as fnuContainer,
-  FetchNullableUserParams,
-} from "./fetchNullableUser";
+  fetchNullableCogUser as fnuContainer,
+  fetchNullableCogUserParams,
+} from "./fetchNullableCogUser";
 import cachedCognitoIdpClient from "./lib/cachedCognitoIdpClient";
 import { cachedDynamoDbClient } from "./lib/cachedDynamoDbClient";
-export interface CleanupUserParams extends FetchNullableUserParams {
+export interface CleanupUserParams extends fetchNullableCogUserParams {
   clubTableName: string;
+  userTableName: string;
 }
 
 export const cleanupUser = {
@@ -26,14 +27,13 @@ export const cleanupUser = {
       UserPoolId: poolId,
       Username: email,
     };
-    const user = await fnuContainer.fetchNullableUser({
+    const cogUser = await fnuContainer.fetchNullableCogUser({
       awsRegion,
       profile,
-      userTableName,
       poolId,
       email,
     });
-    if (!user) {
+    if (!cogUser) {
       return null;
     }
     const promises: Promise<unknown>[] = [];
@@ -42,17 +42,26 @@ export const cleanupUser = {
         new AdminDeleteUserCommand({ ...poolAndName }),
       ),
     );
-    if (user.clubId) {
+    promises.push(
+      cachedDynamoDbClient(awsRegion, profile).send(
+        new DeleteItemCommand({
+          TableName: userTableName,
+          Key: marshall({ id: cogUser.userId }),
+        }),
+      ),
+    );
+    if (cogUser.clubId) {
       promises.push(
         cachedDynamoDbClient(awsRegion, profile).send(
           new DeleteItemCommand({
             TableName: clubTableName,
-            Key: marshall({ id: user.clubId }),
+            Key: marshall({ id: cogUser.clubId }),
           }),
         ),
       );
     }
-    await Promise.all(promises);
+    // we are ignoring errors, in that it would be testing test code
+    await Promise.allSettled(promises);
     return null;
   },
 };

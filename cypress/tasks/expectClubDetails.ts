@@ -7,21 +7,21 @@ interface ExpectClubDetails {
   name: string;
 }
 
-export interface ExpectClubNameParams {
+export interface ExpectClubDetailsParams {
   awsRegion: string;
   profile: string;
   clubId: string;
   clubTableName: string;
   expectedClubDetails: ExpectClubDetails | null;
 }
-export const expectDdbClubDetails = {
-  async expectDdbClubDetails({
+export const expectClubDetails = {
+  async expectClubDetails({
     awsRegion,
     profile,
     clubId,
     expectedClubDetails,
     clubTableName,
-  }: ExpectClubNameParams) {
+  }: ExpectClubDetailsParams) {
     const actual = await cachedDynamoDbClient(awsRegion, profile).send(
       new GetItemCommand({
         TableName: clubTableName,
