@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
-import { dataTestIdSelector as d } from "../support/data-test-id-selector";
+import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
 
 // TODO: email edge cases from ses sandbox handled
 // TODO: validate input parameters to addClub form

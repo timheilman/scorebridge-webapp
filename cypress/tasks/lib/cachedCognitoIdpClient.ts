@@ -1,6 +1,6 @@
 import { CognitoIdentityProviderClient } from "@aws-sdk/client-cognito-identity-provider";
 
-import fromSsoUsingProfile from "./from-sso-using-profile";
+import fromSsoUsingProfile from "./fromSsoUsingProfile";
 
 const dict: {
   [awsRegion: string]: { [profile: string]: CognitoIdentityProviderClient };

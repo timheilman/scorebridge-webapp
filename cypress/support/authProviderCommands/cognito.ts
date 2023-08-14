@@ -1,5 +1,6 @@
+export {};
 // from https://docs.cypress.io/guides/end-to-end-testing/amazon-cognito-authentication
-// cypress/support/auth-provider-commands/cognito.ts
+// cypress/support/authProviderCommands/cognito.ts
 // Amazon Cognito
 //
 // const loginToCognito = (username: string, password: string) => {

@@ -1,6 +1,6 @@
 import { SQSClient } from "@aws-sdk/client-sqs";
 
-import fromSsoUsingProfile from "./from-sso-using-profile";
+import fromSsoUsingProfile from "./fromSsoUsingProfile";
 
 const dict: { [awsRegion: string]: { [profile: string]: SQSClient } } = {};
 

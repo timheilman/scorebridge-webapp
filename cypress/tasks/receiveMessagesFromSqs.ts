@@ -51,7 +51,6 @@ export const receiveMessagesFromSqs = {
     const data = await cachedSqsClient(awsRegion, profile).send(
       receiveMessageCommand,
     );
-    console.log(`Found data: ${JSON.stringify(data, null, 2)}`);
     const promises: Promise<unknown>[] = [];
     if (!data.Messages) {
       return [];

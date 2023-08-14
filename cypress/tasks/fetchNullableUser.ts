@@ -40,7 +40,6 @@ export const fetchNullableUser = {
 
     const userId = adminGetUserCommandOutput.Username as string;
     if (adminGetUserCommandOutput.UserAttributes) {
-      console.log(`AllOutput: ${JSON.stringify(adminGetUserCommandOutput)}`);
       const foundClub = adminGetUserCommandOutput.UserAttributes.find(
         (v) => v.Name === "custom:tenantId",
       );

@@ -1,6 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
-import fromSsoUsingProfile from "./from-sso-using-profile";
+import fromSsoUsingProfile from "./fromSsoUsingProfile";
 
 const dict: { [awsRegion: string]: { [profile: string]: DynamoDBClient } } = {};
 
