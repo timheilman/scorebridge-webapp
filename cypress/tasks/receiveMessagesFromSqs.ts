@@ -38,18 +38,12 @@ export const receiveMessagesFromSqs = {
     awsRegion,
     profile,
   }: ReceiveMessagesFromSqsParams): Promise<(string | null)[]> {
-    const receiveMessageParams = {
-      QueueUrl: queueUrl,
-      MaxNumberOfMessages: 10,
-      WaitTimeSeconds: 9,
-    };
-
-    const receiveMessageCommand = new ReceiveMessageCommand(
-      receiveMessageParams,
-    );
-
     const data = await cachedSqsClient(awsRegion, profile).send(
-      receiveMessageCommand,
+      new ReceiveMessageCommand({
+        QueueUrl: queueUrl,
+        MaxNumberOfMessages: 10,
+        WaitTimeSeconds: 9,
+      }),
     );
     const promises: Promise<unknown>[] = [];
     if (!data.Messages) {

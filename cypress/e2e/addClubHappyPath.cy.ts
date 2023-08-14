@@ -52,16 +52,10 @@ function verifyReceivedEmailNonProd({
     const parsedMessage = JSON.parse(
       JSON.parse(unparsedSqses[0]).Message as string,
     );
-    // cy.task("log", {
-    //   message: `Full received message: ${JSON.stringify(
-    //     parsedMessage,
-    //     null,
-    //     2,
-    //   )}`,
-    // });
     expect(parsedMessage.eventType).to.match(/^Delivery$/);
+    // cy.task("log", JSON.stringify(parsedMessage, null, 2));
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const ch = parsedMessage.commonHeaders;
+    const ch = parsedMessage.mail.commonHeaders;
     expect(ch.from.length).to.equal(1);
     expect(ch.from[0]).to.equal(
       `ScoreBridge Admin Portal <scorebridge8+${requiredEnvVar(
