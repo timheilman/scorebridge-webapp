@@ -1,67 +1,68 @@
-export {};
-// from https://docs.cypress.io/guides/end-to-end-testing/amazon-cognito-authentication
-// cypress/support/authProviderCommands/cognito.ts
-// Amazon Cognito
-//
-// const loginToCognito = (username: string, password: string) => {
-//   Cypress.log({
-//     displayName: "COGNITO LOGIN",
-//     message: [`🔐 Authenticating | ${username}`],
-//     autoEnd: false,
-//   });
-//
-//   cy.visit("/");
-//   cy.contains("Sign in with AWS", {
-//     includeShadowDom: true,
-//   }).click();
-//
-//   cy.origin(
-//     Cypress.env("cognito_domain"),
-//     {
-//       args: {
-//         username,
-//         password,
-//       },
-//     },
-//     ({ username, password }) => {
-//       // Cognito log in page has some elements of the same id but are off screen.
-//       // We only want the visible elements to log in
-//       cy.get('input[name="username"]:visible').type(username);
-//       cy.get('input[name="password"]:visible').type(password, {
-//         // use log: false to prevent your password from showing in the Command Log
-//         log: false,
-//       });
-//       cy.get('input[name="signInSubmitButton"]:visible').click();
-//     },
-//   );
-//
-//   // give a few seconds for redirect to settle
-//   cy.wait(2000);
-//
-//   // verify we have made it passed the login screen
-//   cy.contains("Get Started").should("be.visible");
-// };
-//
-// // right now our custom command is light. More on this later!
-//
-// Cypress.Commands.add("loginByCognito", (username: string, password: string) => {
-//   return loginToCognito(username, password);
-// });
+// cypress/support/auth-provider-commands/cognito.ts
 
-// use this way:
-// describe('Cognito', function () {
-//   beforeEach(function () {
-//     // Seed database with test data
-//     cy.task('db:seed')
-//
-//     // login via Amazon Cognito via cy.origin()
-//     cy.loginByCognito(
-//       Cypress.env('cognito_username'),
-//       Cypress.env('cognito_password')
-//     )
-//   })
-//
-//   it('shows onboarding', function () {
-//     cy.contains('Get Started').should('be.visible')
-//   })
-// })
+import { Amplify, Auth } from "aws-amplify";
+
+import requiredEnvVar from "../../support/requiredEnvVar";
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+Amplify.configure({
+  Auth: {
+    region: requiredEnvVar("AWS_REGION"),
+    userPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
+    userPoolWebClientId: requiredEnvVar("COGNITO_USER_POOL_CLIENT_ID_WEB"), // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+  },
+});
+
+// Amazon Cognito
+Cypress.Commands.add(
+  "loginByCognitoApi",
+  (username: string, password: string) => {
+    const log = Cypress.log({
+      displayName: "COGNITO LOGIN",
+      message: [`🔐 Authenticating | ${username}`],
+      autoEnd: false,
+    });
+
+    log.snapshot("before");
+
+    const signIn = Auth.signIn({ username, password });
+
+    cy.wrap(signIn, { log: false }).then((cognitoResponse) => {
+      const keyPrefixWithUsername = `${cognitoResponse.keyPrefix}.${cognitoResponse.username}`;
+
+      window.localStorage.setItem(
+        `${keyPrefixWithUsername}.idToken`,
+        cognitoResponse.signInUserSession.idToken.jwtToken,
+      );
+
+      window.localStorage.setItem(
+        `${keyPrefixWithUsername}.accessToken`,
+        cognitoResponse.signInUserSession.accessToken.jwtToken,
+      );
+
+      window.localStorage.setItem(
+        `${keyPrefixWithUsername}.refreshToken`,
+        cognitoResponse.signInUserSession.refreshToken.token,
+      );
+
+      window.localStorage.setItem(
+        `${keyPrefixWithUsername}.clockDrift`,
+        cognitoResponse.signInUserSession.clockDrift,
+      );
+
+      window.localStorage.setItem(
+        `${cognitoResponse.keyPrefix}.LastAuthUser`,
+        cognitoResponse.username,
+      );
+
+      window.localStorage.setItem(
+        "amplify-authenticator-authState",
+        "signedIn",
+      );
+      log.snapshot("after");
+      log.end();
+    });
+
+    cy.visit("http://localhost:3000/");
+  },
+);

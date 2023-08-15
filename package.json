@@ -73,6 +73,7 @@
     "aws-amplify": "^5.3.6",
     "chance": "^1.1.11",
     "cypress": "^12.17.3",
+    "cypress-localstorage-commands": "^2.2.4",
     "eslint": "^8.45.0",
     "eslint-plugin-chai-friendly": "^0.7.2",
     "eslint-plugin-cypress": "^2.14.0",
