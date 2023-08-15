@@ -10,6 +10,6 @@
     /*--amplify-components-tabs-item-focus-color: var(--amplify-colors-white);*/
     /*--amplify-components-tabs-item-hover-color: var(--amplify-colors-orange);*/
 /*}*/
-.input-full-width {
+.myInputWidth {
     width: 85%; /* or width: 100%; */
 }

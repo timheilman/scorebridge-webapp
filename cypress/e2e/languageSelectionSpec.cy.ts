@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
 
-// TODO: email edge cases from ses sandbox handled
 // TODO: validate input parameters to addClub form
 // TODO: get disciplined about translations
 // TODO: expect a generic error message and request to look in console if testing env target is prod

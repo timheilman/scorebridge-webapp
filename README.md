@@ -6,7 +6,7 @@ Then the redux repo's counter-ts example
 
 ## Linting
 
-Quick notes on linting: `n`pm run tidy` will keep prettier and eslint both running as separate systems.
+Quick notes on linting: `npm run tidy` will keep prettier and eslint both running as separate systems.
 eslint is improved with type-checking abilities for typescript.
 
 On that front, `@typescript-eslint/no-misused-promises` seems like it can
