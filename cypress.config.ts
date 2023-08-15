@@ -15,6 +15,7 @@ import { setNewPasswordViaAdmin } from "./cypress/tasks/setNewPasswordViaAdmin";
 export default defineConfig({
   defaultCommandTimeout: 10000,
   e2e: {
+    baseUrl: "http://localhost:3000/",
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setupNodeEvents(on, _config) {
       on("task", {
