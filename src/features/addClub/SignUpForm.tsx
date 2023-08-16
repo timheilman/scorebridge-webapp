@@ -1,4 +1,5 @@
 import { GraphQLQuery } from "@aws-amplify/api";
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import { API, graphqlOperation } from "aws-amplify";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 
@@ -6,7 +7,11 @@ import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
 import { mutationAddClub } from "../../graphql/mutations";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from "./SignUpForm.module.css";
-const addClub = async (newAdminEmail: string, newClubName: string) => {
+const addClub = async (
+  newAdminEmail: string,
+  newClubName: string,
+  authenticated: boolean,
+) => {
   const myMutationArgs: MutationAddClubArgs = {
     input: {
       newAdminEmail,
@@ -17,7 +22,7 @@ const addClub = async (newAdminEmail: string, newClubName: string) => {
   /* create a new club */
   return API.graphql<GraphQLQuery<AddClubResponse>>({
     ...graphqlOperation(mutationAddClub, myMutationArgs),
-    authMode: "API_KEY",
+    ...(authenticated ? {} : { authMode: "API_KEY" }),
   });
 };
 
@@ -53,6 +58,7 @@ export default function SignUpForm() {
   const [everSubmitted, setEverSubmitted] = useState(false);
   const [addClubError, setAddClubError] = useState<string | null>(null);
 
+  const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
   function handleExpectedGqlReject(errors: Array<any>) {
     setAddClubError(
@@ -87,7 +93,7 @@ export default function SignUpForm() {
     setEverSubmitted(true);
     setSubmitInFlight(true);
     console.log("in handleSubmit");
-    addClub(email, clubName)
+    addClub(email, clubName, authStatus === "authenticated")
       .then((result) => {
         setAddClubError(null);
         setSubmitInFlight(false);

@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+import { fullAddClubTest } from "../support/fullAddClubTest";
 import requiredEnvVar from "../support/requiredEnvVar";
 
 describe("trying custom command to login programmatically with cognito", () => {
@@ -8,9 +7,6 @@ describe("trying custom command to login programmatically with cognito", () => {
       requiredEnvVar("cognito_username"),
       requiredEnvVar("cognito_password"),
     );
-    cy.visit("http://localhost:3000/");
-    cy.contains("This is the table tablets page placeholder").should(
-      "be.visible",
-    );
+    fullAddClubTest();
   });
 });
