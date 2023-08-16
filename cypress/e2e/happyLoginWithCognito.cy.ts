@@ -5,12 +5,11 @@ import { targetTestEnvDetailsFromEnv } from "../support/targetTestEnvDetailsFrom
 
 describe("trying custom command to login programmatically with cognito", () => {
   it("can login", () => {
-    cy.visit("http://localhost:3000/");
-    cy.task("loginByCognitoApi", {
-      ...targetTestEnvDetailsFromEnv,
-      username: requiredEnvVar("cognito_username"),
-      password: requiredEnvVar("cognito_password"),
-    });
+    // cy.visit("http://localhost:3000/");
+    cy.loginByCognitoApi(
+      requiredEnvVar("cognito_username"),
+      requiredEnvVar("cognito_password"),
+    );
     cy.contains("Projects").should("be.visible");
   });
 });

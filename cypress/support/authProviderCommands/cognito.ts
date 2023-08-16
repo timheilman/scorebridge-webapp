@@ -1,6 +1,6 @@
 // cypress/support/auth-provider-commands/cognito.ts
 
-import { Amplify, Auth } from "aws-amplify";
+import { Amplify /*, Auth*/ } from "aws-amplify";
 
 import requiredEnvVar from "../../support/requiredEnvVar";
 
@@ -25,43 +25,43 @@ Cypress.Commands.add(
 
     log.snapshot("before");
 
-    const signIn = Auth.signIn({ username, password });
-
-    cy.wrap(signIn, { log: false }).then((cognitoResponse) => {
-      const keyPrefixWithUsername = `${cognitoResponse.keyPrefix}.${cognitoResponse.username}`;
-
-      window.localStorage.setItem(
-        `${keyPrefixWithUsername}.idToken`,
-        cognitoResponse.signInUserSession.idToken.jwtToken,
-      );
-
-      window.localStorage.setItem(
-        `${keyPrefixWithUsername}.accessToken`,
-        cognitoResponse.signInUserSession.accessToken.jwtToken,
-      );
-
-      window.localStorage.setItem(
-        `${keyPrefixWithUsername}.refreshToken`,
-        cognitoResponse.signInUserSession.refreshToken.token,
-      );
-
-      window.localStorage.setItem(
-        `${keyPrefixWithUsername}.clockDrift`,
-        cognitoResponse.signInUserSession.clockDrift,
-      );
-
-      window.localStorage.setItem(
-        `${cognitoResponse.keyPrefix}.LastAuthUser`,
-        cognitoResponse.username,
-      );
-
-      window.localStorage.setItem(
-        "amplify-authenticator-authState",
-        "signedIn",
-      );
-      log.snapshot("after");
-      log.end();
-    });
+    // const signIn = Auth.signIn({ username, password });
+    //
+    // cy.wrap(signIn, { log: false }).then((cognitoResponse) => {
+    //   const keyPrefixWithUsername = `${cognitoResponse.keyPrefix}.${cognitoResponse.username}`;
+    //
+    //   window.localStorage.setItem(
+    //     `${keyPrefixWithUsername}.idToken`,
+    //     cognitoResponse.signInUserSession.idToken.jwtToken,
+    //   );
+    //
+    //   window.localStorage.setItem(
+    //     `${keyPrefixWithUsername}.accessToken`,
+    //     cognitoResponse.signInUserSession.accessToken.jwtToken,
+    //   );
+    //
+    //   window.localStorage.setItem(
+    //     `${keyPrefixWithUsername}.refreshToken`,
+    //     cognitoResponse.signInUserSession.refreshToken.token,
+    //   );
+    //
+    //   window.localStorage.setItem(
+    //     `${keyPrefixWithUsername}.clockDrift`,
+    //     cognitoResponse.signInUserSession.clockDrift,
+    //   );
+    //
+    //   window.localStorage.setItem(
+    //     `${cognitoResponse.keyPrefix}.LastAuthUser`,
+    //     cognitoResponse.username,
+    //   );
+    //
+    //   window.localStorage.setItem(
+    //     "amplify-authenticator-authState",
+    //     "signedIn",
+    //   );
+    //   log.snapshot("after");
+    //   log.end();
+    // });
 
     cy.visit("http://localhost:3000/");
   },
