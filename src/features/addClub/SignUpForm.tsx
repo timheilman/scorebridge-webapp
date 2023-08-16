@@ -82,8 +82,10 @@ export default function SignUpForm() {
   function handleGqlReject(reason: any) {
     if (reason.errors && Array.isArray(reason.errors)) {
       handleExpectedGqlReject(reason.errors as Array<unknown>);
+    } else if (reason.message) {
+      setAddClubError(reason.message as string);
     } else {
-      console.error(`unexpected form of error`, reason);
+      console.error(`unexpected form of gql promise rejection`, reason);
       setAddClubError(JSON.stringify(reason, null, 2));
     }
   }
