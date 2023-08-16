@@ -62,7 +62,5 @@ Cypress.Commands.add(
       log.snapshot("after");
       log.end();
     });
-
-    cy.visit("http://localhost:3000/");
   },
 );
