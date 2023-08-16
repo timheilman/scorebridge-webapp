@@ -1,6 +1,6 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useTranslation } from "react-i18next";
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink, useLocation } from "react-router-dom";
 
 import { userInGroup } from "../../cognito";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
@@ -9,12 +9,16 @@ import SignOutButton from "../signIn/SignOutButton";
 
 export default function SessionfulRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
+  const { pathname } = useLocation();
   const { user } = useAuthenticator((context) => [context.user]);
+  if (!userInGroup(user, "adminSuper") && ["/signin"].includes(pathname)) {
+    return <Navigate to="/club_devices" />;
+  }
   return (
     <header className="sticky">
       {userInGroup(user, "adminSuper") ? (
         <>
-          <NavLink to="/" className="button rounded">
+          <NavLink to="/signin" className="button rounded">
             <span data-test-id="signInTab" className="icon-user"></span>
             {t("signIn")}
           </NavLink>

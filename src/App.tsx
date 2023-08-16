@@ -59,10 +59,11 @@ export default function App() {
                 !userInGroup(user, "adminSuper") ? (
                   <Navigate to="/club_devices" />
                 ) : (
-                  <ScoreBridgeAuthenticator />
+                  <Navigate to="/signin" />
                 )
               }
             />
+            <Route path="/signin" element={<ScoreBridgeAuthenticator />} />
             <Route path="/signup" element={<SignUpForm />} />
             {/*<Route path="/projects/:id" element={<ProjectPage />} />*/}
             <Route path="/club_devices" element={<ClubDevicesPage />} />

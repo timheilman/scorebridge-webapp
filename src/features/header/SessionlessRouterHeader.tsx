@@ -9,13 +9,13 @@ export default function SessionlessRouterHeader() {
   const { pathname } = useLocation();
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   if (authStatus !== "authenticated") {
-    if (!["/", "/signup"].includes(pathname)) {
-      return <Navigate to="/" />;
+    if (!["/signin", "/signup"].includes(pathname)) {
+      return <Navigate to="/signin" />;
     }
   }
   return (
     <header className="sticky">
-      <NavLink to="/" className="button rounded">
+      <NavLink to="/signin" className="button rounded">
         <span data-test-id="signInTab" className="icon-user"></span>
         {t("signIn")}
       </NavLink>

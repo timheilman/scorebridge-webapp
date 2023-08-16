@@ -25,8 +25,8 @@ export default function ScoreBridgeAuthenticator() {
     <Authenticator key={forceRerenderKey} hideSignUp={true}>
       {({ signOut, user }) => (
         <>
+          <p>OMG a user:</p> <pre>{JSON.stringify(user, null, 2)}</pre>
           <p>
-            OMG a user: <pre>{JSON.stringify(user, null, 2)}</pre>
             And signout:
             <button onClick={signOut}>Sign Out</button>
           </p>
