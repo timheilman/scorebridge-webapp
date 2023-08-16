@@ -8,4 +8,5 @@ export const targetTestEnvDetailsFromEnv = {
   clubTableName: requiredEnvVar("CLUBS_TABLE"),
   sesSandboxSqsQueueUrl: requiredEnvVar("SES_SANDBOX_SQS_QUEUE_URL"),
   stage: requiredEnvVar("STAGE"),
+  userPoolClientIdWeb: requiredEnvVar("COGNITO_USER_POOL_CLIENT_ID_WEB"),
 };

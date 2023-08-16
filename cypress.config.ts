@@ -11,6 +11,7 @@ import { log } from "./cypress/tasks/log";
 import { purgeSqsQueue } from "./cypress/tasks/purgeSqsQueue";
 import { receiveMessagesFromSqs } from "./cypress/tasks/receiveMessagesFromSqs";
 import { setNewPasswordViaAdmin } from "./cypress/tasks/setNewPasswordViaAdmin";
+import { loginByCognitoApi } from "./cypress/tasks/loginByCognitoApi";
 
 export default defineConfig({
   defaultCommandTimeout: 10000,
@@ -30,6 +31,7 @@ export default defineConfig({
         ...cleanupUser,
         ...receiveMessagesFromSqs,
         ...purgeSqsQueue,
+        ...loginByCognitoApi,
       });
     },
   },
