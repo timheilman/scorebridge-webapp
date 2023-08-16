@@ -1,4 +1,3 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useTranslation } from "react-i18next";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 
@@ -7,11 +6,9 @@ import LanguageSelector from "../languageSelector/LanguageSelector";
 export default function SessionlessRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
   const { pathname } = useLocation();
-  const { authStatus } = useAuthenticator((context) => [context.authStatus]);
-  if (authStatus !== "authenticated") {
-    if (!["/signin", "/signup"].includes(pathname)) {
-      return <Navigate to="/signin" />;
-    }
+  // When rendering the router header due to logout:
+  if (!["/signin", "/signup"].includes(pathname)) {
+    return <Navigate to="/signin" />;
   }
   return (
     <header className="sticky">
