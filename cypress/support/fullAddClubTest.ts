@@ -168,23 +168,21 @@ function runAddClubHappyPath(
 }
 
 export function fullAddClubTest() {
-  it("new address=>sends email; FORCE_RESET_PASSWORD address=>sends email; confirmed address=>already registered", () => {
-    cy.visit("http://localhost:3000");
-    if (targetTestEnvDetailsFromEnv.stage === "prod") {
-      cy.task<TempEmailAccount>("createTempEmailAccount").then(
-        (tempEmailAccount: TempEmailAccount) => {
-          envTask("cleanupUser", { email: tempEmailAccount.user });
-          runAddClubHappyPath({ user: addrs.success });
-        },
-      );
-    } else {
-      envTask("purgeSqsQueue", {
-        queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
-      });
-      envTask("cleanupUser", {
-        email: addrs.success,
-      });
-      runAddClubHappyPath({ user: addrs.success });
-    }
-  });
+  cy.visit("http://localhost:3000");
+  if (targetTestEnvDetailsFromEnv.stage === "prod") {
+    cy.task<TempEmailAccount>("createTempEmailAccount").then(
+      (tempEmailAccount: TempEmailAccount) => {
+        envTask("cleanupUser", { email: tempEmailAccount.user });
+        runAddClubHappyPath({ user: addrs.success });
+      },
+    );
+  } else {
+    envTask("purgeSqsQueue", {
+      queueUrl: targetTestEnvDetailsFromEnv.sesSandboxSqsQueueUrl,
+    });
+    envTask("cleanupUser", {
+      email: addrs.success,
+    });
+    runAddClubHappyPath({ user: addrs.success });
+  }
 }
