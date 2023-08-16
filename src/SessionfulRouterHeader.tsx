@@ -1,37 +1,12 @@
-import { AmplifyUser } from "@aws-amplify/ui";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
 
+import { userInGroup } from "./cognito";
 import SignOutButton from "./features/authAuth/SignOutButton";
 import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
 import TypesafeTranslationT from "./TypesafeTranslationT";
 
-function maybeAdminSuperNavLink(user: AmplifyUser) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const groups = user.getSignInUserSession()?.getIdToken().payload[
-    "cognito:groups"
-  ];
-  console.log(`Groups: ${JSON.stringify(groups)}`);
-  if (
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-    groups?.includes("adminSuper")
-  ) {
-    console.log("returning adminSuper pane");
-    return (
-      <NavLink
-        to="/admin_super"
-        className="button rounded"
-        data-test-id="signUpTab"
-      >
-        SignUp
-      </NavLink>
-    );
-  } else {
-    console.log("returning no pane");
-    return null;
-  }
-}
 export function SessionfulRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
   const { user } = useAuthenticator((context) => [context.user]);
@@ -49,7 +24,20 @@ export function SessionfulRouterHeader() {
       <NavLink to="/counter" className="button rounded">
         Redux repo example counter-ts
       </NavLink>
-      {maybeAdminSuperNavLink(user)}
+      {userInGroup(user, "adminSuper") ? (
+        <>
+          <NavLink to="/" className="button rounded">
+            <span data-test-id="signInTab" className="icon-user"></span>
+            {t("signIn")}
+          </NavLink>
+          <NavLink to="/signup" className="button rounded">
+            <span data-test-id="signUpTab" className="icon-info"></span>
+            {t("signUp")}
+          </NavLink>
+        </>
+      ) : (
+        <></>
+      )}
       <SelectedLanguage />
       <SignOutButton />
     </header>

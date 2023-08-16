@@ -15,7 +15,6 @@ import {
 
 import TableTabletsPage from "./features/./tableTablets/TableTabletsPage";
 import SignUpForm from "./features/addClub/SignUpForm";
-import { AdminSuperPane } from "./features/adminSuper/AdminSuperPane";
 import { ScoreBridgeAuthenticator } from "./features/authAuth/ScoreBridgeAuthenticator";
 import CounterApp from "./features/counter/CounterApp";
 import ProjectPage from "./features/projects/ProjectPage";
@@ -66,7 +65,6 @@ export default function App() {
             <Route path="/counter" element={<CounterApp />} />
             <Route path="/table_tablets" element={<TableTabletsPage />} />
             <Route path="/unexpected_error" element={<UnexpectedErrors />} />
-            <Route path="/admin_super" element={<AdminSuperPane />} />
           </Routes>
         </div>
       </Router>

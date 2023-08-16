@@ -1,28 +1,25 @@
-import { GraphQLQuery } from "@aws-amplify/api";
+import { AuthStatus } from "@aws-amplify/ui";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { API, graphqlOperation } from "aws-amplify";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 
-import { AddClubResponse, MutationAddClubArgs } from "../../../appsync";
+import { AddClubResponse } from "../../../appsync";
+import { gqlMutation } from "../../gql";
 import { mutationAddClub } from "../../graphql/mutations";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from "./SignUpForm.module.css";
+
 const addClub = async (
   newAdminEmail: string,
   newClubName: string,
-  authenticated: boolean,
+  authStatus: AuthStatus,
 ) => {
-  const myMutationArgs: MutationAddClubArgs = {
+  /* create a new club */
+  return gqlMutation<AddClubResponse>(authStatus, mutationAddClub, {
     input: {
       newAdminEmail,
       newClubName,
       suppressInvitationEmail: false,
     },
-  };
-  /* create a new club */
-  return API.graphql<GraphQLQuery<AddClubResponse>>({
-    ...graphqlOperation(mutationAddClub, myMutationArgs),
-    ...(authenticated ? {} : { authMode: "API_KEY" }),
   });
 };
 
@@ -96,7 +93,7 @@ export default function SignUpForm() {
     setEverSubmitted(true);
     setSubmitInFlight(true);
     console.log("in handleSubmit");
-    addClub(email, clubName, authStatus === "authenticated")
+    addClub(email, clubName, authStatus)
       .then((result) => {
         setAddClubError(null);
         setSubmitInFlight(false);
