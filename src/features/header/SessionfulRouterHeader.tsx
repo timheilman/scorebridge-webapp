@@ -11,12 +11,16 @@ export default function SessionfulRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
   const { pathname } = useLocation();
   const { user } = useAuthenticator((context) => [context.user]);
-  if (!userInGroup(user, "adminSuper") && ["/signin"].includes(pathname)) {
+  if (
+    !userInGroup(user, "adminSuper") &&
+    ["/signin", "/signup"].includes(pathname)
+  ) {
     return <Navigate to="/club_devices" />;
   }
   return (
     <header className="sticky">
-      {userInGroup(user, "adminSuper") ? (
+      {userInGroup(user, "adminSuper") ||
+      process.env.REACT_APP_STAGE !== "prod" ? (
         <>
           <NavLink to="/signin" className="button rounded">
             <span data-test-id="signInTab" className="icon-user"></span>
