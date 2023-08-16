@@ -12,7 +12,9 @@ export default function SessionfulRouterHeader() {
   const { pathname } = useLocation();
   const { user } = useAuthenticator((context) => [context.user]);
   if (
-    !userInGroup(user, "adminSuper") &&
+    !(
+      userInGroup(user, "adminSuper") || process.env.REACT_APP_STAGE !== "prod"
+    ) &&
     ["/signin", "/signup"].includes(pathname)
   ) {
     return <Navigate to="/club_devices" />;

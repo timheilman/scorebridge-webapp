@@ -84,7 +84,67 @@ function verifyReceivedEmail(
   }
 }
 
-function runAddClubHappyPath(
+function verifyBackendDetails(
+  user: { userId: string; clubId: string },
+  tempEmailAccount:
+    | TempEmailAccount
+    | {
+        user: string;
+      },
+  originalClubName: string,
+) {
+  if (!user) {
+    throw new Error(`No user found for email ${tempEmailAccount.user}`);
+  }
+  envTask("fetchGroupsForUser", {
+    userId: user.userId,
+  }).then((groupNames) => {
+    expect(groupNames).to.contain("adminClub");
+  });
+  envTask("expectDdbUserDetails", {
+    userId: user.userId,
+    expectedUserDetails: {
+      email: tempEmailAccount.user,
+    },
+  });
+  envTask("expectClubDetails", {
+    clubId: user.clubId,
+    expectedClubDetails: { name: originalClubName },
+  });
+}
+
+function fillForm(
+  tempEmailAccount: TempEmailAccount | { user: string },
+  clubName: string,
+) {
+  cy.get(d("signUpTab")).click();
+  cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
+  cy.get(d("formAddClubClubName")).type(clubName);
+  cy.get(d("formAddClubSubmit")).click();
+}
+
+export function runAddClubHappyPath(
+  tempEmailAccount: TempEmailAccount | { user: string },
+) {
+  const clubName = "Ace of Clubs";
+  fillForm(tempEmailAccount, clubName);
+  cy.contains("email sent!");
+  verifyReceivedEmail(tempEmailAccount);
+  envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {
+    email: tempEmailAccount.user,
+  }).then((user) => {
+    verifyBackendDetails(user, tempEmailAccount, clubName);
+  });
+}
+
+export function runAddClubSadPath(
+  tempEmailAccount: TempEmailAccount | { user: string },
+) {
+  const clubName = "Ace of Clubs";
+  fillForm(tempEmailAccount, clubName);
+  cy.contains("Not Authorized to access addClub on type Mutation");
+}
+export function runAddClubHappyPathFull(
   tempEmailAccount: TempEmailAccount | { user: string },
 ) {
   const originalClubName = "original club name should be created in club table";
@@ -92,37 +152,15 @@ function runAddClubHappyPath(
   const failedClubName =
     "name should not be updated in club table upon invocation by confirmed user";
 
-  cy.get(d("signUpTab")).click();
-  cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
-  cy.get(d("formAddClubClubName")).type(originalClubName);
-  cy.get(d("formAddClubSubmit")).click();
+  fillForm(tempEmailAccount, originalClubName);
   cy.contains("email sent!");
   verifyReceivedEmail(tempEmailAccount);
   envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {
     email: tempEmailAccount.user,
   }).then((user) => {
-    if (!user) {
-      throw new Error(`No user found for email ${tempEmailAccount.user}`);
-    }
-    envTask("fetchGroupsForUser", {
-      userId: user.userId,
-    }).then((groupNames) => {
-      expect(groupNames).to.contain("adminClub");
-    });
-    envTask("expectDdbUserDetails", {
-      userId: user.userId,
-      expectedUserDetails: {
-        email: tempEmailAccount.user,
-      },
-    });
-    envTask("expectClubDetails", {
-      clubId: user.clubId,
-      expectedClubDetails: { name: originalClubName },
-    });
+    verifyBackendDetails(user, tempEmailAccount, originalClubName);
     refreshSignupTab();
-    cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
-    cy.get(d("formAddClubClubName")).type(updatedClubName);
-    cy.get(d("formAddClubSubmit")).click();
+    fillForm(tempEmailAccount, updatedClubName);
     cy.contains("email sent!");
     verifyReceivedEmail(tempEmailAccount);
     envTask("expectDdbUserDetails", {
@@ -141,9 +179,7 @@ function runAddClubHappyPath(
     });
 
     refreshSignupTab();
-    cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
-    cy.get(d("formAddClubClubName")).type(failedClubName);
-    cy.get(d("formAddClubSubmit")).click();
+    fillForm(tempEmailAccount, failedClubName);
     cy.contains(
       `An account has already been registered under this email address: ${tempEmailAccount.user}.`,
     );
@@ -167,13 +203,14 @@ function runAddClubHappyPath(
   });
 }
 
-export function fullAddClubTest() {
-  cy.visit("http://localhost:3000");
+export function withTestAccount(
+  doThis: (tempAcct: TempEmailAccount | { user: string }) => void,
+) {
   if (targetTestEnvDetailsFromEnv.stage === "prod") {
     cy.task<TempEmailAccount>("createTempEmailAccount").then(
       (tempEmailAccount: TempEmailAccount) => {
         envTask("cleanupUser", { email: tempEmailAccount.user });
-        runAddClubHappyPath({ user: addrs.success });
+        doThis(tempEmailAccount);
       },
     );
   } else {
@@ -183,6 +220,6 @@ export function fullAddClubTest() {
     envTask("cleanupUser", {
       email: addrs.success,
     });
-    runAddClubHappyPath({ user: addrs.success });
+    doThis({ user: addrs.success });
   }
 }
