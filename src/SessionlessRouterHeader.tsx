@@ -1,10 +1,18 @@
+import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useTranslation } from "react-i18next";
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink, useLocation } from "react-router-dom";
 
 import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
 import TypesafeTranslationT from "./TypesafeTranslationT";
 export default function SessionlessRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
+  const { pathname } = useLocation();
+  const { authStatus } = useAuthenticator((context) => [context.authStatus]);
+  if (authStatus !== "authenticated") {
+    if (!["/", "/signup"].includes(pathname)) {
+      return <Navigate to="/" />;
+    }
+  }
   return (
     <header className="sticky">
       <NavLink to="/" className="button rounded">

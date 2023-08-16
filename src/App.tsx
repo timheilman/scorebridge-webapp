@@ -13,6 +13,7 @@ import {
   Routes,
 } from "react-router-dom";
 
+import { userInGroup } from "./cognito";
 import TableTabletsPage from "./features/./tableTablets/TableTabletsPage";
 import SignUpForm from "./features/addClub/SignUpForm";
 import { ScoreBridgeAuthenticator } from "./features/authAuth/ScoreBridgeAuthenticator";
@@ -27,13 +28,16 @@ import TypesafeTranslationT from "./TypesafeTranslationT";
 // TODO: customize the Authenticator component to use our own i18n w/these translations and remove this:
 amplifyI18n.putVocabularies(amplifyUiReactTranslations);
 
-// custom hooks, good idea for use case:
+// custom components, good idea for use case:
 // function StatusBar() {
 //   const isOnline = useOnlineStatus();
 //   return <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;
 // }
 export default function App() {
-  const { authStatus } = useAuthenticator((context) => [context.authStatus]);
+  const { authStatus, user } = useAuthenticator((context) => [
+    context.authStatus,
+    context.user,
+  ]);
   const t = useTranslation("translation").t as TypesafeTranslationT;
   if (authStatus === "configuring") {
     return <p>Loading user session</p>;
@@ -52,7 +56,8 @@ export default function App() {
             <Route
               path="/"
               element={
-                authStatus === "authenticated" ? (
+                authStatus === "authenticated" &&
+                !userInGroup(user, "adminSuper") ? (
                   <Navigate to="/table_tablets" />
                 ) : (
                   <ScoreBridgeAuthenticator />

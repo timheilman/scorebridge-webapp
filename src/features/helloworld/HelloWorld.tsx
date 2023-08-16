@@ -65,10 +65,6 @@ function handleClick() {
 }
 
 function HelloWorld({ person, logo }: HelloWorldProps) {
-  const { authStatus } = useAuthenticator();
-  if (authStatus !== "authenticated") {
-    return <Navigate to="/" />;
-  }
   const { first, last } = person;
   const { path, title } = logo;
   return (

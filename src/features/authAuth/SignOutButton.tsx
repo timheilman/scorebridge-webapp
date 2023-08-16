@@ -1,8 +1,10 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { Navigate } from "react-router-dom";
 
 export default function SignOutButton() {
-  const { signOut, authStatus } = useAuthenticator();
+  const { signOut, authStatus } = useAuthenticator((context) => [
+    context.authStatus,
+    context.signOut,
+  ]);
 
   const handleClick = () => {
     signOut();
@@ -15,5 +17,5 @@ export default function SignOutButton() {
       </>
     );
   }
-  return <Navigate to="/" />;
+  return null;
 }

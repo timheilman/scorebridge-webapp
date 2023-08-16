@@ -1,6 +1,5 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { useAppSelector } from "../../app/hooks";
 import { Project } from "./Project";
@@ -22,10 +21,6 @@ function ProjectPage() {
       setLoading(false);
     }, 1000);
   }, [id, projects]);
-  const { authStatus } = useAuthenticator();
-  if (authStatus !== "authenticated") {
-    return <Navigate to="/" />;
-  }
 
   return (
     <div>
