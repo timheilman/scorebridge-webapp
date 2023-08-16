@@ -10,6 +10,8 @@ describe("trying custom command to login programmatically with cognito", () => {
       requiredEnvVar("cognito_username"),
       requiredEnvVar("cognito_password"),
     );
-    cy.contains("Projects").should("be.visible");
+    cy.contains("This is the table tablets page placeholder").should(
+      "be.visible",
+    );
   });
 });
