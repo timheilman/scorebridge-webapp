@@ -2,28 +2,16 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
 
-import { userInGroup } from "./cognito";
-import SignOutButton from "./features/authAuth/SignOutButton";
-import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
-import TypesafeTranslationT from "./TypesafeTranslationT";
+import { userInGroup } from "../../cognito";
+import TypesafeTranslationT from "../../TypesafeTranslationT";
+import LanguageSelector from "../languageSelector/LanguageSelector";
+import SignOutButton from "../signIn/SignOutButton";
 
-export function SessionfulRouterHeader() {
+export default function SessionfulRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
   const { user } = useAuthenticator((context) => [context.user]);
   return (
     <header className="sticky">
-      <NavLink to="/table_tablets" className="button rounded">
-        {t("tableTablets")}
-      </NavLink>
-      <NavLink to="/projects" className="button rounded">
-        {t("projects")}
-      </NavLink>
-      <NavLink to="/helloworld" className="button rounded">
-        Hello World Hands-On-React Examples
-      </NavLink>
-      <NavLink to="/counter" className="button rounded">
-        Redux repo example counter-ts
-      </NavLink>
       {userInGroup(user, "adminSuper") ? (
         <>
           <NavLink to="/" className="button rounded">
@@ -38,7 +26,16 @@ export function SessionfulRouterHeader() {
       ) : (
         <></>
       )}
-      <SelectedLanguage />
+      <NavLink to="/club_devices" className="button rounded">
+        {t("club devices")}
+      </NavLink>
+      <NavLink to="/players" className="button rounded">
+        {t("players")}
+      </NavLink>
+      <NavLink to="/rotation" className="button rounded">
+        {t("rotation")}
+      </NavLink>
+      <LanguageSelector />
       <SignOutButton />
     </header>
   );

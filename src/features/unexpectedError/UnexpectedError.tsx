@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { gqlMutation } from "../../gql";
 import { mutationUnexpectedError } from "../../graphql/mutations";
 
-export default function UnexpectedErrors() {
+export default function UnexpectedError() {
   const [callResult, setCallResult] = useState<unknown | null>(null);
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   useEffect(() => {
@@ -15,10 +15,7 @@ export default function UnexpectedErrors() {
         );
       })
       .catch((e) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions
-        setCallResult(
-          `Error received: ${JSON.stringify(e, null, 2)}`,
-        );
+        setCallResult(`Error received: ${JSON.stringify(e, null, 2)}`);
       });
   });
   return callResult ? (

@@ -14,15 +14,14 @@ import {
 } from "react-router-dom";
 
 import { userInGroup } from "./cognito";
-import TableTabletsPage from "./features/./tableTablets/TableTabletsPage";
-import SignUpForm from "./features/addClub/SignUpForm";
-import { ScoreBridgeAuthenticator } from "./features/authAuth/ScoreBridgeAuthenticator";
-import CounterApp from "./features/counter/CounterApp";
-import ProjectPage from "./features/projects/ProjectPage";
-import ProjectsPage from "./features/projects/ProjectsPage";
-import UnexpectedErrors from "./features/unexpectedErrors/UnexpectedErrors";
-import { SessionfulRouterHeader } from "./SessionfulRouterHeader";
-import SessionlessRouterHeader from "./SessionlessRouterHeader";
+import ScoreBridgeAuthenticator from "./features/./signIn/ScoreBridgeAuthenticator";
+import SignUpForm from "./features/./signUp/SignUpForm";
+import UnexpectedError from "./features/./unexpectedError/UnexpectedError";
+import ClubDevicesPage from "./features/clubDevices/ClubDevicesPage";
+import SessionfulRouterHeader from "./features/header/SessionfulRouterHeader";
+import SessionlessRouterHeader from "./features/header/SessionlessRouterHeader";
+import PlayersPage from "./features/players/PlayersPage";
+import RotationPage from "./features/rotation/RotationPage";
 import TypesafeTranslationT from "./TypesafeTranslationT";
 
 // TODO: customize the Authenticator component to use our own i18n w/these translations and remove this:
@@ -58,18 +57,18 @@ export default function App() {
               element={
                 authStatus === "authenticated" &&
                 !userInGroup(user, "adminSuper") ? (
-                  <Navigate to="/table_tablets" />
+                  <Navigate to="/club_devices" />
                 ) : (
                   <ScoreBridgeAuthenticator />
                 )
               }
             />
             <Route path="/signup" element={<SignUpForm />} />
-            <Route path="/projects" element={<ProjectsPage />} />
-            <Route path="/projects/:id" element={<ProjectPage />} />
-            <Route path="/counter" element={<CounterApp />} />
-            <Route path="/table_tablets" element={<TableTabletsPage />} />
-            <Route path="/unexpected_error" element={<UnexpectedErrors />} />
+            {/*<Route path="/projects/:id" element={<ProjectPage />} />*/}
+            <Route path="/club_devices" element={<ClubDevicesPage />} />
+            <Route path="/players" element={<PlayersPage />} />
+            <Route path="/rotation" element={<RotationPage />} />
+            <Route path="/unexpected_error" element={<UnexpectedError />} />
           </Routes>
         </div>
       </Router>

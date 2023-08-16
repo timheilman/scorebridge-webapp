@@ -26,7 +26,7 @@ const options: Option[] = ["en", "fr", "zh", "he"]
     vl1.label < vl2.label ? -1 : vl1.label === vl2.label ? 0 : 1,
   );
 
-const SelectedLanguage: FC<SelectProps> = () => {
+const LanguageSelector: FC<SelectProps> = () => {
   const selectedLanguage = useAppSelector(selectLanguage);
   const dispatch = useAppDispatch();
   const { i18n } = useTranslation();
@@ -81,4 +81,4 @@ const SelectedLanguage: FC<SelectProps> = () => {
   );
 };
 
-export default SelectedLanguage;
+export default LanguageSelector;

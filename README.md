@@ -57,28 +57,28 @@ Or with no preceding attribute on the element:
 
 When changes occur in the cloud gql api, they need to be refreshed here:
 
-* `cp ../scorebridge-cloud/appsync.d.ts .`
+- `cp ../scorebridge-cloud/appsync.d.ts .`
 
 Or use the `scorebridge-cloud` facility:
 
-* `export SCOREBRIDGE_WEBAPP_CLONE_LOCATION=../scorebridge-webapp`
-* `npm run codegen-gql-types # this creates/updates appsync.d.ts`
-* `npm run provideGqlTypesToWebapp # this copies appsync.d.ts to SCOREBRIDGE_WEBAPP_CLONE_LOCATION`
+- `export SCOREBRIDGE_WEBAPP_CLONE_LOCATION=../scorebridge-webapp`
+- `npm run codegen-gql-types # this creates/updates appsync.d.ts`
+- `npm run provideGqlTypesToWebapp # this copies appsync.d.ts to SCOREBRIDGE_WEBAPP_CLONE_LOCATION`
 
 ## Testing
 
-Testing requires some environment variable and TypeScript type setup.  Files are checked in locally but need to
+Testing requires some environment variable and TypeScript type setup. Files are checked in locally but need to
 be copied:
 
-* `cp ./.env.dev.env ./.env`
-* `cp ./cypress.env.dev.json ./cypress.env.json`
+- `cp ./.env.dev.env ./.env`
+- `cp ./cypress.env.dev.json ./cypress.env.json`
 
 Or updating from within a `scorebridge-cloud` clone into this repo's clone:
 
-* `export SCOREBRIDGE_WEBAPP_CLONE_LOCATION=../scorebridge-webapp`
-* `npm run refreshDetailsToWebapp`
+- `export SCOREBRIDGE_WEBAPP_CLONE_LOCATION=../scorebridge-webapp`
+- `npm run refreshDetailsToWebapp`
 
-React automatically honors `.env` but only for env variables prefixed `REACT_APP`.  Cypress does not use these.
+React automatically honors `.env` but only for env variables prefixed `REACT_APP`. Cypress does not use these.
 
 Cypress honors cypress.env.json.
 
@@ -101,12 +101,12 @@ You will also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the react-based  test runner in the interactive watch mode.\
+Launches the react-based test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run cypress:open`
 
-Launches the Cypress-based test runner application.  This
+Launches the Cypress-based test runner application. This
 runs e2e tests in Electron.
 
 ### `npm run build`

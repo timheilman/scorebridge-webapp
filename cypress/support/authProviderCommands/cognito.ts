@@ -4,7 +4,6 @@ import { Amplify, Auth } from "aws-amplify";
 
 import requiredEnvVar from "../../support/requiredEnvVar";
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 Amplify.configure({
   Auth: {
     region: requiredEnvVar("AWS_REGION"),

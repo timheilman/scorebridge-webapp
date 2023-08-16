@@ -5,7 +5,6 @@ import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { AddClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
 import { mutationAddClub } from "../../graphql/mutations";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from "./SignUpForm.module.css";
 
 const addClub = async (

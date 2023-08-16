@@ -3,7 +3,7 @@ import selectedLanguageReducer, {
   setLanguage,
 } from "./selectedLanguageSlice";
 
-describe("selectedLanguage reducer", () => {
+describe("languageSelector reducer", () => {
   const initialState: SelectedLanguageState = {
     value: "en",
   };

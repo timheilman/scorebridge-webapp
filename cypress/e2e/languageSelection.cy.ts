@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
 
 describe("initial load of page", () => {

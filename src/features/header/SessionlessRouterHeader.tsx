@@ -2,8 +2,8 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useTranslation } from "react-i18next";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 
-import SelectedLanguage from "./features/selectedLanguage/SelectedLanguage";
-import TypesafeTranslationT from "./TypesafeTranslationT";
+import TypesafeTranslationT from "../../TypesafeTranslationT";
+import LanguageSelector from "../languageSelector/LanguageSelector";
 export default function SessionlessRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
   const { pathname } = useLocation();
@@ -24,7 +24,7 @@ export default function SessionlessRouterHeader() {
         {t("signUp")}
       </NavLink>
       <span>
-        <SelectedLanguage />
+        <LanguageSelector />
       </span>
     </header>
   );
