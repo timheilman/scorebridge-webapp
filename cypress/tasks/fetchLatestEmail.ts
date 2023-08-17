@@ -6,9 +6,10 @@ export const fetchLatestEmail = {
     let latestEmail;
     try {
       latestEmail = await fetchLatestEmail.fetchLatestEmail(tempEmailAccount);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (e?.message === "Nothing to fetch") {
+      if (e.message === "Nothing to fetch") {
         return null;
       }
     }

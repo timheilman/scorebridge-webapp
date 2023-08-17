@@ -117,7 +117,6 @@ function fillForm(
   tempEmailAccount: TempEmailAccount | { user: string },
   clubName: string,
 ) {
-  cy.get(d("signUpTab")).click();
   cy.get(d("formAddClubEmailAddress")).type(tempEmailAccount.user);
   cy.get(d("formAddClubClubName")).type(clubName);
   cy.get(d("formAddClubSubmit")).click();
@@ -127,6 +126,7 @@ export function runAddClubHappyPath(
   tempEmailAccount: TempEmailAccount | { user: string },
 ) {
   const clubName = "Ace of Clubs";
+  cy.get(d("superChickenModeTab")).click();
   fillForm(tempEmailAccount, clubName);
   cy.contains("email sent!");
   verifyReceivedEmail(tempEmailAccount);
@@ -141,6 +141,7 @@ export function runAddClubSadPath(
   tempEmailAccount: TempEmailAccount | { user: string },
 ) {
   const clubName = "Ace of Clubs";
+  cy.get(d("superChickenModeTab")).click();
   fillForm(tempEmailAccount, clubName);
   cy.contains("Not Authorized to access addClub on type Mutation");
 }
@@ -152,6 +153,7 @@ export function runAddClubHappyPathFull(
   const failedClubName =
     "name should not be updated in club table upon invocation by confirmed user";
 
+  cy.get(d("signUpTab")).click();
   fillForm(tempEmailAccount, originalClubName);
   cy.contains("email sent!");
   verifyReceivedEmail(tempEmailAccount);

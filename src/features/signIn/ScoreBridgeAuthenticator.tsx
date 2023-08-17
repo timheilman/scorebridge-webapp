@@ -25,10 +25,7 @@ export default function ScoreBridgeAuthenticator() {
     <Authenticator key={forceRerenderKey} hideSignUp={true}>
       {({ /* signOut, */ user }) => (
         <>
-          <p>
-            You are now signed in, either as an adminSuper or in a non-prod env.
-            Here are your user details:
-          </p>
+          <p>You are signed in. Here are your user details:</p>
           <pre>{JSON.stringify(user, null, 2)}</pre>
         </>
       )}

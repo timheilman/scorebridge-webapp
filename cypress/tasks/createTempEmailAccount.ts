@@ -1,4 +1,3 @@
-import Imap from "imap";
 import { createTestAccount } from "nodemailer";
 export type TempEmailAccount = {
   user: string;

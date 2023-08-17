@@ -2,19 +2,19 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 
-export interface SelectedLanguageState {
-  value: string | undefined;
+export interface SuperChickenModeState {
+  value: boolean;
 }
 
-const initialState: SelectedLanguageState = {
-  value: undefined,
+const initialState: SuperChickenModeState = {
+  value: false,
 };
 
-export const selectedLanguageSlice = createSlice({
-  name: "selectedLanguage",
+export const superChickenModeSlice = createSlice({
+  name: "superChickenMode",
   initialState,
   reducers: {
-    setLanguage: (state, action: PayloadAction<string>) => {
+    setSuperChickenMode: (state, action: PayloadAction<boolean>) => {
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new
@@ -24,9 +24,9 @@ export const selectedLanguageSlice = createSlice({
   },
 });
 
-export const { setLanguage } = selectedLanguageSlice.actions;
+export const { setSuperChickenMode } = superChickenModeSlice.actions;
 
-export const selectLanguage = (state: RootState) =>
-  state.selectedLanguage.value;
+export const selectSuperChickenMode = (state: RootState) =>
+  state.superChickenMode.value;
 
-export default selectedLanguageSlice.reducer;
+export default superChickenModeSlice.reducer;

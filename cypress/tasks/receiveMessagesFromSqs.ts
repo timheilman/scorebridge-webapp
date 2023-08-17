@@ -50,6 +50,7 @@ export const receiveMessagesFromSqs = {
       return [];
     }
     // On initial deploy there's a validation message; it does not get repeated but we must discard it
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const valMsgPred = (msg: any) =>
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       msg.Body ===
