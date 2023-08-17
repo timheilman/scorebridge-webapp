@@ -3,7 +3,7 @@ import { Navigate, NavLink, useLocation } from "react-router-dom";
 
 import { useAppSelector } from "../../app/hooks";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
-import { selectSuperChickenMode } from "../internalTesting/superChickenModeSlice";
+import { selectSuperChickenMode } from ".././superChickenMode/superChickenModeSlice";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import SignOutButton from "../signIn/SignOutButton";
 

@@ -183,7 +183,7 @@ export function runAddClubHappyPathFull(
     refreshSignupTab();
     fillForm(tempEmailAccount, failedClubName);
     cy.contains(
-      `An account has already been registered under this email address: ${tempEmailAccount.user}.`,
+      `That email address has already been registered.  Please use the SIGN IN tab and choose "forgot password"`,
     );
     if (targetTestEnvDetailsFromEnv.stage === "prod") {
       cy.task("fetchEmailsExpectingNone", tempEmailAccount);

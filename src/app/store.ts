@@ -1,7 +1,7 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 
 import selectedLanguageReducer from "../features/./languageSelector/selectedLanguageSlice";
-import superChickenModeReducer from "../features/internalTesting/superChickenModeSlice";
+import superChickenModeReducer from "../features/./superChickenMode/superChickenModeSlice";
 
 export const store = configureStore({
   reducer: {

@@ -101,7 +101,21 @@ export default function SignUpForm() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((reason: any) => {
         console.error("Promise rejected: GQL Mutation.AddClub", reason);
-        handleGqlReject(reason);
+        if (
+          /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+          reason.errors &&
+          Array.isArray(reason.errors) &&
+          reason.errors.length > 0 &&
+          reason.errors[0] &&
+          reason.errors[0].errorType === "UserAlreadyExistsError"
+          /* eslint-enable @typescript-eslint/no-unsafe-member-access */
+        ) {
+          setAddClubError(
+            'That email address has already been registered.  Please use the SIGN IN tab and choose "forgot password"',
+          );
+        } else {
+          handleGqlReject(reason);
+        }
         setSubmitInFlight(false);
       });
     console.log("exiting handleSubmit after promise invocation");

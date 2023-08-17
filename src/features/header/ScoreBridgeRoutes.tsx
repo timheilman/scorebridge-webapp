@@ -2,7 +2,7 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import ClubDevicesPage from "../clubDevices/ClubDevicesPage";
-import InternalTesting from "../internalTesting/InternalTesting";
+import SuperChickenMode from ".././superChickenMode/SuperChickenMode";
 import PlayersPage from "../players/PlayersPage";
 import RotationPage from "../rotation/RotationPage";
 import ScoreBridgeAuthenticator from "../signIn/ScoreBridgeAuthenticator";
@@ -31,7 +31,7 @@ export default function ScoreBridgeRoutes() {
       <Route path="/players" element={<PlayersPage />} />
       <Route path="/rotation" element={<RotationPage />} />
       <Route path="/unexpected_error" element={<UnexpectedError />} />
-      <Route path="/super_chicken_mode" element={<InternalTesting />} />
+      <Route path="/super_chicken_mode" element={<SuperChickenMode />} />
     </Routes>
   );
 }

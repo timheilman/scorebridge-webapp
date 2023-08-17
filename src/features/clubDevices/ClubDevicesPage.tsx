@@ -2,7 +2,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   selectSuperChickenMode,
   setSuperChickenMode,
-} from "../internalTesting/superChickenModeSlice";
+} from ".././superChickenMode/superChickenModeSlice";
 
 export default function ClubDevicesPage() {
   const dispatch = useAppDispatch();
