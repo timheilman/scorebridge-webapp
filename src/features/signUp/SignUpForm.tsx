@@ -1,10 +1,12 @@
 import { AuthStatus } from "@aws-amplify/ui";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { AddClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
 import { mutationAddClub } from "../../graphql/mutations";
+import TypesafeTranslationT from "../../TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
 
 const addClub = async (
@@ -55,6 +57,7 @@ export default function SignUpForm() {
   const [addClubError, setAddClubError] = useState<string | null>(null);
 
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
+  const t = useTranslation().t as TypesafeTranslationT;
   /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
   function handleExpectedGqlReject(errors: Array<any>) {
     setAddClubError(
@@ -110,9 +113,7 @@ export default function SignUpForm() {
           reason.errors[0].errorType === "UserAlreadyExistsError"
           /* eslint-enable @typescript-eslint/no-unsafe-member-access */
         ) {
-          setAddClubError(
-            'That email address has already been registered.  Please use the SIGN IN tab and choose "forgot password"',
-          );
+          setAddClubError(t("signUp.userAlreadyExists"));
         } else {
           handleGqlReject(reason);
         }
@@ -131,28 +132,26 @@ export default function SignUpForm() {
     <div>
       <form className="input-group vertical" onSubmit={handleSubmit}>
         <fieldset>
-          <legend>
-            Sign Up to administer your club&apos;s duplicate bridge games
-          </legend>
+          <legend>{t("signUp.legend")}</legend>
           <div className="row">
             <div className="col-sm-12 col-md-6">
-              <label htmlFor="email">Email address</label>
+              <label htmlFor="email">{t("signUp.email.label")}</label>
               <input
                 className={styles.myInputWidth}
                 type="text"
                 id="email"
-                placeholder="email"
+                placeholder={t("signUp.email.placeholder")}
                 onChange={handleChangeEmail}
                 data-test-id="formAddClubEmailAddress"
               />
             </div>
             <div className="col-sm-12 col-md-6">
-              <label htmlFor="clubName">Club&apos;s name:</label>
+              <label htmlFor="clubName">{t("signUp.clubName.label")}</label>
               <input
                 className={styles.myInputWidth}
                 type="text"
                 id="clubName"
-                placeholder="My Bridge Club"
+                placeholder={t("signUp.clubName.placeholder")}
                 onChange={handleChangeName}
                 data-test-id="formAddClubClubName"
               />
@@ -165,7 +164,7 @@ export default function SignUpForm() {
                 className="primary"
                 data-test-id="formAddClubSubmit"
               >
-                Send me an email
+                {t("signUp.submit")}
               </button>
             </div>
           </div>

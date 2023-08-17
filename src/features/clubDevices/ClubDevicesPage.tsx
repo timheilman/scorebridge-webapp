@@ -8,7 +8,6 @@ export default function ClubDevicesPage() {
   const dispatch = useAppDispatch();
   const scm = useAppSelector(selectSuperChickenMode);
   const handleClick = () => {
-    console.log(`Dispatching scm; it was ${scm ? "truthy" : "falsy"}`);
     dispatch(setSuperChickenMode(!scm));
   };
   return (

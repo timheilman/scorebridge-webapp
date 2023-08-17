@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectLanguage, setLanguage } from "./selectedLanguageSlice";
-
 interface Option {
   value: string;
   label: string;
@@ -18,8 +17,10 @@ const options: Option[] = ["en", "fr", "zh", "he"]
     return {
       value: amplifyUiReactXlationLangCode,
       // type safety of this cast is ostensibly guaranteed by the filter and the library
-      label: getLangNameFromCode(amplifyUiReactXlationLangCode)
-        ?.native as string,
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      label: `${
+        getLangNameFromCode(amplifyUiReactXlationLangCode)?.native as string
+      }`,
     };
   })
   .sort((vl1, vl2) =>
@@ -65,6 +66,9 @@ const LanguageSelector: FC<SelectProps> = () => {
     }
     return "";
   };
+  const labelForLang = (option: Option) => {
+    return <span>{option.label}</span>;
+  };
   return (
     <select
       value={selectedLanguage}
@@ -74,7 +78,7 @@ const LanguageSelector: FC<SelectProps> = () => {
       {maybeAddSelectLanguage()}
       {options.map((option) => (
         <option key={option.value} value={option.value}>
-          {option.label}
+          {labelForLang(option)}
         </option>
       ))}
     </select>

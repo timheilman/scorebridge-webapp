@@ -1,5 +1,19 @@
 {
-  "signIn": "登录",
-  "signUp": "报名",
-  "appTitle": "重复桥牌计分管理门户"
+  "appTitle": "复制桥牌记分管理门户",
+  "tabs": {
+    "signIn": "登录",
+    "signUp": "注册",
+    "signOut": "登出",
+    "players": "玩家",
+    "rotation": "轮换",
+    "clubDevices": "俱乐部设备",
+    "superChickenMode": "超级鸡模式！"
+  },
+  "signUp": {
+    "userAlreadyExists": "该电子邮件地址已经被注册。请使用“登录”选项卡，然后选择“忘记密码”",
+    "legend": "注册以管理您的俱乐部复制桥牌比赛",
+    "email": {"label": "电子邮件地址", "placeholder": "电子邮件"},
+    "clubName": {"label": "俱乐部名称", "placeholder": "我的桥牌俱乐部"},
+    "submit": "发送邮件给我"
+  }
 }

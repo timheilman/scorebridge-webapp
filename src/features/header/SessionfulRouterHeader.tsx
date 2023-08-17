@@ -15,28 +15,32 @@ export default function SessionfulRouterHeader() {
     // naturally move to this page when logging in, and so the above tabs disappear:
     return <Navigate to="/club_devices" />;
   }
+  function superChickenNavLink() {
+    if (!superChickenMode) {
+      return;
+    }
+    return (
+      <NavLink
+        to="super_chicken_mode"
+        className="button rounded"
+        data-test-id="superChickenModeTab"
+      >
+        {t("tabs.superChickenMode")}
+      </NavLink>
+    );
+  }
   return (
     <header className="sticky">
       <NavLink to="/club_devices" className="button rounded">
-        {t("club devices")}
+        {t("tabs.clubDevices")}
       </NavLink>
       <NavLink to="/players" className="button rounded">
-        {t("players")}
+        {t("tabs.players")}
       </NavLink>
       <NavLink to="/rotation" className="button rounded">
-        {t("rotation")}
+        {t("tabs.rotation")}
       </NavLink>
-      {superChickenMode ? (
-        <NavLink
-          to="super_chicken_mode"
-          className="button rounded"
-          data-test-id="superChickenModeTab"
-        >
-          {t("super chicken mode")}
-        </NavLink>
-      ) : (
-        <></>
-      )}
+      {superChickenNavLink()}
       <LanguageSelector />
       <SignOutButton />
     </header>

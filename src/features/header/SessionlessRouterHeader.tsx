@@ -14,11 +14,11 @@ export default function SessionlessRouterHeader() {
     <header className="sticky">
       <NavLink to="/signin" className="button rounded">
         <span data-test-id="signInTab" className="icon-user"></span>
-        {t("signIn")}
+        {t("tabs.signIn")}
       </NavLink>
       <NavLink to="/signup" className="button rounded">
         <span data-test-id="signUpTab" className="icon-info"></span>
-        {t("signUp")}
+        {t("tabs.signUp")}
       </NavLink>
       <span>
         <LanguageSelector />

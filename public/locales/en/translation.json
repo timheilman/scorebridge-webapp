@@ -1,7 +1,19 @@
 {
-  "signIn": "Sign In",
-  "signUp": "Sign Up",
   "appTitle": "Duplicate Bridge Scoring Admin Portal",
-  "projects": "Here are some projects",
-  "tableTablets": "Table Tablets"
+  "tabs": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "players": "players",
+    "rotation": "rotation",
+    "clubDevices": "Club Devices",
+    "superChickenMode": "SUPER CHICKEN MODE!"
+  },
+  "signUp": {
+    "userAlreadyExists": "'That email address has already been registered.  Please use the SIGN IN tab and choose \"forgot password\"'",
+    "legend": "Sign Up to administer your club's duplicate bridge games",
+    "email": {"label": "Email address", "placeholder": "email"},
+    "clubName": {"label": "Club's name", "placeholder": "My Bridge Club"},
+    "submit": "Send me an email"
+  }
 }

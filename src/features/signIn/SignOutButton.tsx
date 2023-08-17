@@ -1,10 +1,14 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import { useTranslation } from "react-i18next";
+
+import TypesafeTranslationT from "../../TypesafeTranslationT";
 
 export default function SignOutButton() {
   const { signOut, authStatus } = useAuthenticator((context) => [
     context.authStatus,
     context.signOut,
   ]);
+  const t = useTranslation().t as TypesafeTranslationT;
 
   const handleClick = () => {
     signOut();
@@ -13,7 +17,7 @@ export default function SignOutButton() {
   if (authStatus === "authenticated") {
     return (
       <>
-        <button onClick={handleClick}>Sign Out</button>
+        <button onClick={handleClick}>{t("tabs.signOut")}</button>
       </>
     );
   }
