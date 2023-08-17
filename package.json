@@ -62,6 +62,7 @@
     "@aws-amplify/ui-react": "^5.0.7",
     "@aws-sdk/client-cognito-identity-provider": "^3.388.0",
     "@aws-sdk/client-dynamodb": "^3.388.0",
+    "@aws-sdk/client-secrets-manager": "^3.391.0",
     "@aws-sdk/client-sqs": "^3.388.0",
     "@aws-sdk/credential-providers": "^3.389.0",
     "@aws-sdk/util-dynamodb": "^3.388.0",

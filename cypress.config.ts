@@ -7,6 +7,7 @@ import { expectDdbUserDetails } from "./cypress/tasks/expectDdbUserDetails";
 import { fetchGroupsForUser } from "./cypress/tasks/fetchGroupsForUser";
 import { fetchLatestEmail } from "./cypress/tasks/fetchLatestEmail";
 import { fetchNullableCogUser } from "./cypress/tasks/fetchNullableCogUser";
+import { fetchSecret } from "./cypress/tasks/fetchSecret";
 import { log } from "./cypress/tasks/log";
 import { purgeSqsQueue } from "./cypress/tasks/purgeSqsQueue";
 import { receiveMessagesFromSqs } from "./cypress/tasks/receiveMessagesFromSqs";
@@ -25,6 +26,7 @@ export default defineConfig({
         ...setNewPasswordViaAdmin,
         ...fetchNullableCogUser,
         ...fetchGroupsForUser,
+        ...fetchSecret,
         ...expectClubDetails,
         ...expectDdbUserDetails,
         ...cleanupUser,
