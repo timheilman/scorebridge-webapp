@@ -34,7 +34,7 @@ function withCredentialsRun(
 }
 
 describe("signUp new address=>sends email; FORCE_RESET_PASSWORD address=>sends email; confirmed address=>already registered", () => {
-  xit("passes happy path with API_KEY", () => {
+  it("passes happy path with API_KEY", () => {
     cy.visit("http://localhost:3000");
     withTestAccount((t) => runAddClubHappyPathFull(t));
   });
