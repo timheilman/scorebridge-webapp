@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { logFn } from "../../lib/logging";
 import { selectLanguage, setLanguage } from "./selectedLanguageSlice";
+
 const log = logFn("src.features.languageSelector");
 
 interface Option {
@@ -71,10 +72,6 @@ const LanguageSelector: FC<SelectProps> = () => {
     if (!selectedLanguage) {
       return <option value="">Select a language</option>;
     }
-    return "";
-  };
-  const labelForLang = (option: Option) => {
-    return <span>{option.label}</span>;
   };
   return (
     <select
@@ -85,7 +82,7 @@ const LanguageSelector: FC<SelectProps> = () => {
       {maybeAddSelectLanguage()}
       {options.map((option) => (
         <option key={option.value} value={option.value}>
-          {labelForLang(option)}
+          {option.label}
         </option>
       ))}
     </select>
