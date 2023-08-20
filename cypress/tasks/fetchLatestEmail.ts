@@ -1,6 +1,8 @@
 import Imap from "imap";
 
+import { logFn } from "../../src/lib/logging";
 import { TempEmailAccount } from "./createTempEmailAccount";
+const log = logFn("cypress.tasks.fetchLatestEmail");
 export const fetchLatestEmail = {
   async fetchEmailsExpectingNone(tempEmailAccount: TempEmailAccount) {
     let latestEmail;
@@ -49,7 +51,7 @@ export const fetchLatestEmail = {
             }
 
             f.on("message", (msg, seqno) => {
-              console.log(`Message #${seqno}`);
+              log("debug", `Message #${seqno}`);
 
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               msg.on("body", (stream, info) => {
@@ -63,7 +65,7 @@ export const fetchLatestEmail = {
                 );
 
                 stream.on("end", () => {
-                  console.log(buffer);
+                  log("debug", buffer);
                   res(buffer);
                 });
               });
@@ -76,7 +78,7 @@ export const fetchLatestEmail = {
                     rej(markErr);
                     return;
                   }
-                  console.log("Email marked as read.");
+                  log("debug", "Email marked as read.");
                 });
               });
             });
@@ -89,12 +91,11 @@ export const fetchLatestEmail = {
       });
 
       imapObj.once("error", (err: unknown) => {
-        console.error("Error during imapObj operation");
-        console.error(err);
+        log("error", "Error during imapObj operation", err);
       });
 
       imapObj.once("end", () => {
-        console.log("Connection ended.");
+        log("debug", "Connection ended.");
       });
 
       imapObj.connect();

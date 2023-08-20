@@ -3,6 +3,9 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import Backend from "i18next-http-backend";
 import { initReactI18next } from "react-i18next";
 
+import { logFn } from "./lib/logging";
+const log = logFn("src.i18n");
+
 // intended for interpretation once at loading: NO EXPORTS, do not re-import
 
 i18n
@@ -26,13 +29,14 @@ i18n
     },
   })
   .then(() => {
-    console.log("reactI18next initialization success");
-    console.log(
+    log("debug", "reactI18next initialization success");
+    log(
+      "debug",
       `resolvedLanguage: ${
         i18n.resolvedLanguage ? i18n.resolvedLanguage : "not present"
       }`,
     );
   })
   .catch((reason) => {
-    console.error("reactI18next initialization failed", reason);
+    log("error", "reactI18next initialization failed", reason);
   });

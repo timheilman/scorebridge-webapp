@@ -2,12 +2,14 @@ import { AdminDeleteUserCommand } from "@aws-sdk/client-cognito-identity-provide
 import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 
+import { logFn } from "../../src/lib/logging";
 import {
   fetchNullableCogUser as fnuContainer,
   fetchNullableCogUserParams,
 } from "./fetchNullableCogUser";
 import cachedCognitoIdpClient from "./lib/cachedCognitoIdpClient";
 import { cachedDynamoDbClient } from "./lib/cachedDynamoDbClient";
+const log = logFn("cypress.tasks.cleanupUser");
 export interface CleanupUserParams extends fetchNullableCogUserParams {
   clubTableName: string;
   userTableName: string;
@@ -22,7 +24,7 @@ export const cleanupUser = {
     userTableName,
     clubTableName,
   }: CleanupUserParams) {
-    console.log(`Cleaning up user ${email}`);
+    log("debug", `Cleaning up user ${email}`);
     const poolAndName = {
       UserPoolId: poolId,
       Username: email,

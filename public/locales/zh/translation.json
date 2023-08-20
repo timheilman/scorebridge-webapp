@@ -12,8 +12,8 @@
   "signUp": {
     "userAlreadyExists": "该电子邮件地址已经被注册。请使用“登录”选项卡，然后选择“忘记密码”",
     "legend": "注册以管理您的俱乐部复制桥牌比赛",
-    "email": {"label": "电子邮件地址", "placeholder": "电子邮件"},
-    "clubName": {"label": "俱乐部名称", "placeholder": "我的桥牌俱乐部"},
+    "email": { "label": "电子邮件地址", "placeholder": "电子邮件" },
+    "clubName": { "label": "俱乐部名称", "placeholder": "我的桥牌俱乐部" },
     "submit": "发送邮件给我"
   }
 }

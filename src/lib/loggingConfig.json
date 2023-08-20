@@ -1,0 +1,10 @@
+[
+  {
+    "keyPrefix": "",
+    "logLevel": "info"
+  },
+  {
+    "keyPrefix": "src.features",
+    "logLevel": "debug"
+  }
+]

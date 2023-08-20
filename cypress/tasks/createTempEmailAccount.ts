@@ -1,4 +1,7 @@
 import { createTestAccount } from "nodemailer";
+
+import { logFn } from "../../src/lib/logging";
+const log = logFn("cypress.tasks.createTempEmailAccount");
 export type TempEmailAccount = {
   user: string;
   password: string;
@@ -8,7 +11,7 @@ export type TempEmailAccount = {
 };
 export const createTempEmailAccount = {
   async createTempEmailAccount(): Promise<TempEmailAccount> {
-    console.log("Creating email account...");
+    log("debug", "Creating email account...");
     const testAccount = await createTestAccount();
     const { user, pass, imap } = testAccount;
     const { host, port, secure } = imap;

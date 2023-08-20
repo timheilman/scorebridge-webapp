@@ -4,7 +4,10 @@ import { ChangeEvent, FC, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { logFn } from "../../lib/logging";
 import { selectLanguage, setLanguage } from "./selectedLanguageSlice";
+const log = logFn("src.features.languageSelector");
+
 interface Option {
   value: string;
   label: string;
@@ -17,7 +20,7 @@ const options: Option[] = ["en", "fr", "zh", "he"]
     return {
       value: amplifyUiReactXlationLangCode,
       // type safety of this cast is ostensibly guaranteed by the filter and the library
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
       label: `${
         getLangNameFromCode(amplifyUiReactXlationLangCode)?.native as string
       }`,
@@ -33,24 +36,28 @@ const LanguageSelector: FC<SelectProps> = () => {
   const { i18n } = useTranslation();
   useEffect(() => {
     if (selectedLanguage) {
-      console.log(
+      log(
+        "debug",
         `truthy selectedLanguage so setting i18n to it ${selectedLanguage}; redux caused this event`,
       );
       i18n.changeLanguage(selectedLanguage).then(
-        () => console.log(`change good to ${selectedLanguage}`),
-        (r) => console.error(`change bad to ${selectedLanguage}`, r),
+        () => log("debug", `change good to ${selectedLanguage}`),
+        (r) => log("error", `change bad to ${selectedLanguage}`, r),
       );
-      console.log(`i18n setting dispatched...`);
+      log("debug", `i18n setting dispatched...`);
     } else if (i18n.resolvedLanguage) {
-      console.log(
+      log(
+        "debug",
         `falsy selectedLanguage, truthy i18next-resolved language so setting redux to resolved ${i18n.resolvedLanguage}`,
       );
       dispatch(setLanguage(i18n.resolvedLanguage));
-      console.log(
+      log(
+        "debug",
         `redux setting dispatched, should rerun this useEffect w/truthy selectedLanguage...`,
       );
     } else {
-      console.log(
+      log(
+        "debug",
         `falsy selectedLanguage, falsy resolved language; simply leaving unset`,
       );
     }

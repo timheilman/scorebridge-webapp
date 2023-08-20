@@ -6,8 +6,10 @@ import { useTranslation } from "react-i18next";
 import { AddClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
 import { mutationAddClub } from "../../graphql/mutations";
+import { logFn } from "../../lib/logging";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
+const log = logFn("src.features.signUp.SignUpForm");
 
 const addClub = async (
   newAdminEmail: string,
@@ -84,7 +86,7 @@ export default function SignUpForm() {
     } else if (reason.message) {
       setAddClubError(reason.message as string);
     } else {
-      console.error(`unexpected form of gql promise rejection`, reason);
+      log("error", `unexpected form of gql promise rejection`, reason);
       setAddClubError(JSON.stringify(reason, null, 2));
     }
   }
@@ -94,16 +96,16 @@ export default function SignUpForm() {
     event.preventDefault(); // we are taking over, in react, from browser event handling here
     setEverSubmitted(true);
     setSubmitInFlight(true);
-    console.log("in handleSubmit");
+    log("debug", "in handleSubmit");
     addClub(email, clubName, authStatus)
       .then((result) => {
         setAddClubError(null);
         setSubmitInFlight(false);
-        console.log(`Add club success: ${JSON.stringify(result, null, 2)}`);
+        log("debug", `Add club success: ${JSON.stringify(result, null, 2)}`);
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((reason: any) => {
-        console.error("Promise rejected: GQL Mutation.AddClub", reason);
+        log("error", "Promise rejected: GQL Mutation.AddClub", reason);
         if (
           /* eslint-disable @typescript-eslint/no-unsafe-member-access */
           reason.errors &&
@@ -119,7 +121,7 @@ export default function SignUpForm() {
         }
         setSubmitInFlight(false);
       });
-    console.log("exiting handleSubmit after promise invocation");
+    log("debug", "exiting handleSubmit after promise invocation");
   };
   const handleChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);

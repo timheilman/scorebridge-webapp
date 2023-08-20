@@ -12,8 +12,8 @@
   "signUp": {
     "userAlreadyExists": "Cette adresse e-mail est déjà enregistrée. Veuillez utiliser l'onglet 'Se connecter' et choisir 'Mot de passe oublié'",
     "legend": "Inscrivez-vous pour administrer les parties de bridge duplicate de votre club",
-    "email": {"label": "Adresse e-mail", "placeholder": "e-mail"},
-    "clubName": {"label": "Nom du club", "placeholder": "Mon Club de Bridge"},
+    "email": { "label": "Adresse e-mail", "placeholder": "e-mail" },
+    "clubName": { "label": "Nom du club", "placeholder": "Mon Club de Bridge" },
     "submit": "Envoyez-moi un e-mail"
   }
 }

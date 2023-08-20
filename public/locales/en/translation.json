@@ -12,8 +12,8 @@
   "signUp": {
     "userAlreadyExists": "'That email address has already been registered.  Please use the SIGN IN tab and choose \"forgot password\"'",
     "legend": "Sign Up to administer your club's duplicate bridge games",
-    "email": {"label": "Email address", "placeholder": "email"},
-    "clubName": {"label": "Club's name", "placeholder": "My Bridge Club"},
+    "email": { "label": "Email address", "placeholder": "email" },
+    "clubName": { "label": "Club's name", "placeholder": "My Bridge Club" },
     "submit": "Send me an email"
   }
 }

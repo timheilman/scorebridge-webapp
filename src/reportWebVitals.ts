@@ -1,5 +1,8 @@
 import { ReportHandler } from "web-vitals";
 
+import { logFn } from "./lib/logging";
+const log = logFn("src.reportWebVitals");
+
 const reportWebVitals = (onPerfEntry?: ReportHandler) => {
   if (onPerfEntry && onPerfEntry instanceof Function) {
     import("web-vitals")
@@ -11,8 +14,7 @@ const reportWebVitals = (onPerfEntry?: ReportHandler) => {
         getTTFB(onPerfEntry);
       })
       .catch((reason) => {
-        console.error("Problems with import:");
-        console.error(reason);
+        log("error", "Problems with import:", reason);
       });
   }
 };

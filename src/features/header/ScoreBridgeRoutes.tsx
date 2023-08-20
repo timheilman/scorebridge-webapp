@@ -1,8 +1,8 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
-import ClubDevicesPage from "../clubDevices/ClubDevicesPage";
 import SuperChickenMode from ".././superChickenMode/SuperChickenMode";
+import ClubDevicesPage from "../clubDevices/ClubDevicesPage";
 import PlayersPage from "../players/PlayersPage";
 import RotationPage from "../rotation/RotationPage";
 import ScoreBridgeAuthenticator from "../signIn/ScoreBridgeAuthenticator";
