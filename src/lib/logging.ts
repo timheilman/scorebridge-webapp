@@ -4,32 +4,46 @@ import {
   PrintFnParams,
   withConfigProvideLogFn,
 } from "./genericLogger";
-import loggingConfig from "./loggingConfig.json";
+import fileLoggingConfig from "./loggingConfig.json";
 const getCloudPrintFn = (message: string, ...addlParams: unknown[]) => {
   return ({
-    matchingConfigLine,
-    requestedLogLevel,
-    requestedKey,
+    matchingConfigCat,
+    matchingConfigLevel,
+    requestedLevel,
+    requestedCat,
   }: PrintFnParams) => {
-    const remainingKey = requestedKey.slice(
-      matchingConfigLine.keyPrefix.length,
-    );
+    const remainingKey = requestedCat.slice(matchingConfigCat.length);
     console.log(
-      `${new Date().toJSON()} ${requestedLogLevel.toLocaleUpperCase()} (${
-        matchingConfigLine.keyPrefix
-      }@${matchingConfigLine.logLevel.toLocaleUpperCase()})${remainingKey} ${message}`,
+      `${new Date().toJSON()} ${requestedLevel.toLocaleUpperCase()} (${matchingConfigCat}@${matchingConfigLevel.toLocaleUpperCase()})${remainingKey} ${message}`,
       ...addlParams,
     );
   };
 };
 console.log(
-  `Found filesystem logging config:\n${JSON.stringify(loggingConfig)}`,
+  `Loaded-for-default filesystem logging config:\n${JSON.stringify(
+    fileLoggingConfig,
+  )}`,
 );
+
+function currentConfig() {
+  const envConfigStr = process.env["REACT_APP_SB_LOGGING_CONFIG"];
+  if (envConfigStr) {
+    let envConfigObj;
+    try {
+      envConfigObj = JSON.parse(envConfigStr) as LoggingConfig;
+    } catch (e) {
+      console.error(
+        "Unable to parse logging config from env var, falling back to file.",
+      );
+      return fileLoggingConfig as LoggingConfig;
+    }
+    return envConfigObj;
+  }
+  return fileLoggingConfig as LoggingConfig;
+}
+
 export function logFn(
   key: string,
 ): (logLevel: LogLevel, message: string, ...addlParams: unknown[]) => void {
-  return withConfigProvideLogFn(
-    loggingConfig as LoggingConfig,
-    getCloudPrintFn,
-  )(key);
+  return withConfigProvideLogFn(currentConfig(), getCloudPrintFn)(key);
 }

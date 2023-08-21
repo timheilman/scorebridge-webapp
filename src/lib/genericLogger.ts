@@ -15,9 +15,9 @@
 //   readRelativeUtf8FileSync("config.json"),
 // ) as LoggingConfig;
 // const getPrintFn = (message) => {
-//   return ({ requestedKey, requestedLogLevel }: PrintFnParams) => {
+//   return ({ requestedCat, requestedLevel }: PrintFnParams) => {
 //     console.log(
-//       `${new Date().toJSON()} ${requestedKey} ${requestedLogLevel} ${message}`,
+//       `${new Date().toJSON()} ${requestedCat} ${requestedLevel} ${message}`,
 //     );
 //   };
 // };
@@ -33,16 +33,15 @@ const levelToInt = {
   fatal: 600,
 };
 export type LogLevel = keyof typeof levelToInt;
-type LoggingConfigLine = {
-  keyPrefix: string;
-  logLevel: LogLevel;
+export type LoggingConfig = {
+  [keyPrefix: string]: LogLevel;
 };
-export type LoggingConfig = LoggingConfigLine[];
 
 export interface PrintFnParams {
-  matchingConfigLine: LoggingConfigLine;
-  requestedLogLevel: LogLevel;
-  requestedKey: string;
+  matchingConfigCat: string;
+  matchingConfigLevel: string;
+  requestedLevel: LogLevel;
+  requestedCat: string;
 }
 
 export function genericLogger(loggingConfig: LoggingConfig) {
@@ -51,22 +50,26 @@ export function genericLogger(loggingConfig: LoggingConfig) {
     logLevel: LogLevel,
     printFn: (p: PrintFnParams) => void,
   ) => {
-    const matchingConfigLine = loggingConfig.reduce<LoggingConfigLine>(
-      (acc, configLine) => {
-        if (key.startsWith(configLine.keyPrefix)) {
-          if (acc.keyPrefix.length <= configLine.keyPrefix.length) {
-            return configLine;
+    const matchingConfigCat = Object.keys(loggingConfig).reduce<string | null>(
+      (acc, configKey) => {
+        if (key.startsWith(configKey)) {
+          if (!acc || acc.length <= configKey.length) {
+            return configKey;
           }
         }
         return acc;
       },
-      { keyPrefix: "", logLevel: "fatal" },
+      null,
     );
-    if (levelToInt[logLevel] >= levelToInt[matchingConfigLine.logLevel]) {
+    if (
+      matchingConfigCat && // default is OFF
+      levelToInt[logLevel] >= levelToInt[loggingConfig[matchingConfigCat]]
+    ) {
       printFn({
-        matchingConfigLine,
-        requestedLogLevel: logLevel,
-        requestedKey: key,
+        matchingConfigLevel: loggingConfig[matchingConfigCat],
+        matchingConfigCat: matchingConfigCat,
+        requestedLevel: logLevel,
+        requestedCat: key,
       });
     }
   };
@@ -84,7 +87,7 @@ export function withConfigProvideLogFn(
       genericLogger(config)(
         key,
         logLevel,
-        printFnProvider(message, addlParams),
+        printFnProvider(message, ...addlParams),
       );
     };
   };

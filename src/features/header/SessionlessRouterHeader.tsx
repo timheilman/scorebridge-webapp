@@ -7,7 +7,7 @@ export default function SessionlessRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
   const { pathname } = useLocation();
   // When rendering the router header due to logout:
-  if (!["/signin", "/signup"].includes(pathname)) {
+  if (!["/signin", "/signup", "/unexpected_error"].includes(pathname)) {
     return <Navigate to="/signin" />;
   }
   return (

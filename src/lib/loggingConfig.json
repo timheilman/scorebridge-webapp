@@ -1,10 +1,4 @@
-[
-  {
-    "keyPrefix": "",
-    "logLevel": "info"
-  },
-  {
-    "keyPrefix": "src.features",
-    "logLevel": "debug"
-  }
-]
+{
+  "": "info",
+  "src.features": "debug"
+}
