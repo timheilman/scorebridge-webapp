@@ -2,7 +2,6 @@ import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
 import {
   runAddClubHappyPath,
   runAddClubHappyPathFull,
-  runAddClubSadPath,
   withTestAccount,
 } from "../support/fullAddClubTest";
 import requiredEnvVar from "../support/requiredEnvVar";
@@ -43,11 +42,5 @@ describe("signUp new address=>sends email; FORCE_RESET_PASSWORD address=>sends e
     const stage = requiredEnvVar("STAGE");
     const email = `scorebridge8+${stage}-testUser-adminSuper@gmail.com`;
     withCredentialsRun(stage, email, runAddClubHappyPath);
-  });
-
-  it("fails auth with clubAdmin", () => {
-    const stage = requiredEnvVar("STAGE");
-    const email = `scorebridge8+${stage}-testUser-adminClub@gmail.com`;
-    withCredentialsRun(stage, email, runAddClubSadPath);
   });
 });

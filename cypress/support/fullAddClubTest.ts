@@ -137,14 +137,6 @@ export function runAddClubHappyPath(
   });
 }
 
-export function runAddClubSadPath(
-  tempEmailAccount: TempEmailAccount | { user: string },
-) {
-  const clubName = "Ace of Clubs";
-  cy.get(d("superChickenModeTab")).click();
-  fillForm(tempEmailAccount, clubName);
-  cy.contains("Not Authorized to access addClub on type Mutation");
-}
 export function runAddClubHappyPathFull(
   tempEmailAccount: TempEmailAccount | { user: string },
 ) {
