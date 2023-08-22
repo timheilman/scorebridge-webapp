@@ -1,13 +1,14 @@
 {
   "appTitle": "Duplicate Bridge Scoring Admin Portal",
-  "tabs": {
-    "signIn": "Sign In",
-    "signUp": "Sign Up",
-    "signOut": "Sign Out",
-    "players": "players",
-    "rotation": "rotation",
-    "clubDevices": "Club Devices",
-    "superChickenMode": "SUPER CHICKEN MODE!"
+  "forgetMe": {
+    "legend": "Account Deletion",
+    "confirm": {
+      "labelBefore": "Please type \"",
+      "labelAfter": "\" into the field below to enable the button.",
+      "phrase": "Delete my account",
+      "placeholder": "Do please reconsider..."
+    },
+    "submit": "Delete my account"
   },
   "signUp": {
     "userAlreadyExists": "'That email address has already been registered.  Please use the SIGN IN tab and choose \"forgot password\"'",
@@ -15,5 +16,15 @@
     "email": { "label": "Email address", "placeholder": "email" },
     "clubName": { "label": "Club's name", "placeholder": "My Bridge Club" },
     "submit": "Send me an email"
+  },
+  "tabs": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "forgetMe": "Delete My Account",
+    "players": "players",
+    "rotation": "rotation",
+    "clubDevices": "Club Devices",
+    "superChickenMode": "SUPER CHICKEN MODE!"
   }
 }

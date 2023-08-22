@@ -40,6 +40,13 @@ export default function SessionfulRouterHeader() {
       <NavLink to="/rotation" className="button rounded">
         {t("tabs.rotation")}
       </NavLink>
+      <NavLink
+        to="/forget_me"
+        className="button rounded"
+        data-test-id="forgetMeTab"
+      >
+        {t("tabs.forgetMe")}
+      </NavLink>
       {superChickenNavLink()}
       <LanguageSelector />
       <SignOutButton />

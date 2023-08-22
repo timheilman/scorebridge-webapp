@@ -29,14 +29,12 @@ i18n
     },
   })
   .then(() => {
-    log("debug", "reactI18next initialization success");
-    log(
-      "debug",
-      `resolvedLanguage: ${
-        i18n.resolvedLanguage ? i18n.resolvedLanguage : "not present"
-      }`,
-    );
+    log("reactI18next.success", "debug", {
+      resolvedLanguage: i18n.resolvedLanguage
+        ? i18n.resolvedLanguage
+        : "not present",
+    });
   })
   .catch((reason) => {
-    log("error", "reactI18next initialization failed", reason);
+    log("reactI18next.success", "error", reason);
   });

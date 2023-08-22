@@ -2,7 +2,7 @@ import { AdminListGroupsForUserCommand } from "@aws-sdk/client-cognito-identity-
 
 import { logFn } from "../../src/lib/logging";
 import cachedCognitoIdpClient from "./lib/cachedCognitoIdpClient";
-const log = logFn("cypress.tasks.fetchGroupsForUser");
+const log = logFn("cypress.tasks.fetchGroupsForUser.");
 
 export interface FetchGroupsForUserParams {
   awsRegion: string;
@@ -23,10 +23,7 @@ export const fetchGroupsForUser = {
         Username: userId,
       }),
     );
-    log(
-      "debug",
-      `fetchGroupsForUserCognitoResult ${JSON.stringify(result, null, 2)}`,
-    );
+    log("fetchGroupsForUser.start", "debug", { result });
     if (result.NextToken) {
       throw new Error("More than one page of groups found; unhandled");
     }

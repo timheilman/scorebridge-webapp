@@ -37,30 +37,35 @@ const LanguageSelector: FC<SelectProps> = () => {
   const { i18n } = useTranslation();
   useEffect(() => {
     if (selectedLanguage) {
-      log(
-        "debug",
-        `truthy selectedLanguage so setting i18n to it ${selectedLanguage}; redux caused this event`,
-      );
+      log("useEffect.selectedLanguage.true", "debug", { selectedLanguage });
       i18n.changeLanguage(selectedLanguage).then(
-        () => log("debug", `change good to ${selectedLanguage}`),
-        (r) => log("error", `change bad to ${selectedLanguage}`, r),
+        () =>
+          log(
+            "useEffect.selectedLanguage.true.i18n.changeLanguage.success",
+            "debug",
+            { selectedLanguage },
+          ),
+        (r) =>
+          log(
+            "useEffect.selectedLanguage.true.i18n.changeLanguage.error",
+            "error",
+            r,
+          ),
       );
-      log("debug", `i18n setting dispatched...`);
+      log("useEffect.selectedLanguage.true.i18n.changeLanguage.start", "debug");
     } else if (i18n.resolvedLanguage) {
       log(
+        "useEffect.resolvedLanguage.true.dispatchSetLanguage.start",
         "debug",
-        `falsy selectedLanguage, truthy i18next-resolved language so setting redux to resolved ${i18n.resolvedLanguage}`,
+        { i18nResolvedLanguage: i18n.resolvedLanguage },
       );
       dispatch(setLanguage(i18n.resolvedLanguage));
       log(
+        "useEffect.resolvedLanguage.true.dispatchSetLanguage.waiting",
         "debug",
-        `redux setting dispatched, should rerun this useEffect w/truthy selectedLanguage...`,
       );
     } else {
-      log(
-        "debug",
-        `falsy selectedLanguage, falsy resolved language; simply leaving unset`,
-      );
+      log("useEffect.resolvedLanguage.false.leavingUnset", "debug");
     }
   }, [selectedLanguage, i18n, dispatch]);
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {

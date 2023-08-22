@@ -5,64 +5,74 @@ import { useTranslation } from "react-i18next";
 
 import { AddClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
-import { mutationAddClub } from "../../graphql/mutations";
+import { mutationRemoveClubAndAdmin } from "../../graphql/mutations";
 import { logFn } from "../../lib/logging";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
-const log = logFn("src.features.signUp.SignUpForm");
+const log = logFn("src.features.signUp.ForgetMeForm");
 
-const addClub = async (
-  newAdminEmail: string,
-  newClubName: string,
+const removeClubAndAdmin = async (
+  clubId: string,
+  userId: string,
   authStatus: AuthStatus,
 ) => {
   /* create a new club */
-  return gqlMutation<AddClubResponse>(authStatus, mutationAddClub, {
-    input: {
-      newAdminEmail,
-      newClubName,
-      suppressInvitationEmail: false,
-    },
+  return gqlMutation<AddClubResponse>(authStatus, mutationRemoveClubAndAdmin, {
+    input: { clubId, userId },
   });
 };
 
 interface MaybeErrorElementParams {
   submitInFlight: boolean;
   everSubmitted: boolean;
-  addClubError: string | null;
+  removeClubAndAdminError: string | null;
 }
 function maybeFooterElement({
-  addClubError,
+  removeClubAndAdminError,
   submitInFlight,
   everSubmitted,
 }: MaybeErrorElementParams) {
   if (submitInFlight) {
     return <div>sending email...</div>;
   }
-  if (addClubError) {
+  if (removeClubAndAdminError) {
     return (
       <div>
-        Problem with last submission: <pre>{addClubError}</pre>
+        Problem with last submission: <pre>{removeClubAndAdminError}</pre>
       </div>
     );
   }
   if (everSubmitted) {
-    return <div>email sent!</div>;
+    return (
+      <div>Your account has been deleted; you should now be logged out.</div>
+    );
   }
 }
 
-export default function SignUpForm() {
-  const [email, setEmail] = useState("");
-  const [clubName, setClubName] = useState("");
+export default function ForgetMeForm() {
   const [submitInFlight, setSubmitInFlight] = useState(false);
   const [everSubmitted, setEverSubmitted] = useState(false);
-  const [addClubError, setAddClubError] = useState<string | null>(null);
-
-  const { authStatus } = useAuthenticator((context) => [context.authStatus]);
+  const [removeClubAndAdminError, setRemoveClubAndAdminError] = useState<
+    string | null
+  >(null);
+  const [confirm, setConfirm] = useState("");
+  const { authStatus, user, signOut } = useAuthenticator((context) => [
+    context.authStatus,
+    context.user,
+    context.signOut,
+  ]);
   const t = useTranslation().t as TypesafeTranslationT;
+  const confirmPhrase = t("forgetMe.confirm.phrase");
+  const submitButtonDisabled = () => {
+    return submitInFlight || confirm != confirmPhrase;
+  };
+  const handleChangeConfirm = (event: ChangeEvent<HTMLInputElement>) => {
+    setConfirm(event.target.value);
+  };
+
   /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
   function handleExpectedGqlReject(errors: Array<any>) {
-    setAddClubError(
+    setRemoveClubAndAdminError(
       errors
         .map((error) => {
           if (error.message) {
@@ -84,15 +94,10 @@ export default function SignUpForm() {
     if (reason.errors && Array.isArray(reason.errors)) {
       handleExpectedGqlReject(reason.errors as Array<unknown>);
     } else if (reason.message) {
-      setAddClubError(reason.message as string);
+      setRemoveClubAndAdminError(reason.message as string);
     } else {
-      log(
-        "handleGqlReject.unexpectedError",
-        "error",
-        `unexpected form of gql promise rejection`,
-        reason,
-      );
-      setAddClubError(JSON.stringify(reason, null, 2));
+      log("handleGqlReject.error", "error", reason);
+      setRemoveClubAndAdminError(JSON.stringify(reason, null, 2));
     }
   }
   /* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
@@ -102,15 +107,27 @@ export default function SignUpForm() {
     setEverSubmitted(true);
     setSubmitInFlight(true);
     log("handleSubmit.start", "debug");
-    addClub(email, clubName, authStatus)
+    if (!user.username) {
+      throw new Error("no username in ForgetMeForm");
+    }
+    if (!user.attributes) {
+      throw new Error("no attributes in ForgetMeForm");
+    }
+
+    removeClubAndAdmin(
+      user.attributes["custom:tenantId"],
+      user.username,
+      authStatus,
+    )
       .then((result) => {
-        setAddClubError(null);
+        setRemoveClubAndAdminError(null);
         setSubmitInFlight(false);
-        log("handleSubmit.addClub.success", "debug", { result });
+        log("removeClubAndAdmin.success", "debug", { result });
+        signOut();
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((reason: any) => {
-        log("handleSubmit.addClub.error", "error", reason);
+        log("removeClubAndAdmin.error", "error", reason);
         if (
           /* eslint-disable @typescript-eslint/no-unsafe-member-access */
           reason.errors &&
@@ -120,64 +137,60 @@ export default function SignUpForm() {
           reason.errors[0].errorType === "UserAlreadyExistsError"
           /* eslint-enable @typescript-eslint/no-unsafe-member-access */
         ) {
-          setAddClubError(t("signUp.userAlreadyExists"));
+          setRemoveClubAndAdminError(t("signUp.userAlreadyExists"));
         } else {
           handleGqlReject(reason);
         }
         setSubmitInFlight(false);
       });
-    log("handleSubmit.addClub.start", "debug");
-  };
-  const handleChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-  };
-  const handleChangeName = (event: ChangeEvent<HTMLInputElement>) => {
-    setClubName(event.target.value);
+    log("removeClubAndAdmin.start", "debug");
   };
 
   return (
     <div>
+      <p>
+        We are very sad to see you go. Clicking the button below will delete
+        your club, all its data, and your account. You will no longer be able to
+        sign in.
+      </p>
       <form className="input-group vertical" onSubmit={handleSubmit}>
         <fieldset>
-          <legend>{t("signUp.legend")}</legend>
+          <legend>{t("forgetMe.legend")}</legend>
           <div className="row">
             <div className="col-sm-12 col-md-6">
-              <label htmlFor="email">{t("signUp.email.label")}</label>
+              <label htmlFor="confirm">
+                {t("forgetMe.confirm.labelBefore")}
+                {t("forgetMe.confirm.phrase")}
+                {t("forgetMe.confirm.labelAfter")}
+              </label>
               <input
                 className={styles.myInputWidth}
                 type="text"
-                id="email"
-                placeholder={t("signUp.email.placeholder")}
-                onChange={handleChangeEmail}
-                data-test-id="formAddClubEmailAddress"
-              />
-            </div>
-            <div className="col-sm-12 col-md-6">
-              <label htmlFor="clubName">{t("signUp.clubName.label")}</label>
-              <input
-                className={styles.myInputWidth}
-                type="text"
-                id="clubName"
-                placeholder={t("signUp.clubName.placeholder")}
-                onChange={handleChangeName}
-                data-test-id="formAddClubClubName"
+                id="confirm"
+                placeholder={t("forgetMe.confirm.placeholder")}
+                onChange={handleChangeConfirm}
+                data-test-id="formForgetMeConfirm"
               />
             </div>
           </div>
           <div className="row">
             <div className="col-sm">
               <button
-                disabled={submitInFlight}
+                disabled={submitButtonDisabled()}
                 className="primary"
-                data-test-id="formAddClubSubmit"
+                data-test-id="formForgetMeSubmit"
               >
-                {t("signUp.submit")}
+                {t("forgetMe.submit")}
               </button>
             </div>
           </div>
         </fieldset>
       </form>
-      {maybeFooterElement({ everSubmitted, submitInFlight, addClubError })}
+      {maybeFooterElement({
+        everSubmitted,
+        submitInFlight,
+        removeClubAndAdminError,
+      })}
     </div>
   );
 }

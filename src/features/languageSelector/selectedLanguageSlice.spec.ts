@@ -8,13 +8,13 @@ describe("languageSelector reducer", () => {
     value: "en",
   };
   it("should handle initial state", () => {
-    expect(selectedLanguageReducer(undefined, { type: "unknown" })).toEqual({
+    expect(selectedLanguageReducer(undefined, { type: "unknown" })).to.equal({
       value: "en",
     });
   });
 
   it("should handle setLanguage", () => {
     const actual = selectedLanguageReducer(initialState, setLanguage("de"));
-    expect(actual.value).toEqual("de");
+    expect(actual.value).to.equal("de");
   });
 });

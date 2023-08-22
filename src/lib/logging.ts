@@ -5,7 +5,7 @@ import {
   withConfigProvideLogFn,
 } from "./genericLogger";
 import fileLoggingConfig from "./loggingConfig.json";
-const getCloudPrintFn = (message: string, ...addlParams: unknown[]) => {
+const getCloudPrintFn = (...addlParams: unknown[]) => {
   return ({
     matchingConfigCat,
     matchingConfigLevel,
@@ -14,7 +14,7 @@ const getCloudPrintFn = (message: string, ...addlParams: unknown[]) => {
   }: PrintFnParams) => {
     const remainingKey = requestedCat.slice(matchingConfigCat.length);
     console.log(
-      `${new Date().toJSON()} ${requestedLevel.toLocaleUpperCase()} (${matchingConfigCat}@${matchingConfigLevel.toLocaleUpperCase()})${remainingKey} ${message}`,
+      `${new Date().toJSON()} ${requestedLevel.toLocaleUpperCase()} (${matchingConfigCat}@${matchingConfigLevel.toLocaleUpperCase()})${remainingKey}`,
       ...addlParams,
     );
   };
@@ -43,7 +43,7 @@ function currentConfig() {
 }
 
 export function logFn(
-  key: string,
-): (logLevel: LogLevel, message: string, ...addlParams: unknown[]) => void {
-  return withConfigProvideLogFn(currentConfig(), getCloudPrintFn)(key);
+  catPrefix: string,
+): (catSuffix: string, logLevel: LogLevel, ...addlParams: unknown[]) => void {
+  return withConfigProvideLogFn(currentConfig(), getCloudPrintFn)(catPrefix);
 }

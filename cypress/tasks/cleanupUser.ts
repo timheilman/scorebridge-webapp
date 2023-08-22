@@ -9,7 +9,7 @@ import {
 } from "./fetchNullableCogUser";
 import cachedCognitoIdpClient from "./lib/cachedCognitoIdpClient";
 import { cachedDynamoDbClient } from "./lib/cachedDynamoDbClient";
-const log = logFn("cypress.tasks.cleanupUser");
+const log = logFn("cypress.tasks.cleanupUser.");
 export interface CleanupUserParams extends fetchNullableCogUserParams {
   clubTableName: string;
   userTableName: string;
@@ -24,7 +24,7 @@ export const cleanupUser = {
     userTableName,
     clubTableName,
   }: CleanupUserParams) {
-    log("debug", `Cleaning up user ${email}`);
+    log("cleanupUser.start", "debug", { email });
     const poolAndName = {
       UserPoolId: poolId,
       Username: email,

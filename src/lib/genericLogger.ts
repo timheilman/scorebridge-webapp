@@ -46,13 +46,13 @@ export interface PrintFnParams {
 
 export function genericLogger(loggingConfig: LoggingConfig) {
   return (
-    key: string,
+    category: string,
     logLevel: LogLevel,
     printFn: (p: PrintFnParams) => void,
   ) => {
     const matchingConfigCat = Object.keys(loggingConfig).reduce<string | null>(
       (acc, configKey) => {
-        if (key.startsWith(configKey)) {
+        if (category.startsWith(configKey)) {
           if (!acc || acc.length <= configKey.length) {
             return configKey;
           }
@@ -69,7 +69,7 @@ export function genericLogger(loggingConfig: LoggingConfig) {
         matchingConfigLevel: loggingConfig[matchingConfigCat],
         matchingConfigCat: matchingConfigCat,
         requestedLevel: logLevel,
-        requestedCat: key,
+        requestedCat: category,
       });
     }
   };
@@ -77,17 +77,18 @@ export function genericLogger(loggingConfig: LoggingConfig) {
 
 export function withConfigProvideLogFn(
   config: LoggingConfig,
-  printFnProvider: (
-    message: string,
-    ...addlParams: unknown[]
-  ) => (p: PrintFnParams) => void,
+  printFnProvider: (...addlParams: unknown[]) => (p: PrintFnParams) => void,
 ) {
-  return (key: string) => {
-    return (logLevel: LogLevel, message: string, ...addlParams: unknown[]) => {
+  return (catPrefix: string) => {
+    return (
+      catSuffix: string,
+      logLevel: LogLevel,
+      ...addlParams: unknown[]
+    ) => {
       genericLogger(config)(
-        key,
+        catPrefix + catSuffix,
         logLevel,
-        printFnProvider(message, ...addlParams),
+        printFnProvider(...addlParams),
       );
     };
   };

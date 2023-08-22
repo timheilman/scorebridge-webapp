@@ -1,8 +1,8 @@
-import Imap from "imap";
+import Imap, { Config } from "imap";
 
 import { logFn } from "../../src/lib/logging";
 import { TempEmailAccount } from "./createTempEmailAccount";
-const log = logFn("cypress.tasks.fetchLatestEmail");
+const log = logFn("cypress.tasks.fetchLatestEmail.");
 export const fetchLatestEmail = {
   async fetchEmailsExpectingNone(tempEmailAccount: TempEmailAccount) {
     let latestEmail;
@@ -21,7 +21,7 @@ export const fetchLatestEmail = {
 
   async fetchLatestEmail(tempEmailAccount: TempEmailAccount) {
     // Create an instance of the Imap class
-    const imapObj = new Imap(tempEmailAccount);
+    const imapObj = new Imap(tempEmailAccount as Config);
     // to log in into the email inbox
     return new Promise<string>((res, rej) => {
       imapObj.once("ready", () => {
@@ -51,7 +51,7 @@ export const fetchLatestEmail = {
             }
 
             f.on("message", (msg, seqno) => {
-              log("debug", `Message #${seqno}`);
+              log("imap.onMessage", "debug", { seqno });
 
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               msg.on("body", (stream, info) => {
@@ -65,7 +65,7 @@ export const fetchLatestEmail = {
                 );
 
                 stream.on("end", () => {
-                  log("debug", buffer);
+                  log("imap.onBodyStreamEnd", "debug", { buffer });
                   res(buffer);
                 });
               });
@@ -78,7 +78,7 @@ export const fetchLatestEmail = {
                     rej(markErr);
                     return;
                   }
-                  log("debug", "Email marked as read.");
+                  log("imap.markedAsRead", "debug");
                 });
               });
             });
@@ -91,11 +91,11 @@ export const fetchLatestEmail = {
       });
 
       imapObj.once("error", (err: unknown) => {
-        log("error", "Error during imapObj operation", err);
+        log("imap.onError", "error", err);
       });
 
       imapObj.once("end", () => {
-        log("debug", "Connection ended.");
+        log("imap.onConnectionEnd", "debug");
       });
 
       imapObj.connect();

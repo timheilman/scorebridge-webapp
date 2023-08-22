@@ -6,7 +6,7 @@ import {
 
 import { logFn } from "../../src/lib/logging";
 import { cachedSqsClient } from "./lib/cachedSqsClient";
-const log = logFn("cypress.tasks.purgeSqsQueue");
+const log = logFn("cypress.tasks.purgeSqsQueue.");
 
 export interface PurgeSqsQueueParams {
   awsRegion: string;
@@ -26,7 +26,7 @@ export const purgeSqsQueue = {
     try {
       return await cachedSqsClient(awsRegion, profile).send(purgeQueueCommand);
     } catch (e) {
-      log("error", "Message of the error", e);
+      log("purgeSqsQueue.error", "error", e);
       if (!(e instanceof PurgeQueueInProgress)) {
         throw e;
       }

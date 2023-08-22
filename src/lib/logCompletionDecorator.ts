@@ -2,20 +2,28 @@ import { LogLevel } from "./genericLogger";
 import { logFn } from "./logging";
 
 export function getLogCompletionDecorator<T>(
-  filename: string,
+  catPrefix: string,
   logLevel: LogLevel,
+  ...addlArgs: unknown[]
 ) {
-  return (promise: Promise<T>, message: string) =>
-    logCompletionDecorator<T>(promise, message, filename, logLevel);
+  return (promise: Promise<T>, catSuffix: string) =>
+    logCompletionDecorator<T>(
+      promise,
+      catPrefix,
+      catSuffix,
+      logLevel,
+      ...addlArgs,
+    );
 }
 
 async function logCompletionDecorator<T>(
   promise: Promise<T>,
-  message: string,
-  filename: string,
+  catPrefix: string,
+  catSuffix: string,
   logLevel: LogLevel,
+  ...addlArgs: unknown[]
 ) {
   const r = await promise;
-  logFn(filename)(logLevel, message);
+  logFn(catPrefix)(catSuffix, logLevel, ...addlArgs);
   return r;
 }

@@ -16,3 +16,11 @@ export const mutationUnexpectedError = gql`
     }
   }
 `;
+
+export const mutationRemoveClubAndAdmin = gql`
+  mutation removeClubAndAdmin($input: RemoveClubAndAdminInput!) {
+    removeClubAndAdmin(input: $input) {
+      status
+    }
+  }
+`;
