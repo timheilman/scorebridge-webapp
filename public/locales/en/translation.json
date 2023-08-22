@@ -2,6 +2,7 @@
   "appTitle": "Duplicate Bridge Scoring Admin Portal",
   "forgetMe": {
     "legend": "Account Deletion",
+    "text": "We are very sad to see you go. Clicking the button below will delete your club, all its data, and your account. You will no longer be able to sign in.",
     "confirm": {
       "labelBefore": "Please type \"",
       "labelAfter": "\" into the field below to enable the button.",
@@ -9,7 +10,8 @@
       "placeholder": "Do please reconsider..."
     },
     "submit": "Delete my account",
-    "deletingAccount": "deleting account..."
+    "deletingAccount": "deleting account...",
+    "accountDeleted": "Your account has been deleted; you should now be logged out."
   },
   "problemWithLastSubmission": "There was a problem with your last submission:",
   "signUp": {

@@ -2,11 +2,9 @@ import {
   randomPassword,
   setNewPassword,
   submitAddClubDetails,
-  withCredentialsRun,
   withPreexistingCredsDo,
   withTestAccount,
   withUnverifiedTempClubAdminDo,
-  withVerifiedTempClubAdminDo,
 } from "../support/authUtils";
 import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
 import { verifyReceivedEmail } from "../support/emailUtils";
@@ -61,6 +59,7 @@ describe("signUp", () => {
       withTestAccount((tempAcct) => {
         cy.visit("http://localhost:3000/");
         const clubName = "Ace of Clubs";
+        cy.get(d("superChickenModeButton")).click();
         cy.get(d("superChickenModeTab")).click();
         submitAddClubDetails(tempAcct.user, clubName);
         cy.contains("email sent!");

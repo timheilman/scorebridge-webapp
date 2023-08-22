@@ -45,9 +45,7 @@ function maybeFooterElement({
     );
   }
   if (everSubmitted) {
-    return (
-      <div>Your account has been deleted; you should now be logged out.</div>
-    );
+    return <div>${t("forgetMe.accountDeleted")}</div>;
   }
 }
 
@@ -150,11 +148,7 @@ export default function ForgetMeForm() {
 
   return (
     <div>
-      <p>
-        We are very sad to see you go. Clicking the button below will delete
-        your club, all its data, and your account. You will no longer be able to
-        sign in.
-      </p>
+      <p>{t("forgetMe.text")}</p>
       <form className="input-group vertical" onSubmit={handleSubmit}>
         <fieldset>
           <legend>{t("forgetMe.legend")}</legend>

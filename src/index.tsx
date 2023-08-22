@@ -3,7 +3,7 @@ import "@aws-amplify/ui-react"; // TODO: can this be deleted?
 import "./i18n";
 
 import { Authenticator } from "@aws-amplify/ui-react";
-import { Amplify } from "aws-amplify";
+import { Amplify, Auth } from "aws-amplify";
 import React from "react"; // this is the only place this import should be needed on v18 of react
 import { createRoot } from "react-dom/client";
 import { Provider as ReactReduxProvider } from "react-redux";
@@ -12,7 +12,20 @@ import App from "./App";
 import { store } from "./app/store";
 import reportWebVitals from "./reportWebVitals";
 import requiredEnvVar from "./requiredEnvVar";
+
 Amplify.configure({
+  API: {
+    graphql_headers: async () => {
+      try {
+        const session = await Auth.currentSession();
+        return {
+          Authorization: session.getIdToken().getJwtToken(),
+        };
+      } catch (e) {
+        return {};
+      }
+    },
+  },
   Auth: {
     region: requiredEnvVar("AWS_REGION"),
     userPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
