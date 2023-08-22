@@ -62,7 +62,7 @@ export function genericLogger(loggingConfig: LoggingConfig) {
       null,
     );
     if (
-      matchingConfigCat && // default is OFF
+      matchingConfigCat !== null && // default is OFF
       levelToInt[logLevel] >= levelToInt[loggingConfig[matchingConfigCat]]
     ) {
       printFn({

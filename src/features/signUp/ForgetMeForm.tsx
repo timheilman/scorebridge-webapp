@@ -26,19 +26,21 @@ interface MaybeErrorElementParams {
   submitInFlight: boolean;
   everSubmitted: boolean;
   removeClubAndAdminError: string | null;
+  t: TypesafeTranslationT;
 }
 function maybeFooterElement({
   removeClubAndAdminError,
   submitInFlight,
   everSubmitted,
+  t,
 }: MaybeErrorElementParams) {
   if (submitInFlight) {
-    return <div>sending email...</div>;
+    return <div>{t("forgetMe.deletingAccount")}</div>;
   }
   if (removeClubAndAdminError) {
     return (
       <div>
-        Problem with last submission: <pre>{removeClubAndAdminError}</pre>
+        {t("problemWithLastSubmission")} <pre>{removeClubAndAdminError}</pre>
       </div>
     );
   }
@@ -190,6 +192,7 @@ export default function ForgetMeForm() {
         everSubmitted,
         submitInFlight,
         removeClubAndAdminError,
+        t,
       })}
     </div>
   );

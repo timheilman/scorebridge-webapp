@@ -8,8 +8,10 @@
       "phrase": "Delete my account",
       "placeholder": "Do please reconsider..."
     },
-    "submit": "Delete my account"
+    "submit": "Delete my account",
+    "deletingAccount": "deleting account..."
   },
+  "problemWithLastSubmission": "There was a problem with your last submission:",
   "signUp": {
     "userAlreadyExists": "'That email address has already been registered.  Please use the SIGN IN tab and choose \"forgot password\"'",
     "legend": "Sign Up to administer your club's duplicate bridge games",

@@ -4,6 +4,7 @@ import {
   submitAddClubDetails,
   withCredentialsRun,
   withPreexistingCredsDo,
+  withTestAccount,
   withUnverifiedTempClubAdminDo,
   withVerifiedTempClubAdminDo,
 } from "../support/authUtils";
@@ -14,7 +15,6 @@ import { refreshSignupTab } from "../support/refreshSignupTab";
 import requiredEnvVar from "../support/requiredEnvVar";
 import { targetTestEnvDetailsFromEnv } from "../support/targetTestEnvDetailsFromEnv";
 import { expectBackendDetails, expectDdbDetails } from "../support/userUtils";
-import { TempEmailAccount } from "../tasks/createTempEmailAccount";
 
 const stage = requiredEnvVar("STAGE");
 
@@ -57,43 +57,20 @@ describe("signUp and self-account-deletion", () => {
 
   it("passes happy path with adminSuper", () => {
     const email = `scorebridge8+${stage}-testUser-adminSuper@gmail.com`;
-    withPreexistingCredsDo(stage, email, (tempAcct: TempEmailAccount) => {
-      cy.visit("http://localhost:3000/");
-      const clubName = "Ace of Clubs";
-      cy.get(d("superChickenModeTab")).click();
-      submitAddClubDetails(tempAcct.user, clubName);
-      cy.contains("email sent!");
-      verifyReceivedEmail(tempAcct);
-      envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {
-        email: tempAcct.user,
-      }).then((user) => {
-        expectBackendDetails(user, tempAcct, clubName);
+    withPreexistingCredsDo(stage, email, () => {
+      withTestAccount((tempAcct) => {
+        cy.visit("http://localhost:3000/");
+        const clubName = "Ace of Clubs";
+        cy.get(d("superChickenModeTab")).click();
+        submitAddClubDetails(tempAcct.user, clubName);
+        cy.contains("email sent!");
+        verifyReceivedEmail(tempAcct);
+        envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {
+          email: tempAcct.user,
+        }).then((user) => {
+          expectBackendDetails(user, tempAcct, clubName);
+        });
       });
     });
-  });
-
-  it("actually-deletes things when account deleted", () => {
-    withVerifiedTempClubAdminDo(
-      originalClubName,
-      (newPassword, tempAcct, user) => {
-        verifyReceivedEmail(tempAcct);
-        expectBackendDetails(user, tempAcct, originalClubName);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        withCredentialsRun(
-          tempAcct.user,
-          newPassword,
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          (_t: TempEmailAccount) => {
-            cy.get(d("forgetMeTab")).click();
-            cy.get(d("formForgetMeConfirm")).type("Delete my account");
-            cy.get(d("formForgetMeSubmit")).click();
-            cy.contains("SIGN IN");
-            cy.contains("Username");
-            cy.contains("Password");
-          },
-        );
-        // todo: verifications of null for backend, need to revamp expect tasks to fetchNullable instead
-      },
-    );
   });
 });

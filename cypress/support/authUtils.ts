@@ -15,7 +15,7 @@ export const randomPassword = () => {
   });
 };
 
-function withTestAccount(doThis: (tempAcct: TempEmailAccount) => void) {
+export function withTestAccount(doThis: (tempAcct: TempEmailAccount) => void) {
   if (targetTestEnvDetailsFromEnv.stage === "prod") {
     cy.task<TempEmailAccount>("createTempEmailAccount").then(
       (tempAcct: TempEmailAccount) => {
@@ -76,7 +76,7 @@ export function withVerifiedTempClubAdminDo(
 export function withPreexistingCredsDo(
   stage: string,
   email: string,
-  testFn: (tempAcct: TempEmailAccount) => void,
+  testFn: () => void,
 ) {
   cy.task<Record<"password", string>>("fetchSecret", {
     ...targetTestEnvDetailsFromEnv,
@@ -89,13 +89,13 @@ export function withPreexistingCredsDo(
 export function withCredentialsRun(
   email: string,
   password: string,
-  testFn: (tempAcct: TempEmailAccount) => void,
+  testFn: () => void,
 ) {
   /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/ban-ts-comment */
   // @ts-ignore
   cy.loginByCognitoApi(email, password);
   cy.visit("http://localhost:3000");
-  withTestAccount((t) => testFn(t));
+  testFn();
 }
 
 export function setNewPassword(

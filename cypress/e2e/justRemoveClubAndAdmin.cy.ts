@@ -5,7 +5,6 @@ import {
 import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
 import { verifyReceivedEmail } from "../support/emailUtils";
 import { expectBackendDetails } from "../support/userUtils";
-import { TempEmailAccount } from "../tasks/createTempEmailAccount";
 
 describe("trying to speed up cypress", () => {
   it("actually-deletes things when account deleted", () => {
@@ -19,11 +18,17 @@ describe("trying to speed up cypress", () => {
         tempAcct.user,
         newPassword,
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        (_t: TempEmailAccount) => {
+        () => {
           cy.get(d("forgetMeTab")).click();
           cy.get(d("formForgetMeConfirm")).type("Delete my account");
+          cy.task("log", {
+            catPrefix: "cypress.e2e.justRemoveClubAndAdmin.",
+            catSuffix: "beforeClick",
+            logLevel: "info",
+            addlParams: [user],
+          });
           cy.get(d("formForgetMeSubmit")).click();
-          cy.contains("SIGN IN");
+          cy.contains("Sign In"); // capitalized with CSS magic, but this capitalization in source
           cy.contains("Username");
           cy.contains("Password");
         },
