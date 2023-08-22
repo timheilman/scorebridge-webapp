@@ -4,6 +4,7 @@ import {
 } from "../support/authUtils";
 import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
 import { verifyReceivedEmail } from "../support/emailUtils";
+import { envTask } from "../support/envTask";
 import { expectBackendDetails } from "../support/userUtils";
 
 describe("trying to speed up cypress", () => {
@@ -31,9 +32,22 @@ describe("trying to speed up cypress", () => {
           cy.contains("Sign In"); // capitalized with CSS magic, but this capitalization in source
           cy.contains("Username");
           cy.contains("Password");
+          envTask("expectDdbUserDetails", {
+            userId: user.userId,
+            expectedUserDetails: null,
+          });
+          envTask("expectClubDetails", {
+            clubId: user.clubId,
+            expectedClubDetails: null,
+          });
+          envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {
+            email: tempAcct.user,
+          }).then((user) => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            expect(user).to.be.null;
+          });
         },
       );
-      // todo: verifications of null for backend, need to revamp expect tasks to fetchNullable instead
     });
   });
 });
