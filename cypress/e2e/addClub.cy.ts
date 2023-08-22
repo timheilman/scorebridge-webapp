@@ -23,7 +23,7 @@ const updatedClubName = "updated name should be stored in club table";
 const failedClubName =
   "name should not be updated in club table upon invocation by confirmed user";
 
-describe("signUp and self-account-deletion", () => {
+describe("signUp", () => {
   it("with API_KEY, signUp new address=>sends email; FORCE_RESET_PASSWORD address=>sends email; confirmed address=>already registered", () => {
     cy.visit("http://localhost:3000");
     const newPassword = randomPassword();
@@ -55,7 +55,7 @@ describe("signUp and self-account-deletion", () => {
     });
   });
 
-  it("passes happy path with adminSuper", () => {
+  it("with adminSuper, passes happy path", () => {
     const email = `scorebridge8+${stage}-testUser-adminSuper@gmail.com`;
     withPreexistingCredsDo(stage, email, () => {
       withTestAccount((tempAcct) => {

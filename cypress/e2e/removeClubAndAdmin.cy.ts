@@ -32,6 +32,8 @@ describe("trying to speed up cypress", () => {
           cy.contains("Sign In"); // capitalized with CSS magic, but this capitalization in source
           cy.contains("Username");
           cy.contains("Password");
+
+          // expect account deletion:
           envTask("expectDdbUserDetails", {
             userId: user.userId,
             expectedUserDetails: null,
