@@ -1,12 +1,16 @@
 import { AuthStatus } from "@aws-amplify/ui";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { ChangeEvent, SyntheticEvent, useState } from "react";
+import { ChangeEvent, SyntheticEvent, useRef, useState } from "react";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import ReCAPTCHA from "react-google-recaptcha";
 import { useTranslation } from "react-i18next";
 
 import { AddClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
 import { mutationAddClub } from "../../graphql/mutations";
 import { logFn } from "../../lib/logging";
+import requiredEnvVar from "../../requiredEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
 const log = logFn("src.features.signUp.SignUpForm");
@@ -15,6 +19,7 @@ const addClub = async (
   newAdminEmail: string,
   newClubName: string,
   authStatus: AuthStatus,
+  recaptchaToken?: string,
 ) => {
   /* create a new club */
   return gqlMutation<AddClubResponse>(authStatus, mutationAddClub, {
@@ -22,6 +27,7 @@ const addClub = async (
       newAdminEmail,
       newClubName,
       suppressInvitationEmail: false,
+      recaptchaToken,
     },
   });
 };
@@ -57,7 +63,12 @@ export default function SignUpForm() {
   const [submitInFlight, setSubmitInFlight] = useState(false);
   const [everSubmitted, setEverSubmitted] = useState(false);
   const [addClubError, setAddClubError] = useState<string | null>(null);
+  const [recaptchaPassed, setRecaptchaPassed] = useState(false);
 
+  const captchaRef = useRef<{
+    getValue: () => string;
+    reset: () => void;
+  } | null>(null);
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   const t = useTranslation().t as TypesafeTranslationT;
   /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
@@ -102,14 +113,18 @@ export default function SignUpForm() {
     setEverSubmitted(true);
     setSubmitInFlight(true);
     log("handleSubmit.start", "debug");
-    addClub(email, clubName, authStatus)
+    addClub(email, clubName, authStatus, captchaRef.current?.getValue())
       .then((result) => {
+        captchaRef.current?.reset();
         setAddClubError(null);
         setSubmitInFlight(false);
+        setRecaptchaPassed(false);
         log("handleSubmit.addClub.success", "debug", { result });
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((reason: any) => {
+        captchaRef.current?.reset();
+        setRecaptchaPassed(false);
         log("handleSubmit.addClub.error", "error", reason);
         if (
           /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -135,6 +150,14 @@ export default function SignUpForm() {
     setClubName(event.target.value);
   };
 
+  const handleRecaptchaChange = (value: string) => {
+    log("handleRecaptchaChange", "debug", {
+      value,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+      captchaRefCurrent: captchaRef.current?.getValue(),
+    });
+    setRecaptchaPassed(!!captchaRef.current?.getValue());
+  };
   return (
     <div>
       <form className="input-group vertical" onSubmit={handleSubmit}>
@@ -165,12 +188,26 @@ export default function SignUpForm() {
             </div>
           </div>
           <div className="row">
+            <div className="col-wm">
+              <ReCAPTCHA
+                sitekey={requiredEnvVar("RECAPTCHA2_SITE_KEY")}
+                onChange={handleRecaptchaChange}
+                ref={captchaRef}
+                data-test-id="recaptchaComponent"
+              />
+            </div>
+          </div>
+          <div className="row">
             <div className="col-sm">
+              {/* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */}
               <button
-                disabled={submitInFlight}
+                disabled={
+                  submitInFlight || !recaptchaPassed || !email || !clubName
+                }
                 className="primary"
                 data-test-id="formAddClubSubmit"
               >
+                {/* eslint-enable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */}
                 {t("signUp.submit")}
               </button>
             </div>

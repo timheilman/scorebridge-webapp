@@ -14,6 +14,7 @@ import { receiveMessagesFromSqs } from "./cypress/tasks/receiveMessagesFromSqs";
 import { setNewPasswordViaAdmin } from "./cypress/tasks/setNewPasswordViaAdmin";
 
 export default defineConfig({
+  chromeWebSecurity: false, // so we can get the iFrame inside recaptcha2
   defaultCommandTimeout: 10000,
   e2e: {
     baseUrl: "http://localhost:3000/",

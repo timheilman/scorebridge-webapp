@@ -5,6 +5,7 @@ import { addrs } from "./awsSesSandbox";
 import { dataTestIdSelector as d } from "./dataTestIdSelector";
 import { envTask } from "./envTask";
 import { targetTestEnvDetailsFromEnv } from "./targetTestEnvDetailsFromEnv";
+const catPrefix = "cypress.support.authUtils.";
 export const randomPassword = () => {
   const pool =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()";
@@ -36,6 +37,17 @@ export function withTestAccount(doThis: (tempAcct: TempEmailAccount) => void) {
 export function submitAddClubDetails(email: string, clubName: string) {
   cy.get(d("formAddClubEmailAddress")).type(email);
   cy.get(d("formAddClubClubName")).type(clubName);
+
+  cy.get(d("recaptchaComponent"))
+    .find("iframe")
+    .first()
+    .then((recaptchaIframe) => {
+      const body = recaptchaIframe.contents();
+      cy.wrap(body)
+        .find(".recaptcha-checkbox-border")
+        .should("be.visible")
+        .click();
+    });
   cy.get(d("formAddClubSubmit")).click();
 }
 
