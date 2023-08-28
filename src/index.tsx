@@ -33,7 +33,7 @@ Amplify.configure({
   },
   aws_appsync_graphqlEndpoint: requiredEnvVar("API_URL"),
   aws_appsync_region: requiredEnvVar("AWS_REGION"),
-  aws_appsync_apiKey: requiredEnvVar("ADD_CLUB_API_KEY"),
+  aws_appsync_apiKey: requiredEnvVar("CREATE_CLUB_API_KEY"),
 });
 
 const container = document.getElementById("root");

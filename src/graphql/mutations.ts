@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
-export const mutationAddClub = gql`
-  mutation addClub($input: AddClubInput!) {
-    addClub(input: $input) {
+export const mutationCreateClub = gql`
+  mutation createClub($input: CreateClubInput!) {
+    createClub(input: $input) {
       clubId
       userId
     }

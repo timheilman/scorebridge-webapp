@@ -37,7 +37,7 @@ function verifyReceivedEmailNonProd({
       JSON.parse(unparsedSqses[0]).Message as string,
     );
     expect(parsedMessage.eventType).to.match(/^Delivery$/);
-    // cy.task("log", { catPrefix: "cypress.support.fullAddClubTest", catSuffix: "verifyReceivedEmailNonProd", logLevel: "error", addlParams: [parsedMessage]);
+    // cy.task("log", { catPrefix: "cypress.support.fullCreateClubTest", catSuffix: "verifyReceivedEmailNonProd", logLevel: "error", addlParams: [parsedMessage]);
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const ch = parsedMessage.mail.commonHeaders;
     expect(ch.from.length).to.equal(1);

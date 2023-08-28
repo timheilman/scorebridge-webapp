@@ -3,7 +3,7 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { AddClubResponse } from "../../../appsync";
+import { CreateClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
 import { mutationRemoveClubAndAdmin } from "../../graphql/mutations";
 import { logFn } from "../../lib/logging";
@@ -17,9 +17,13 @@ const removeClubAndAdmin = async (
   authStatus: AuthStatus,
 ) => {
   /* create a new club */
-  return gqlMutation<AddClubResponse>(authStatus, mutationRemoveClubAndAdmin, {
-    input: { clubId, userId },
-  });
+  return gqlMutation<CreateClubResponse>(
+    authStatus,
+    mutationRemoveClubAndAdmin,
+    {
+      input: { clubId, userId },
+    },
+  );
 };
 
 interface MaybeErrorElementParams {
@@ -45,7 +49,7 @@ function maybeFooterElement({
     );
   }
   if (everSubmitted) {
-    return <div>${t("forgetMe.accountDeleted")}</div>;
+    return <div>{t("forgetMe.accountDeleted")}</div>;
   }
 }
 

@@ -34,9 +34,9 @@ export function withTestAccount(doThis: (tempAcct: TempEmailAccount) => void) {
     doThis({ user: addrs.success });
   }
 }
-export function submitAddClubDetails(email: string, clubName: string) {
-  cy.get(d("formAddClubEmailAddress")).type(email);
-  cy.get(d("formAddClubClubName")).type(clubName);
+export function submitCreateClubDetails(email: string, clubName: string) {
+  cy.get(d("formCreateClubEmailAddress")).type(email);
+  cy.get(d("formCreateClubClubName")).type(clubName);
 
   cy.get(d("recaptchaComponent"))
     .find("iframe")
@@ -48,7 +48,7 @@ export function submitAddClubDetails(email: string, clubName: string) {
         .should("be.visible")
         .click();
     });
-  cy.get(d("formAddClubSubmit")).click();
+  cy.get(d("formCreateClubSubmit")).click();
 }
 
 export function withUnverifiedTempClubAdminDo(
@@ -60,7 +60,7 @@ export function withUnverifiedTempClubAdminDo(
 ) {
   withTestAccount((tempAcct) => {
     cy.get(d("signUpTab")).click();
-    submitAddClubDetails(tempAcct.user, clubName);
+    submitCreateClubDetails(tempAcct.user, clubName);
     cy.contains("email sent!");
     envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {
       email: tempAcct.user,

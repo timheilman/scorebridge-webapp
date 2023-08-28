@@ -1,7 +1,7 @@
 import {
   randomPassword,
   setNewPassword,
-  submitAddClubDetails,
+  submitCreateClubDetails,
   withPreexistingCredsDo,
   withTestAccount,
   withUnverifiedTempClubAdminDo,
@@ -31,14 +31,14 @@ describe("signUp", () => {
       expectBackendDetails(user, tempAcct, originalClubName);
       refreshSignupTab();
 
-      submitAddClubDetails(tempAcct.user, updatedClubName);
+      submitCreateClubDetails(tempAcct.user, updatedClubName);
       cy.contains("email sent!");
       verifyReceivedEmail(tempAcct);
       expectDdbDetails(user, tempAcct, updatedClubName);
 
       setNewPassword(tempAcct, newPassword);
       refreshSignupTab();
-      submitAddClubDetails(tempAcct.user, failedClubName);
+      submitCreateClubDetails(tempAcct.user, failedClubName);
       cy.contains(
         `That email address has already been registered.  Please use the SIGN IN tab and choose "forgot password"`,
       );
@@ -61,7 +61,7 @@ describe("signUp", () => {
         const clubName = "Ace of Clubs";
         cy.get(d("superChickenModeButton")).click();
         cy.get(d("superChickenModeTab")).click();
-        submitAddClubDetails(tempAcct.user, clubName);
+        submitCreateClubDetails(tempAcct.user, clubName);
         cy.contains("email sent!");
         verifyReceivedEmail(tempAcct);
         envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {

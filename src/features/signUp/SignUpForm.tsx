@@ -6,23 +6,23 @@ import { ChangeEvent, SyntheticEvent, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useTranslation } from "react-i18next";
 
-import { AddClubResponse } from "../../../appsync";
+import { CreateClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
-import { mutationAddClub } from "../../graphql/mutations";
+import { mutationCreateClub } from "../../graphql/mutations";
 import { logFn } from "../../lib/logging";
 import requiredEnvVar from "../../requiredEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
 const log = logFn("src.features.signUp.SignUpForm");
 
-const addClub = async (
+const createClub = async (
   newAdminEmail: string,
   newClubName: string,
   authStatus: AuthStatus,
   recaptchaToken?: string,
 ) => {
   /* create a new club */
-  return gqlMutation<AddClubResponse>(authStatus, mutationAddClub, {
+  return gqlMutation<CreateClubResponse>(authStatus, mutationCreateClub, {
     input: {
       newAdminEmail,
       newClubName,
@@ -35,20 +35,20 @@ const addClub = async (
 interface MaybeErrorElementParams {
   submitInFlight: boolean;
   everSubmitted: boolean;
-  addClubError: string | null;
+  createClubError: string | null;
 }
 function maybeFooterElement({
-  addClubError,
+  createClubError,
   submitInFlight,
   everSubmitted,
 }: MaybeErrorElementParams) {
   if (submitInFlight) {
     return <div>sending email...</div>;
   }
-  if (addClubError) {
+  if (createClubError) {
     return (
       <div>
-        Problem with last submission: <pre>{addClubError}</pre>
+        Problem with last submission: <pre>{createClubError}</pre>
       </div>
     );
   }
@@ -62,7 +62,7 @@ export default function SignUpForm() {
   const [clubName, setClubName] = useState("");
   const [submitInFlight, setSubmitInFlight] = useState(false);
   const [everSubmitted, setEverSubmitted] = useState(false);
-  const [addClubError, setAddClubError] = useState<string | null>(null);
+  const [createClubError, setCreateClubError] = useState<string | null>(null);
   const [recaptchaPassed, setRecaptchaPassed] = useState(false);
 
   const captchaRef = useRef<{
@@ -73,7 +73,7 @@ export default function SignUpForm() {
   const t = useTranslation().t as TypesafeTranslationT;
   /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
   function handleExpectedGqlReject(errors: Array<any>) {
-    setAddClubError(
+    setCreateClubError(
       errors
         .map((error) => {
           if (error.message) {
@@ -95,7 +95,7 @@ export default function SignUpForm() {
     if (reason.errors && Array.isArray(reason.errors)) {
       handleExpectedGqlReject(reason.errors as Array<unknown>);
     } else if (reason.message) {
-      setAddClubError(reason.message as string);
+      setCreateClubError(reason.message as string);
     } else {
       log(
         "handleGqlReject.unexpectedError",
@@ -103,7 +103,7 @@ export default function SignUpForm() {
         `unexpected form of gql promise rejection`,
         reason,
       );
-      setAddClubError(JSON.stringify(reason, null, 2));
+      setCreateClubError(JSON.stringify(reason, null, 2));
     }
   }
   /* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
@@ -113,19 +113,19 @@ export default function SignUpForm() {
     setEverSubmitted(true);
     setSubmitInFlight(true);
     log("handleSubmit.start", "debug");
-    addClub(email, clubName, authStatus, captchaRef.current?.getValue())
+    createClub(email, clubName, authStatus, captchaRef.current?.getValue())
       .then((result) => {
         captchaRef.current?.reset();
-        setAddClubError(null);
+        setCreateClubError(null);
         setSubmitInFlight(false);
         setRecaptchaPassed(false);
-        log("handleSubmit.addClub.success", "debug", { result });
+        log("handleSubmit.createClub.success", "debug", { result });
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((reason: any) => {
         captchaRef.current?.reset();
         setRecaptchaPassed(false);
-        log("handleSubmit.addClub.error", "error", reason);
+        log("handleSubmit.createClub.error", "error", reason);
         if (
           /* eslint-disable @typescript-eslint/no-unsafe-member-access */
           reason.errors &&
@@ -135,13 +135,13 @@ export default function SignUpForm() {
           reason.errors[0].errorType === "UserAlreadyExistsError"
           /* eslint-enable @typescript-eslint/no-unsafe-member-access */
         ) {
-          setAddClubError(t("signUp.userAlreadyExists"));
+          setCreateClubError(t("signUp.userAlreadyExists"));
         } else {
           handleGqlReject(reason);
         }
         setSubmitInFlight(false);
       });
-    log("handleSubmit.addClub.start", "debug");
+    log("handleSubmit.createClub.start", "debug");
   };
   const handleChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -172,7 +172,7 @@ export default function SignUpForm() {
                 id="email"
                 placeholder={t("signUp.email.placeholder")}
                 onChange={handleChangeEmail}
-                data-test-id="formAddClubEmailAddress"
+                data-test-id="formCreateClubEmailAddress"
               />
             </div>
             <div className="col-sm-12 col-md-6">
@@ -183,7 +183,7 @@ export default function SignUpForm() {
                 id="clubName"
                 placeholder={t("signUp.clubName.placeholder")}
                 onChange={handleChangeName}
-                data-test-id="formAddClubClubName"
+                data-test-id="formCreateClubClubName"
               />
             </div>
           </div>
@@ -205,7 +205,7 @@ export default function SignUpForm() {
                   submitInFlight || !recaptchaPassed || !email || !clubName
                 }
                 className="primary"
-                data-test-id="formAddClubSubmit"
+                data-test-id="formCreateClubSubmit"
               >
                 {/* eslint-enable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */}
                 {t("signUp.submit")}
@@ -214,7 +214,7 @@ export default function SignUpForm() {
           </div>
         </fieldset>
       </form>
-      {maybeFooterElement({ everSubmitted, submitInFlight, addClubError })}
+      {maybeFooterElement({ everSubmitted, submitInFlight, createClubError })}
     </div>
   );
 }
