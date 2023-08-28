@@ -17,9 +17,9 @@ export const mutationUnexpectedError = gql`
   }
 `;
 
-export const mutationRemoveClubAndAdmin = gql`
-  mutation removeClubAndAdmin($input: RemoveClubAndAdminInput!) {
-    removeClubAndAdmin(input: $input) {
+export const mutationDeleteClubAndAdmin = gql`
+  mutation deleteClubAndAdmin($input: DeleteClubAndAdminInput!) {
+    deleteClubAndAdmin(input: $input) {
       status
     }
   }

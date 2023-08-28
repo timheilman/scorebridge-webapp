@@ -23,7 +23,7 @@ describe("trying to speed up cypress", () => {
           cy.get(d("forgetMeTab")).click();
           cy.get(d("formForgetMeConfirm")).type("Delete my account");
           cy.task("log", {
-            catPrefix: "cypress.e2e.justRemoveClubAndAdmin.",
+            catPrefix: "cypress.e2e.justDeleteClubAndAdmin.",
             catSuffix: "beforeClick",
             logLevel: "info",
             addlParams: [user],

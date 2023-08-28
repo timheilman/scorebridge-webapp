@@ -5,13 +5,13 @@ import { useTranslation } from "react-i18next";
 
 import { CreateClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
-import { mutationRemoveClubAndAdmin } from "../../graphql/mutations";
+import { mutationDeleteClubAndAdmin } from "../../graphql/mutations";
 import { logFn } from "../../lib/logging";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
 const log = logFn("src.features.signUp.ForgetMeForm");
 
-const removeClubAndAdmin = async (
+const deleteClubAndAdmin = async (
   clubId: string,
   userId: string,
   authStatus: AuthStatus,
@@ -19,7 +19,7 @@ const removeClubAndAdmin = async (
   /* create a new club */
   return gqlMutation<CreateClubResponse>(
     authStatus,
-    mutationRemoveClubAndAdmin,
+    mutationDeleteClubAndAdmin,
     {
       input: { clubId, userId },
     },
@@ -29,11 +29,11 @@ const removeClubAndAdmin = async (
 interface MaybeErrorElementParams {
   submitInFlight: boolean;
   everSubmitted: boolean;
-  removeClubAndAdminError: string | null;
+  deleteClubAndAdminError: string | null;
   t: TypesafeTranslationT;
 }
 function maybeFooterElement({
-  removeClubAndAdminError,
+  deleteClubAndAdminError,
   submitInFlight,
   everSubmitted,
   t,
@@ -41,10 +41,10 @@ function maybeFooterElement({
   if (submitInFlight) {
     return <div>{t("forgetMe.deletingAccount")}</div>;
   }
-  if (removeClubAndAdminError) {
+  if (deleteClubAndAdminError) {
     return (
       <div>
-        {t("problemWithLastSubmission")} <pre>{removeClubAndAdminError}</pre>
+        {t("problemWithLastSubmission")} <pre>{deleteClubAndAdminError}</pre>
       </div>
     );
   }
@@ -56,7 +56,7 @@ function maybeFooterElement({
 export default function ForgetMeForm() {
   const [submitInFlight, setSubmitInFlight] = useState(false);
   const [everSubmitted, setEverSubmitted] = useState(false);
-  const [removeClubAndAdminError, setRemoveClubAndAdminError] = useState<
+  const [deleteClubAndAdminError, setDeleteClubAndAdminError] = useState<
     string | null
   >(null);
   const [confirm, setConfirm] = useState("");
@@ -76,7 +76,7 @@ export default function ForgetMeForm() {
 
   /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
   function handleExpectedGqlReject(errors: Array<any>) {
-    setRemoveClubAndAdminError(
+    setDeleteClubAndAdminError(
       errors
         .map((error) => {
           if (error.message) {
@@ -98,10 +98,10 @@ export default function ForgetMeForm() {
     if (reason.errors && Array.isArray(reason.errors)) {
       handleExpectedGqlReject(reason.errors as Array<unknown>);
     } else if (reason.message) {
-      setRemoveClubAndAdminError(reason.message as string);
+      setDeleteClubAndAdminError(reason.message as string);
     } else {
       log("handleGqlReject.error", "error", reason);
-      setRemoveClubAndAdminError(JSON.stringify(reason, null, 2));
+      setDeleteClubAndAdminError(JSON.stringify(reason, null, 2));
     }
   }
   /* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
@@ -118,20 +118,20 @@ export default function ForgetMeForm() {
       throw new Error("no attributes in ForgetMeForm");
     }
 
-    removeClubAndAdmin(
+    deleteClubAndAdmin(
       user.attributes["custom:tenantId"],
       user.username,
       authStatus,
     )
       .then((result) => {
-        setRemoveClubAndAdminError(null);
+        setDeleteClubAndAdminError(null);
         setSubmitInFlight(false);
-        log("removeClubAndAdmin.success", "debug", { result });
+        log("deleteClubAndAdmin.success", "debug", { result });
         signOut();
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((reason: any) => {
-        log("removeClubAndAdmin.error", "error", reason);
+        log("deleteClubAndAdmin.error", "error", reason);
         if (
           /* eslint-disable @typescript-eslint/no-unsafe-member-access */
           reason.errors &&
@@ -141,13 +141,13 @@ export default function ForgetMeForm() {
           reason.errors[0].errorType === "UserAlreadyExistsError"
           /* eslint-enable @typescript-eslint/no-unsafe-member-access */
         ) {
-          setRemoveClubAndAdminError(t("signUp.userAlreadyExists"));
+          setDeleteClubAndAdminError(t("signUp.userAlreadyExists"));
         } else {
           handleGqlReject(reason);
         }
         setSubmitInFlight(false);
       });
-    log("removeClubAndAdmin.start", "debug");
+    log("deleteClubAndAdmin.start", "debug");
   };
 
   return (
@@ -189,7 +189,7 @@ export default function ForgetMeForm() {
       {maybeFooterElement({
         everSubmitted,
         submitInFlight,
-        removeClubAndAdminError,
+        deleteClubAndAdminError,
         t,
       })}
     </div>
