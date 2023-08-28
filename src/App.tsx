@@ -5,12 +5,13 @@ import {
   useAuthenticator,
 } from "@aws-amplify/ui-react";
 import { I18n as amplifyI18n } from "aws-amplify";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import ScoreBridgeRoutes from "./features/header/ScoreBridgeRoutes";
 import SessionfulRouterHeader from "./features/header/SessionfulRouterHeader";
 import SessionlessRouterHeader from "./features/header/SessionlessRouterHeader";
+import requiredEnvVar from "./requiredEnvVar";
 import TypesafeTranslationT from "./TypesafeTranslationT";
 
 // TODO: customize the Authenticator component to use our own i18n w/these translations and remove this:
@@ -25,11 +26,15 @@ export default function App() {
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   const t = useTranslation("translation").t as TypesafeTranslationT;
   if (authStatus === "configuring") {
-    return <p>Loading user session</p>;
+    return <Trans>Loading user session</Trans>;
   }
+  const stage = requiredEnvVar("STAGE");
   return (
     <>
-      <h2>{t("appTitle")}</h2>
+      <h2>
+        {t("appTitle")}
+        {stage === "prod" ? "" : `-${stage}`}
+      </h2>
       <Router>
         {authStatus === "authenticated" ? (
           <SessionfulRouterHeader />
