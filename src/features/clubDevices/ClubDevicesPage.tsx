@@ -4,22 +4,15 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { AgGridReact } from "ag-grid-react";
 import { useCallback, useMemo, useRef } from "react";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import { logFn } from "../../lib/logging";
-import {
-  selectSuperChickenMode,
-  setSuperChickenMode,
-} from "../superChickenMode/superChickenModeSlice";
 import { selectClubDevices } from "./clubDevicesSlice";
 import { CreateClubDeviceForm } from "./CreateClubDeviceForm";
 const log = logFn("src.features.clubDevices.clubDevicesPage.");
 
 const columnDefsWithRows = [
-  { field: "name", sortable: true, filter: true, flex: 1 },
-  { field: "clubId" },
-  { field: "clubDeviceId" },
-  { field: "email" },
-  { field: "createdAt" },
+  { field: "name", sortable: true, filter: true, flex: 2 },
+  { field: "table", sortable: true, filter: true, flex: 1 },
 ];
 const columnDefsSansRows = [{ field: "message" }];
 

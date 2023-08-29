@@ -89,7 +89,9 @@ export function CreateClubDeviceForm() {
                 style={{ width: "85%" }}
                 type="text"
                 id="deviceName"
-                placeholder="2022-08-android-00"
+                placeholder={t(
+                  "clubDevices.createClubDeviceForm.deviceName.placeholder",
+                )}
                 onChange={handleChangeNewDeviceName}
                 data-test-id="formCreateClubDeviceDeviceName"
               />
@@ -102,7 +104,9 @@ export function CreateClubDeviceForm() {
                 style={{ width: "85%" }}
                 type="text"
                 id="regToken"
-                placeholder="EFFZBSMDSEJWHJME"
+                placeholder={t(
+                  "clubDevices.createClubDeviceForm.regToken.placeholder",
+                )}
                 onChange={handleChangeRegToken}
                 data-test-id="formCreateClubDeviceRegToken"
               />

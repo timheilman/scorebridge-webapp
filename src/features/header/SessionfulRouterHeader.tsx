@@ -1,6 +1,7 @@
 import { CONNECTION_STATE_CHANGE, ConnectionState } from "@aws-amplify/pubsub";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Hub } from "aws-amplify";
+import gql from "graphql-tag";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
@@ -8,7 +9,6 @@ import { Navigate, NavLink, useLocation } from "react-router-dom";
 import { ClubDevice, ListClubDevicesOutput } from "../../../appsync";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
-import { queryListClubDevices } from "../../graphql/mutations";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
 import requiredEnvVar from "../../requiredEnvVar";
@@ -17,13 +17,24 @@ import { setClubDevices } from "../clubDevices/clubDevicesSlice";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import SignOutButton from "../signIn/SignOutButton";
 import { selectSuperChickenMode } from "../superChickenMode/superChickenModeSlice";
+
 const log = logFn("src.features.header.SessionfulRouterHeader");
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment */
 const fetchRecentData = async (clubId: string, dispatch: any) => {
   // Retrieve some/all data from AppSync
   return gqlMutation<ListClubDevicesOutput>(
     "authenticated",
-    queryListClubDevices,
+    gql`
+      query createClub($input: ListClubDevicesInput!) {
+        listClubDevices(input: $input) {
+          clubDevices {
+            clubDeviceId
+            name
+            table
+          }
+        }
+      }
+    `,
     {
       input: { clubId },
     },
@@ -49,29 +60,31 @@ export default function SessionfulRouterHeader() {
   let priorConnectionState: string;
   const clubId = useClubId();
   useEffect(() => {
-    if (clubId) {
+    if (!clubId) {
       // sneaky sneaky superchickenmode w/superAdmin will not
-      log("initialFetch", "debug");
-      fetchRecentData(clubId, dispatch).catch((e) =>
-        log("badInitialGqlQuery", "error", { e }),
-      );
-      Hub.listen("api", (data: any) => {
-        const { payload } = data;
-        if (payload.event === CONNECTION_STATE_CHANGE) {
-          if (
-            priorConnectionState === ConnectionState.Connecting &&
-            payload.data.connectionState === ConnectionState.Connected
-          ) {
-            log("refreshFetch", "debug");
-            fetchRecentData(
-              (user.attributes && user.attributes["custom:tenantId"]) as string,
-              dispatch,
-            ).catch((e) => log("badRefreshGqlQuery", "error", { e }));
-          }
-          priorConnectionState = payload.data.connectionState;
-        }
-      });
+      log("noClubId", "info", { user });
+      return;
     }
+    log("initialFetch", "debug");
+    fetchRecentData(clubId, dispatch).catch((e) =>
+      log("badInitialGqlQuery", "error", { e }),
+    );
+    Hub.listen("api", (data: any) => {
+      const { payload } = data;
+      if (payload.event === CONNECTION_STATE_CHANGE) {
+        if (
+          priorConnectionState === ConnectionState.Connecting &&
+          payload.data.connectionState === ConnectionState.Connected
+        ) {
+          log("refreshFetch", "debug");
+          fetchRecentData(
+            (user.attributes && user.attributes["custom:tenantId"]) as string,
+            dispatch,
+          ).catch((e) => log("badRefreshGqlQuery", "error", { e }));
+        }
+        priorConnectionState = payload.data.connectionState;
+      }
+    });
   }, []);
   if (["/signin", "/signup"].includes(pathname)) {
     // naturally move to this page when logging in, and so the above tabs disappear:

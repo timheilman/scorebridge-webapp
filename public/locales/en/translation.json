@@ -1,5 +1,19 @@
 {
   "appTitle": "Duplicate Bridge Scoring Admin Portal",
+  "clubDevices": {
+    "createClubDeviceForm": {
+      "deviceName": {
+        "label": "Name your device (names are sortable and filterable):",
+        "placeholder": "2021-08-samsung-s3-00"
+      },
+      "regToken": {
+        "label": "Enter the registration key displayed by the app on the device awaiting registration.  To protect your club's data, do not share this key with anyone else!",
+        "placeholder": "IREYFFNVSBSAMXFF"
+      },
+      "legend": "Onboard a new device to your club:",
+      "submit": "Onboard my device"
+    }
+  },
   "forgetMe": {
     "legend": "Account Deletion",
     "text": "We are very sad to see you go. Clicking the button below will delete your club, all its data, and your account. You will no longer be able to sign in.",
