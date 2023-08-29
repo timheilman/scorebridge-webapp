@@ -24,3 +24,17 @@ export const mutationDeleteClubAndAdmin = gql`
     }
   }
 `;
+
+export const queryListClubDevices = gql`
+  query createClub($input: ListClubDevicesInput!) {
+    listClubDevices(input: $input) {
+      clubDevices {
+        clubId
+        clubDeviceId
+        name
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;

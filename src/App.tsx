@@ -22,6 +22,31 @@ amplifyI18n.putVocabularies(amplifyUiReactTranslations);
 //   const isOnline = useOnlineStatus();
 //   return <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;
 // }
+
+// const createSub = API.graphql<GraphQLSubscription<OnCreateTodoSubscription>>(
+//   graphqlOperation(subscriptions.onCreateTodo)
+// ).subscribe({
+//   next: data => // Process incoming messages
+// });
+//
+// const updateSub = API.graphql<GraphQLSubscription<OnUpdateTodoSubscription>>(
+//   graphqlOperation(subscriptions.onUpdateTodo)
+// ).subscribe({
+//   next: data => // Process incoming messages
+// });
+//
+// const deleteSub = API.graphql<GraphQLSubscription<OnDeleteTodoSubscription>>(
+//   graphqlOperation(subscriptions.onDeleteTodo)
+// ).subscribe({
+//   next: data => // Process incoming messages
+// });
+//
+// const cleanupSubscriptions = () => {
+//   createSub.unsubscribe();
+//   updateSub.unsubscribe();
+//   deleteSub.unsubscribe();
+// }
+
 export default function App() {
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   const t = useTranslation("translation").t as TypesafeTranslationT;
@@ -29,6 +54,7 @@ export default function App() {
     return <Trans>Loading user session</Trans>;
   }
   const stage = requiredEnvVar("STAGE");
+
   return (
     <>
       <h2>
