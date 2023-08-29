@@ -59,7 +59,9 @@ describe("signUp", () => {
       withTestAccount((tempAcct) => {
         cy.visit("http://localhost:3000/");
         const clubName = "Ace of Clubs";
-        cy.get(d("superChickenModeButton")).click();
+        cy.get(d("formCreateClubDeviceDeviceName")).type("superchickenmode");
+        cy.get(d("formCreateClubDeviceRegToken")).type("b'gock!");
+        cy.get(d("formCreateClubDeviceSubmit")).click();
         cy.get(d("superChickenModeTab")).click();
         submitCreateClubDetails(tempAcct.user, clubName);
         cy.contains("email sent!");

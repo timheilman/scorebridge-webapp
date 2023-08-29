@@ -43,8 +43,6 @@ const useVoidableClubDevices = () => {
 };
 
 export default function ClubDevicesPage() {
-  const dispatch = useAppDispatch();
-  const scm = useAppSelector(selectSuperChickenMode);
   const gridRef = useRef();
   const voidableClubDevices = useVoidableClubDevices();
   const voidableColumnDefs = useVoidableColumnDefs();
@@ -53,9 +51,6 @@ export default function ClubDevicesPage() {
       resizable: true,
     };
   }, []);
-  const handleScmClick = () => {
-    dispatch(setSuperChickenMode(!scm));
-  };
   const agGridRowId = ({ data }: { data: Record<string, string> }) => {
     // sufficient (globally unique) alone, tho only 1/2 of the PK in cloud for multitenancy
     return data.clubDeviceId;
@@ -72,7 +67,7 @@ export default function ClubDevicesPage() {
 
   return (
     <div>
-      <p>Your tablets:</p>
+      <p>Your club devices:</p>
       <div className="ag-theme-alpine" style={{ height: 400, width: 1000 }}>
         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
         {/* @ts-ignore */}
@@ -86,14 +81,6 @@ export default function ClubDevicesPage() {
         />
       </div>
       <CreateClubDeviceForm />
-      <p>club devices remain associated to a table throughout the game</p>
-      <p>eventually this will be replaced with an easter egg:</p>
-      <button onClick={handleScmClick} data-test-id="superChickenModeButton">
-        toggle SuperChickenMode
-      </button>
-      <p>
-        player devices remain associated to their player throughout the game
-      </p>
     </div>
   );
 }

@@ -120,7 +120,11 @@ export default function ForgetMeForm() {
       throw new Error("no attributes in ForgetMeForm");
     }
 
-    deleteClubAndAdmin(clubId, user.username, authStatus)
+    deleteClubAndAdmin(
+      clubId as string /* adminSuper: don't do this */,
+      user.username,
+      authStatus,
+    )
       .then((result) => {
         setDeleteClubAndAdminError(null);
         setSubmitInFlight(false);

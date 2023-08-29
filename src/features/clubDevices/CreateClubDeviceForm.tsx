@@ -4,12 +4,17 @@ import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { CreateClubDeviceResponse } from "../../../appsync";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { mutationCreateClubDevice } from "../../graphql/mutations";
 import { handleGqlReject, maybeFooterElement } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
+import {
+  selectSuperChickenMode,
+  setSuperChickenMode,
+} from "../superChickenMode/superChickenModeSlice";
 const log = logFn("src.features.clubDevices.createClubDeviceForm.");
 export function CreateClubDeviceForm() {
   const [submitInFlight, setSubmitInFlight] = useState(false);
@@ -20,6 +25,8 @@ export function CreateClubDeviceForm() {
   const [regToken, setRegToken] = useState("");
   const clubId = useClubId();
   const { authStatus } = useAuthenticator();
+  const dispatch = useAppDispatch();
+  const scm = useAppSelector(selectSuperChickenMode);
   const createClubDevice = async (deviceName: string, regToken: string) => {
     /* create a new club */
     return gqlMutation<CreateClubDeviceResponse>(
@@ -37,6 +44,10 @@ export function CreateClubDeviceForm() {
 
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault(); // we are taking over, in react, from browser event handling here
+    if (deviceName === "superchickenmode" || regToken === "superchickenmode") {
+      dispatch(setSuperChickenMode(!scm));
+      return;
+    }
     setSubmitInFlight(true);
     setEverSubmitted(true);
     setSubmitInFlight(true);
@@ -78,7 +89,7 @@ export function CreateClubDeviceForm() {
                 style={{ width: "85%" }}
                 type="text"
                 id="deviceName"
-                placeholder="todo: make me randomly filled"
+                placeholder="2022-08-android-00"
                 onChange={handleChangeNewDeviceName}
                 data-test-id="formCreateClubDeviceDeviceName"
               />

@@ -49,26 +49,29 @@ export default function SessionfulRouterHeader() {
   let priorConnectionState: string;
   const clubId = useClubId();
   useEffect(() => {
-    log("initialFetch", "debug");
-    fetchRecentData(clubId, dispatch).catch((e) =>
-      log("badInitialGqlQuery", "error", { e }),
-    );
-    Hub.listen("api", (data: any) => {
-      const { payload } = data;
-      if (payload.event === CONNECTION_STATE_CHANGE) {
-        if (
-          priorConnectionState === ConnectionState.Connecting &&
-          payload.data.connectionState === ConnectionState.Connected
-        ) {
-          log("refreshFetch", "debug");
-          fetchRecentData(
-            (user.attributes && user.attributes["custom:tenantId"]) as string,
-            dispatch,
-          ).catch((e) => log("badRefreshGqlQuery", "error", { e }));
+    if (clubId) {
+      // sneaky sneaky superchickenmode w/superAdmin will not
+      log("initialFetch", "debug");
+      fetchRecentData(clubId, dispatch).catch((e) =>
+        log("badInitialGqlQuery", "error", { e }),
+      );
+      Hub.listen("api", (data: any) => {
+        const { payload } = data;
+        if (payload.event === CONNECTION_STATE_CHANGE) {
+          if (
+            priorConnectionState === ConnectionState.Connecting &&
+            payload.data.connectionState === ConnectionState.Connected
+          ) {
+            log("refreshFetch", "debug");
+            fetchRecentData(
+              (user.attributes && user.attributes["custom:tenantId"]) as string,
+              dispatch,
+            ).catch((e) => log("badRefreshGqlQuery", "error", { e }));
+          }
+          priorConnectionState = payload.data.connectionState;
         }
-        priorConnectionState = payload.data.connectionState;
-      }
-    });
+      });
+    }
   }, []);
   if (["/signin", "/signup"].includes(pathname)) {
     // naturally move to this page when logging in, and so the above tabs disappear:
