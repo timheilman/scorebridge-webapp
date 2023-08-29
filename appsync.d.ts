@@ -36,6 +36,7 @@ export type ClubDevice = {
   clubDeviceId: Scalars['String']['output'];
   clubId: Scalars['String']['output'];
   createdAt: Scalars['AWSDateTime']['output'];
+  email: Scalars['AWSEmail']['output'];
   name: Scalars['String']['output'];
   updatedAt: Scalars['AWSDateTime']['output'];
 };

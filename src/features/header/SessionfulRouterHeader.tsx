@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { queryListClubDevices } from "../../graphql/mutations";
 import { logFn } from "../../lib/logging";
+import { useClubId } from "../../lib/useClubId";
 import requiredEnvVar from "../../requiredEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import { setClubDevices } from "../clubDevices/clubDevicesSlice";
@@ -46,14 +47,12 @@ export default function SessionfulRouterHeader() {
   const superChickenMode = useAppSelector(selectSuperChickenMode);
   const dispatch = useAppDispatch();
   let priorConnectionState: string;
+  const clubId = useClubId();
   useEffect(() => {
     log("initialFetch", "debug");
-    fetchRecentData(
-      (user.attributes && user.attributes["custom:tenantId"]) as string,
-      dispatch,
-    )
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      .catch((e) => log("badInitialGqlQuery", "error", { e }));
+    fetchRecentData(clubId, dispatch).catch((e) =>
+      log("badInitialGqlQuery", "error", { e }),
+    );
     Hub.listen("api", (data: any) => {
       const { payload } = data;
       if (payload.event === CONNECTION_STATE_CHANGE) {
@@ -65,9 +64,7 @@ export default function SessionfulRouterHeader() {
           fetchRecentData(
             (user.attributes && user.attributes["custom:tenantId"]) as string,
             dispatch,
-          )
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            .catch((e) => log("badRefreshGqlQuery", "error", { e }));
+          ).catch((e) => log("badRefreshGqlQuery", "error", { e }));
         }
         priorConnectionState = payload.data.connectionState;
       }

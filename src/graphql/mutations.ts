@@ -9,6 +9,15 @@ export const mutationCreateClub = gql`
   }
 `;
 
+export const mutationCreateClubDevice = gql`
+  mutation createClubDevice($input: CreateClubDeviceInput!) {
+    createClubDevice(input: $input) {
+      clubDeviceId
+      clubDeviceEmail
+    }
+  }
+`;
+
 export const mutationUnexpectedError = gql`
   mutation unexpectedError {
     unexpectedError {
@@ -31,6 +40,7 @@ export const queryListClubDevices = gql`
       clubDevices {
         clubId
         clubDeviceId
+        email
         name
         createdAt
         updatedAt

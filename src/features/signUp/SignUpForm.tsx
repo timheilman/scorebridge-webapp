@@ -1,3 +1,4 @@
+import { GraphQLQuery, GraphQLResult } from "@aws-amplify/api";
 import { AuthStatus } from "@aws-amplify/ui";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { ChangeEvent, SyntheticEvent, useRef, useState } from "react";
@@ -9,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { CreateClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
 import { mutationCreateClub } from "../../graphql/mutations";
+import { handleGqlReject, maybeFooterElement } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import requiredEnvVar from "../../requiredEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
@@ -32,37 +34,13 @@ const createClub = async (
   });
 };
 
-interface MaybeErrorElementParams {
-  submitInFlight: boolean;
-  everSubmitted: boolean;
-  createClubError: string | null;
-}
-function maybeFooterElement({
-  createClubError,
-  submitInFlight,
-  everSubmitted,
-}: MaybeErrorElementParams) {
-  if (submitInFlight) {
-    return <div>sending email...</div>;
-  }
-  if (createClubError) {
-    return (
-      <div>
-        Problem with last submission: <pre>{createClubError}</pre>
-      </div>
-    );
-  }
-  if (everSubmitted) {
-    return <div>email sent!</div>;
-  }
-}
-
 export default function SignUpForm() {
-  const [email, setEmail] = useState("");
-  const [clubName, setClubName] = useState("");
   const [submitInFlight, setSubmitInFlight] = useState(false);
   const [everSubmitted, setEverSubmitted] = useState(false);
-  const [createClubError, setCreateClubError] = useState<string | null>(null);
+  const [errStr, setErrStr] = useState<string | null>(null);
+
+  const [email, setEmail] = useState("");
+  const [clubName, setClubName] = useState("");
   const [recaptchaPassed, setRecaptchaPassed] = useState(false);
 
   const captchaRef = useRef<{
@@ -71,42 +49,6 @@ export default function SignUpForm() {
   } | null>(null);
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   const t = useTranslation().t as TypesafeTranslationT;
-  /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
-  function handleExpectedGqlReject(errors: Array<any>) {
-    setCreateClubError(
-      errors
-        .map((error) => {
-          if (error.message) {
-            if (error.errorType) {
-              return `ErrorType: ${error.errorType}; Message: ${error.message}`;
-            } else {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-              return error.message;
-            }
-          } else {
-            return JSON.stringify(error);
-          }
-        })
-        .join("\n"),
-    );
-  }
-
-  function handleGqlReject(reason: any) {
-    if (reason.errors && Array.isArray(reason.errors)) {
-      handleExpectedGqlReject(reason.errors as Array<unknown>);
-    } else if (reason.message) {
-      setCreateClubError(reason.message as string);
-    } else {
-      log(
-        "handleGqlReject.unexpectedError",
-        "error",
-        `unexpected form of gql promise rejection`,
-        reason,
-      );
-      setCreateClubError(JSON.stringify(reason, null, 2));
-    }
-  }
-  /* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
 
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault(); // we are taking over, in react, from browser event handling here
@@ -114,9 +56,9 @@ export default function SignUpForm() {
     setSubmitInFlight(true);
     log("handleSubmit.start", "debug");
     createClub(email, clubName, authStatus, captchaRef.current?.getValue())
-      .then((result) => {
+      .then((result: GraphQLResult<GraphQLQuery<CreateClubResponse>>) => {
         captchaRef.current?.reset();
-        setCreateClubError(null);
+        setErrStr(null);
         setSubmitInFlight(false);
         setRecaptchaPassed(false);
         log("handleSubmit.createClub.success", "debug", { result });
@@ -135,9 +77,9 @@ export default function SignUpForm() {
           reason.errors[0].errorType === "UserAlreadyExistsError"
           /* eslint-enable @typescript-eslint/no-unsafe-member-access */
         ) {
-          setCreateClubError(t("signUp.userAlreadyExists"));
+          setErrStr(t("signUp.userAlreadyExists"));
         } else {
-          handleGqlReject(reason);
+          handleGqlReject(reason, setErrStr);
         }
         setSubmitInFlight(false);
       });
@@ -153,7 +95,7 @@ export default function SignUpForm() {
   const handleRecaptchaChange = (value: string) => {
     log("handleRecaptchaChange", "debug", {
       value,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
+
       captchaRefCurrent: captchaRef.current?.getValue(),
     });
     setRecaptchaPassed(!!captchaRef.current?.getValue());
@@ -199,7 +141,7 @@ export default function SignUpForm() {
           </div>
           <div className="row">
             <div className="col-sm">
-              {/* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */}
+              {}
               <button
                 disabled={
                   submitInFlight || !recaptchaPassed || !email || !clubName
@@ -214,7 +156,18 @@ export default function SignUpForm() {
           </div>
         </fieldset>
       </form>
-      {maybeFooterElement({ everSubmitted, submitInFlight, createClubError })}
+      {maybeFooterElement({
+        everSubmitted,
+        submitInFlight,
+        errStr,
+        submitInFlightElt: <div>sending email...</div>,
+        errElt: (
+          <div>
+            Problem with last submission: <pre>{errStr}</pre>
+          </div>
+        ),
+        successElt: <div>email sent!</div>,
+      })}
     </div>
   );
 }

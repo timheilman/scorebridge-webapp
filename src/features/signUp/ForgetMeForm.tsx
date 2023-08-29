@@ -7,6 +7,7 @@ import { CreateClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
 import { mutationDeleteClubAndAdmin } from "../../graphql/mutations";
 import { logFn } from "../../lib/logging";
+import { useClubId } from "../../lib/useClubId";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
 const log = logFn("src.features.signUp.ForgetMeForm");
@@ -65,6 +66,7 @@ export default function ForgetMeForm() {
     context.user,
     context.signOut,
   ]);
+  const clubId = useClubId();
   const t = useTranslation().t as TypesafeTranslationT;
   const confirmPhrase = t("forgetMe.confirm.phrase");
   const submitButtonDisabled = () => {
@@ -118,11 +120,7 @@ export default function ForgetMeForm() {
       throw new Error("no attributes in ForgetMeForm");
     }
 
-    deleteClubAndAdmin(
-      user.attributes["custom:tenantId"],
-      user.username,
-      authStatus,
-    )
+    deleteClubAndAdmin(clubId, user.username, authStatus)
       .then((result) => {
         setDeleteClubAndAdminError(null);
         setSubmitInFlight(false);

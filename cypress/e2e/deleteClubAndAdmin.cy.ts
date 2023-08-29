@@ -14,11 +14,11 @@ describe("trying to speed up cypress", () => {
     withVerifiedTempClubAdminDo(clubName, (newPassword, tempAcct, user) => {
       verifyReceivedEmail(tempAcct);
       expectBackendDetails(user, tempAcct, clubName);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
       withCredentialsRun(
         tempAcct.user,
         newPassword,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
         () => {
           cy.get(d("forgetMeTab")).click();
           cy.get(d("formForgetMeConfirm")).type("Delete my account");
