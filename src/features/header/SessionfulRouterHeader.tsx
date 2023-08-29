@@ -25,7 +25,7 @@ const fetchRecentData = async (clubId: string, dispatch: any) => {
   return gqlMutation<ListClubDevicesOutput>(
     "authenticated",
     gql`
-      query createClub($input: ListClubDevicesInput!) {
+      query listClubDevices($input: ListClubDevicesInput!) {
         listClubDevices(input: $input) {
           clubDevices {
             clubDeviceId
@@ -47,7 +47,14 @@ const fetchRecentData = async (clubId: string, dispatch: any) => {
     const d = res.data.listClubDevices.clubDevices as ClubDevice[];
     // TODO: handle nextToken etc...
     log("dispatchingSetClubDevices", "debug", { res });
-    dispatch(setClubDevices(d));
+    dispatch(
+      setClubDevices(
+        d.reduce<Record<string, ClubDevice>>((acc, cd) => {
+          acc[cd.clubDeviceId] = cd;
+          return acc;
+        }, {}),
+      ),
+    );
   });
 };
 

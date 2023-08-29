@@ -10,10 +10,14 @@ export const mutationCreateClub = gql`
 `;
 
 export const mutationCreateClubDevice = gql`
-  mutation createClubDevice($input: CreateClubDeviceInput!) {
-    createClubDevice(input: $input) {
+  mutation createClubDevice($clubId: String!, $input: CreateClubDeviceInput!) {
+    createClubDevice(clubId: $clubId, input: $input) {
+      clubId
       clubDeviceId
-      clubDeviceEmail
+      name
+      email
+      createdAt
+      updatedAt
     }
   }
 `;

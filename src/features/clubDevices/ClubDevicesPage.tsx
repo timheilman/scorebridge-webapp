@@ -18,7 +18,7 @@ const columnDefsSansRows = [{ field: "message" }];
 
 const useVoidableColumnDefs = () => {
   const clubDevices = useAppSelector(selectClubDevices);
-  if (clubDevices.length) {
+  if (Object.keys(clubDevices).length) {
     return columnDefsWithRows;
   } else {
     return columnDefsSansRows;
@@ -27,11 +27,11 @@ const useVoidableColumnDefs = () => {
 
 const useVoidableClubDevices = () => {
   const clubDevices = useAppSelector(selectClubDevices);
-  if (!clubDevices.length) {
+  if (!Object.keys(clubDevices).length) {
     return [{ message: "You have no club devices yet." }];
   } else {
     log("useVoidableClubDevices.1", "info", { clubDevices });
-    return clubDevices;
+    return Object.values(clubDevices);
   }
 };
 

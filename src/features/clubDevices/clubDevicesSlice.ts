@@ -4,18 +4,19 @@ import { ClubDevice } from "../../../appsync";
 import { RootState } from "../../app/store";
 
 export interface ClubDevicesState {
-  value: ClubDevice[];
+  value: Record<string, ClubDevice>;
 }
 
-const initialState: ClubDevicesState = {
-  value: [],
-};
+const initialState: ClubDevicesState = { value: {} };
 
 export const clubDevicesSlice = createSlice({
   name: "clubDevices",
   initialState,
   reducers: {
-    setClubDevices: (state, action: PayloadAction<ClubDevice[]>) => {
+    setClubDevices: (
+      state,
+      action: PayloadAction<Record<string, ClubDevice>>,
+    ) => {
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new

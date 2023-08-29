@@ -3,7 +3,7 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { CreateClubDeviceResponse } from "../../../appsync";
+import { ClubDevice } from "../../../appsync";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { mutationCreateClubDevice } from "../../graphql/mutations";
@@ -29,17 +29,13 @@ export function CreateClubDeviceForm() {
   const scm = useAppSelector(selectSuperChickenMode);
   const createClubDevice = async (deviceName: string, regToken: string) => {
     /* create a new club */
-    return gqlMutation<CreateClubDeviceResponse>(
-      authStatus,
-      mutationCreateClubDevice,
-      {
-        input: {
-          clubId,
-          deviceName,
-          regToken,
-        },
+    return gqlMutation<ClubDevice>(authStatus, mutationCreateClubDevice, {
+      clubId,
+      input: {
+        deviceName,
+        regToken,
       },
-    );
+    });
   };
 
   const handleSubmit = (event: SyntheticEvent) => {
@@ -53,7 +49,7 @@ export function CreateClubDeviceForm() {
     setSubmitInFlight(true);
     log("handleSubmit.start", "debug");
     createClubDevice(deviceName, regToken)
-      .then((c: GraphQLResult<GraphQLQuery<CreateClubDeviceResponse>>) => {
+      .then((c: GraphQLResult<GraphQLQuery<ClubDevice>>) => {
         setSubmitInFlight(false);
         setErrStr(null);
         if (!c.data) {
