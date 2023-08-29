@@ -23,10 +23,13 @@ export const clubDevicesSlice = createSlice({
       // immutable state based off those changes
       state.value = action.payload;
     },
+    insertClubDevice: (state, action: PayloadAction<ClubDevice>) => {
+      state.value[action.payload.clubDeviceId] = action.payload;
+    },
   },
 });
 
-export const { setClubDevices } = clubDevicesSlice.actions;
+export const { setClubDevices, insertClubDevice } = clubDevicesSlice.actions;
 
 export const selectClubDevices = (state: RootState) => state.clubDevices.value;
 

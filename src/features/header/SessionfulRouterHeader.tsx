@@ -1,6 +1,7 @@
+import { GraphQLSubscription } from "@aws-amplify/api";
 import { CONNECTION_STATE_CHANGE, ConnectionState } from "@aws-amplify/pubsub";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { Hub } from "aws-amplify";
+import { API, graphqlOperation, Hub } from "aws-amplify";
 import gql from "graphql-tag";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -9,11 +10,15 @@ import { Navigate, NavLink, useLocation } from "react-router-dom";
 import { ClubDevice, ListClubDevicesOutput } from "../../../appsync";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
+import { subscriptionCreatedClubDevice } from "../../graphql/subscriptions";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
 import requiredEnvVar from "../../requiredEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
-import { setClubDevices } from "../clubDevices/clubDevicesSlice";
+import {
+  insertClubDevice,
+  setClubDevices,
+} from "../clubDevices/clubDevicesSlice";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import SignOutButton from "../signIn/SignOutButton";
 import { selectSuperChickenMode } from "../superChickenMode/superChickenModeSlice";
@@ -57,6 +62,7 @@ const fetchRecentData = async (clubId: string, dispatch: any) => {
     );
   });
 };
+const subscriptions: Record<string, unknown> = {};
 
 export default function SessionfulRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
@@ -92,6 +98,30 @@ export default function SessionfulRouterHeader() {
         priorConnectionState = payload.data.connectionState;
       }
     });
+    if (!subscriptions["createdClubDevice"]) {
+      subscriptions["createdClubDevice"] = API.graphql<
+        GraphQLSubscription<{ createdClubDevice: ClubDevice }>
+      >({
+        authMode: "AMAZON_COGNITO_USER_POOLS",
+        ...graphqlOperation(subscriptionCreatedClubDevice, { clubId }),
+      }).subscribe({
+        next: (data) => {
+          if (!data.value?.data) {
+            log("createSub", "error", { data });
+            return;
+          }
+          log("dispatchingInsert", "info", { data });
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+          dispatch(insertClubDevice(data.value.data.createdClubDevice));
+        },
+      });
+    }
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      subscriptions["createdClubDevice"].unsubscribe();
+      delete subscriptions["createdClubDevice"];
+    };
   }, []);
   if (["/signin", "/signup"].includes(pathname)) {
     // naturally move to this page when logging in, and so the above tabs disappear:
