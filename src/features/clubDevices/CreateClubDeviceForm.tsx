@@ -22,6 +22,7 @@ export function CreateClubDeviceForm() {
   const [errStr, setErrStr] = useState<string | null>(null);
   const [deviceId, setDeviceId] = useState("");
   const [deviceName, setDeviceName] = useState("");
+  const [createdDeviceName, setCreatedDeviceName] = useState("");
   const [regToken, setRegToken] = useState("");
   const clubId = useClubId();
   const { authStatus } = useAuthenticator();
@@ -29,13 +30,17 @@ export function CreateClubDeviceForm() {
   const scm = useAppSelector(selectSuperChickenMode);
   const createClubDevice = async (deviceName: string, regToken: string) => {
     /* create a new club */
-    return gqlMutation<ClubDevice>(authStatus, mutationCreateClubDevice, {
-      clubId,
-      input: {
-        deviceName,
-        regToken,
+    return gqlMutation<{ createClubDevice: ClubDevice }>(
+      authStatus,
+      mutationCreateClubDevice,
+      {
+        clubId,
+        input: {
+          deviceName,
+          regToken,
+        },
       },
-    });
+    );
   };
 
   const handleSubmit = (event: SyntheticEvent) => {
@@ -49,14 +54,17 @@ export function CreateClubDeviceForm() {
     setSubmitInFlight(true);
     log("handleSubmit.start", "debug");
     createClubDevice(deviceName, regToken)
-      .then((c: GraphQLResult<GraphQLQuery<ClubDevice>>) => {
-        setSubmitInFlight(false);
-        setErrStr(null);
-        if (!c.data) {
-          throw new Error("gotta have data");
-        }
-        setDeviceId(c.data.clubDeviceId);
-      })
+      .then(
+        (c: GraphQLResult<GraphQLQuery<{ createClubDevice: ClubDevice }>>) => {
+          setSubmitInFlight(false);
+          setErrStr(null);
+          if (!c.data) {
+            throw new Error("gotta have data");
+          }
+          setDeviceId(c.data.createClubDevice.clubDeviceId);
+          setCreatedDeviceName(c.data.createClubDevice.name);
+        },
+      )
       .catch((reason: any) => {
         setSubmitInFlight(false);
         handleGqlReject(reason, setErrStr);
@@ -131,7 +139,7 @@ export function CreateClubDeviceForm() {
         errElt: <div>Problem: {errStr}</div>,
         successElt: (
           <div>
-            device {deviceName}: {deviceId} created
+            device {createdDeviceName}: {deviceId} created
           </div>
         ),
       })}

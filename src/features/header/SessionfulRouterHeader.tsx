@@ -111,7 +111,7 @@ export default function SessionfulRouterHeader() {
             return;
           }
           log("dispatchingInsert", "info", { data });
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
           dispatch(insertClubDevice(data.value.data.createdClubDevice));
         },
       });

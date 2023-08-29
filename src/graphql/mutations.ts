@@ -1,5 +1,4 @@
 import gql from "graphql-tag";
-
 export const mutationCreateClub = gql`
   mutation createClub($input: CreateClubInput!) {
     createClub(input: $input) {
@@ -38,6 +37,18 @@ export const mutationDeleteClubAndAdmin = gql`
   }
 `;
 
+export const mutationDeleteClubDevice = gql`
+  mutation deleteClubDevice($input: DeleteClubDeviceInput!) {
+    deleteClubDevice(input: $input) {
+      clubId
+      clubDeviceId
+      name
+      email
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const queryListClubDevices = gql`
   query createClub($input: ListClubDevicesInput!) {
     listClubDevices(input: $input) {
