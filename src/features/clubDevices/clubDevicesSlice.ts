@@ -26,10 +26,15 @@ export const clubDevicesSlice = createSlice({
     insertClubDevice: (state, action: PayloadAction<ClubDevice>) => {
       state.value[action.payload.clubDeviceId] = action.payload;
     },
+    deleteClubDevice: (state, action: PayloadAction<string>) => {
+      // praying this magically works
+      delete state.value[action.payload];
+    },
   },
 });
 
-export const { setClubDevices, insertClubDevice } = clubDevicesSlice.actions;
+export const { setClubDevices, insertClubDevice, deleteClubDevice } =
+  clubDevicesSlice.actions;
 
 export const selectClubDevices = (state: RootState) => state.clubDevices.value;
 
