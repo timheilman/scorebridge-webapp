@@ -33,6 +33,7 @@ const useVoidableColumnDefs = () => {
   }
 };
 
+// TODO: differentiate between loading and 0-devices
 const useVoidableClubDevices = () => {
   const clubDevices = useAppSelector(selectClubDevices);
   if (!Object.keys(clubDevices).length) {

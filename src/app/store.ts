@@ -2,6 +2,7 @@ import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 
 import clubDevicesReducer from "../features/clubDevices/clubDevicesSlice";
 import selectedLanguageReducer from "../features/languageSelector/selectedLanguageSlice";
+import subscriptionsReducer from "../features/subscriptions/subscriptionsSlice";
 import superChickenModeReducer from "../features/superChickenMode/superChickenModeSlice";
 
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
     selectedLanguage: selectedLanguageReducer,
     superChickenMode: superChickenModeReducer,
     clubDevices: clubDevicesReducer,
+    subscriptions: subscriptionsReducer,
   },
 });
 
