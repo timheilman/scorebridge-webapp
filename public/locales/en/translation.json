@@ -35,6 +35,12 @@
     "clubName": { "label": "Club's name", "placeholder": "My Bridge Club" },
     "submit": "Send me an email"
   },
+  "subscriptions": {
+    "fallbackClubId": {
+      "label": "clubId",
+      "placeholder": "26 characters to complete"
+    }
+  },
   "tabs": {
     "signIn": "Sign In",
     "signUp": "Sign Up",

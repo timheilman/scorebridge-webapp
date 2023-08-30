@@ -18,12 +18,12 @@ export default function MaybeFallbackForm() {
       <>
         <p>Sessionless visit!</p>
         <label htmlFor="fallbackClubId">
-          {t("tabs.subscriptions.fallbackClubId")}
+          {t("subscriptions.fallbackClubId.label")}
         </label>
         <input
           type="text"
           id="fallbackClubId"
-          placeholder={t("tabs.subscriptions.fallbackClubId.placeholder")}
+          placeholder={t("subscriptions.fallbackClubId.placeholder")}
           onChange={handleChangeFallbackClubId}
           data-test-id="fallbackClubId"
         />
