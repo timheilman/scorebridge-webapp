@@ -34,8 +34,8 @@ export function CreateClubDeviceForm() {
       authStatus,
       mutationCreateClubDevice,
       {
-        clubId,
         input: {
+          clubId,
           deviceName,
           regToken,
         },

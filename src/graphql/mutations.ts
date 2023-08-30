@@ -9,8 +9,8 @@ export const mutationCreateClub = gql`
 `;
 
 export const mutationCreateClubDevice = gql`
-  mutation createClubDevice($clubId: String!, $input: CreateClubDeviceInput!) {
-    createClubDevice(clubId: $clubId, input: $input) {
+  mutation createClubDevice($input: CreateClubDeviceInput!) {
+    createClubDevice(input: $input) {
       clubId
       clubDeviceId
       name
