@@ -1,22 +1,24 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 
 import { useAppSelector } from "../../app/hooks";
+import { useClubId } from "../../lib/useClubId";
 import ScoreBridgeAuthenticator from "../signIn/ScoreBridgeAuthenticator";
 import SignUpForm from "../signUp/SignUpForm";
 import Subscriptions from "../subscriptions/Subscriptions";
 import { selectFallbackClubId } from "../subscriptions/subscriptionsSlice";
-import MaybeFallbackForm from "./MaybeFallbackForm";
+import FallbackFormWhenUnauthenticated from "./FallbackFormWhenUnauthenticated";
 import SubscriptionDisplayer from "./SubscriptionDisplayer";
 
 export default function SuperChickenMode() {
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
+  const clubId = useClubId();
   const fallbackClubId = useAppSelector(selectFallbackClubId);
   const MaybeSubscriptions = () => {
-    if (authStatus !== "authenticated" && fallbackClubId.length === 26) {
+    if (clubId) {
       return (
         <>
           <p>reinitializing subscriptions...</p>
-          <Subscriptions clubId={fallbackClubId} />
+          <Subscriptions clubId={clubId} />
         </>
       );
     } else if (authStatus !== "authenticated") {
@@ -30,7 +32,7 @@ export default function SuperChickenMode() {
     <>
       <ScoreBridgeAuthenticator />
       <SignUpForm />
-      <MaybeFallbackForm />
+      <FallbackFormWhenUnauthenticated />
       <MaybeSubscriptions />
       <SubscriptionDisplayer />
     </>

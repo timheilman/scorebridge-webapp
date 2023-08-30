@@ -1,9 +1,18 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 
+import { useAppSelector } from "../app/hooks";
+import { selectFallbackClubId } from "../features/subscriptions/subscriptionsSlice";
+
 export const useClubId = () => {
   const { user } = useAuthenticator();
-  if (!user || !user.attributes || !user.attributes["custom:tenantId"]) {
+  const fallbackClubId = useAppSelector(selectFallbackClubId);
+  if (!user || !user.attributes) {
     return;
   }
-  return user.attributes["custom:tenantId"];
+  if (user.attributes["custom:tenantId"]) {
+    return user.attributes["custom:tenantId"];
+  }
+  if (fallbackClubId && fallbackClubId.length === 26) {
+    return fallbackClubId;
+  }
 };
