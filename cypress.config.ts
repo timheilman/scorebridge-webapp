@@ -1,5 +1,6 @@
 import { defineConfig } from "cypress";
 
+import { cleanupClubDevice } from "./cypress/tasks/cleanupClubDevice";
 import { cleanupUser } from "./cypress/tasks/cleanupUser";
 import { createTempEmailAccount } from "./cypress/tasks/createTempEmailAccount";
 import { expectClubDetails } from "./cypress/tasks/expectClubDetails";
@@ -21,18 +22,19 @@ export default defineConfig({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setupNodeEvents(on, _config) {
       on("task", {
-        ...log,
-        ...createTempEmailAccount,
-        ...fetchLatestEmail,
-        ...setNewPasswordViaAdmin,
-        ...fetchNullableCogUser,
-        ...fetchGroupsForUser,
-        ...fetchSecret,
-        ...expectClubDetails,
-        ...expectDdbUserDetails,
-        ...cleanupUser,
-        ...receiveMessagesFromSqs,
-        ...purgeSqsQueue,
+        log,
+        createTempEmailAccount,
+        fetchLatestEmail,
+        setNewPasswordViaAdmin,
+        fetchNullableCogUser,
+        fetchGroupsForUser,
+        fetchSecret,
+        expectClubDetails,
+        expectDdbUserDetails,
+        cleanupUser,
+        cleanupClubDevice,
+        receiveMessagesFromSqs,
+        purgeSqsQueue,
       });
     },
   },

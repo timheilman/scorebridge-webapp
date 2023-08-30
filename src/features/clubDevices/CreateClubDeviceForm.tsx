@@ -65,6 +65,7 @@ export function CreateClubDeviceForm() {
           setCreatedDeviceName(c.data.createClubDevice.name);
         },
       )
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((reason: any) => {
         setSubmitInFlight(false);
         handleGqlReject(reason, setErrStr);

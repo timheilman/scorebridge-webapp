@@ -8,11 +8,14 @@ export interface LogParams {
   addlParams: unknown[];
 }
 
-export const log = {
-  log({ catPrefix, catSuffix, logLevel, addlParams }: LogParams) {
-    const log = logFn(catPrefix);
-    log(catSuffix, logLevel, ...addlParams);
+export const log = ({
+  catPrefix,
+  catSuffix,
+  logLevel,
+  addlParams,
+}: LogParams) => {
+  const log = logFn(catPrefix);
+  log(catSuffix, logLevel, ...addlParams);
 
-    return null;
-  },
+  return null;
 };

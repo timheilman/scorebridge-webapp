@@ -13,24 +13,22 @@ export interface PurgeSqsQueueParams {
   queueUrl: string;
   profile: string;
 }
-export const purgeSqsQueue = {
-  async purgeSqsQueue({
-    awsRegion,
-    queueUrl,
-    profile,
-  }: PurgeSqsQueueParams): Promise<PurgeQueueCommandOutput> {
-    const purgeQueueCommand = new PurgeQueueCommand({
-      QueueUrl: queueUrl,
-    });
+export const purgeSqsQueue = async ({
+  awsRegion,
+  queueUrl,
+  profile,
+}: PurgeSqsQueueParams): Promise<PurgeQueueCommandOutput> => {
+  const purgeQueueCommand = new PurgeQueueCommand({
+    QueueUrl: queueUrl,
+  });
 
-    try {
-      return await cachedSqsClient(awsRegion, profile).send(purgeQueueCommand);
-    } catch (e) {
-      log("purgeSqsQueue.error", "error", e);
-      if (!(e instanceof PurgeQueueInProgress)) {
-        throw e;
-      }
-      return { $metadata: {} };
+  try {
+    return await cachedSqsClient(awsRegion, profile).send(purgeQueueCommand);
+  } catch (e) {
+    log("purgeSqsQueue.error", "error", e);
+    if (!(e instanceof PurgeQueueInProgress)) {
+      throw e;
     }
-  },
+    return { $metadata: {} };
+  }
 };

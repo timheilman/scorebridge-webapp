@@ -32,51 +32,49 @@ async function deleteMessage({
   );
 }
 
-export const receiveMessagesFromSqs = {
-  async receiveMessagesFromSqs({
-    queueUrl,
-    awsRegion,
-    profile,
-  }: ReceiveMessagesFromSqsParams): Promise<(string | null)[]> {
-    const data = await cachedSqsClient(awsRegion, profile).send(
-      new ReceiveMessageCommand({
-        QueueUrl: queueUrl,
-        MaxNumberOfMessages: 10,
-        WaitTimeSeconds: 9,
+export const receiveMessagesFromSqs = async ({
+  queueUrl,
+  awsRegion,
+  profile,
+}: ReceiveMessagesFromSqsParams): Promise<(string | null)[]> => {
+  const data = await cachedSqsClient(awsRegion, profile).send(
+    new ReceiveMessageCommand({
+      QueueUrl: queueUrl,
+      MaxNumberOfMessages: 10,
+      WaitTimeSeconds: 9,
+    }),
+  );
+  const promises: Promise<unknown>[] = [];
+  if (!data.Messages) {
+    return [];
+  }
+  // On initial deploy there's a validation message; it does not get repeated but we must discard it
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const valMsgPred = (msg: any) =>
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    msg.Body ===
+    "Successfully validated SNS topic for Amazon SES event publishing.";
+  const validationMessage = data.Messages.find(valMsgPred);
+  if (validationMessage) {
+    promises.push(
+      deleteMessage({
+        queueUrl,
+        message: validationMessage,
+        awsRegion,
+        profile,
       }),
     );
-    const promises: Promise<unknown>[] = [];
-    if (!data.Messages) {
-      return [];
-    }
-    // On initial deploy there's a validation message; it does not get repeated but we must discard it
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const valMsgPred = (msg: any) =>
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      msg.Body ===
-      "Successfully validated SNS topic for Amazon SES event publishing.";
-    const validationMessage = data.Messages.find(valMsgPred);
-    if (validationMessage) {
-      promises.push(
-        deleteMessage({
-          queueUrl,
-          message: validationMessage,
-          awsRegion,
-          profile,
-        }),
-      );
-    }
-    const messageBodies = data.Messages.filter((m) => !valMsgPred(m)).map(
-      (message) => {
-        const messageBody = message.Body;
-        if (!messageBody) {
-          return null;
-        }
-        promises.push(deleteMessage({ queueUrl, message, awsRegion, profile }));
-        return messageBody;
-      },
-    );
-    await Promise.all(promises);
-    return messageBodies;
-  },
+  }
+  const messageBodies = data.Messages.filter((m) => !valMsgPred(m)).map(
+    (message) => {
+      const messageBody = message.Body;
+      if (!messageBody) {
+        return null;
+      }
+      promises.push(deleteMessage({ queueUrl, message, awsRegion, profile }));
+      return messageBody;
+    },
+  );
+  await Promise.all(promises);
+  return messageBodies;
 };

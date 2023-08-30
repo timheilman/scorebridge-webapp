@@ -3,27 +3,26 @@ import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 
 import { logFn } from "../../src/lib/logging";
-import {
-  fetchNullableCogUser,
-  fetchNullableCogUserParams,
-} from "./fetchNullableCogUser";
+import { fetchNullableCogUser } from "./fetchNullableCogUser";
 import cachedCognitoIdpClient from "./lib/cachedCognitoIdpClient";
 import { cachedDynamoDbClient } from "./lib/cachedDynamoDbClient";
-const log = logFn("cypress.tasks.cleanupUser.");
-export interface CleanupUserParams extends fetchNullableCogUserParams {
-  clubTableName: string;
-  userTableName: string;
+const log = logFn("cypress.tasks.cleanupClubDevice.");
+export interface CleanupClubDeviceParams {
+  awsRegion: string;
+  profile: string;
+  poolId: string;
+  email: string;
+  clubDevicesTableName: string;
 }
 
-export const cleanupUser = async ({
+export const cleanupClubDevice = async ({
   awsRegion,
   profile,
   poolId,
   email,
-  userTableName,
-  clubTableName,
-}: CleanupUserParams) => {
-  log("cleanupUser.start", "debug", { email });
+  clubDevicesTableName,
+}: CleanupClubDeviceParams) => {
+  log("cleanupClubDevice.start", "debug", { email });
   const poolAndName = {
     UserPoolId: poolId,
     Username: email,
@@ -46,21 +45,19 @@ export const cleanupUser = async ({
   promises.push(
     cachedDynamoDbClient(awsRegion, profile).send(
       new DeleteItemCommand({
-        TableName: userTableName,
+        TableName: clubDevicesTableName,
         Key: marshall({ id: cogUser.userId }),
       }),
     ),
   );
-  if (cogUser.clubId) {
-    promises.push(
-      cachedDynamoDbClient(awsRegion, profile).send(
-        new DeleteItemCommand({
-          TableName: clubTableName,
-          Key: marshall({ id: cogUser.clubId }),
-        }),
-      ),
-    );
-  }
+  promises.push(
+    cachedDynamoDbClient(awsRegion, profile).send(
+      new DeleteItemCommand({
+        TableName: clubDevicesTableName,
+        Key: marshall({ clubId: cogUser.clubId, clubDeviceId: cogUser.userId }),
+      }),
+    ),
+  );
   // we are ignoring errors, in that it would be testing test code
   await Promise.allSettled(promises);
   return null;

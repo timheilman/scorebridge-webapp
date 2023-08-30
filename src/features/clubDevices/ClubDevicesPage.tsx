@@ -96,7 +96,11 @@ export default function ClubDevicesPage() {
   return (
     <div>
       <p>Your club devices:</p>
-      <div className="ag-theme-alpine" style={{ height: 400, width: 650 }}>
+      <div
+        className="ag-theme-alpine"
+        style={{ height: 400, width: 650 }}
+        data-test-id="clubDevicesPageTable"
+      >
         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
         {/* @ts-ignore */}
         <AgGridReact

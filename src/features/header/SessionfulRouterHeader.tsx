@@ -107,9 +107,9 @@ export default function SessionfulRouterHeader() {
   const { user } = useAuthenticator((context) => [context.user]);
   const superChickenMode = useAppSelector(selectSuperChickenMode);
   const dispatch = useAppDispatch();
-  let priorConnectionState: string;
   const clubId = useClubId();
   useEffect(() => {
+    let priorConnectionState: string;
     if (!clubId) {
       // sneaky sneaky superchickenmode w/superAdmin will not
       log("noClubId", "info", { user });
@@ -154,7 +154,7 @@ export default function SessionfulRouterHeader() {
       deleteSub("createdClubDevice");
       deleteSub("deletedClubDevice");
     };
-  }, []);
+  }, [clubId, dispatch, user]);
   if (["/signin", "/signup"].includes(pathname)) {
     // naturally move to this page when logging in, and so the above tabs disappear:
     return <Navigate to="/club_devices" />;
