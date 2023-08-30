@@ -1,38 +1,30 @@
+import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 
-import { useAppSelector } from "../../app/hooks";
+import { useClubId } from "../../lib/useClubId";
 import requiredEnvVar from "../../requiredEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import SignOutButton from "../signIn/SignOutButton";
 import Subscriptions from "../subscriptions/Subscriptions";
-import { selectSuperChickenMode } from "../superChickenMode/superChickenModeSlice";
+import SuperChickenModeNavLink from "./SuperChickenModeNavLink";
 
 // const log = logFn("src.features.header.SessionfulRouterHeader");
 
 export default function SessionfulRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
   const { pathname } = useLocation();
-  const superChickenMode = useAppSelector(selectSuperChickenMode);
+  const [fallbackClubId, setFallbackClubId] = useState("");
+  const clubId = useClubId();
+  const handleChangeFallbackClubId = (event: ChangeEvent<HTMLInputElement>) => {
+    setFallbackClubId(event.target.value);
+  };
 
+  const guaranteedClubId = clubId ? clubId : fallbackClubId;
   if (["/signin", "/signup"].includes(pathname)) {
     // naturally move to this page when logging in, and so the above tabs disappear:
     return <Navigate to="/club_devices" />;
-  }
-  function superChickenNavLink() {
-    if (!superChickenMode) {
-      return;
-    }
-    return (
-      <NavLink
-        to="super_chicken_mode"
-        className="button rounded"
-        data-test-id="superChickenModeTab"
-      >
-        {t("tabs.superChickenMode")}
-      </NavLink>
-    );
   }
   return (
     <header className="sticky">
@@ -52,10 +44,30 @@ export default function SessionfulRouterHeader() {
       >
         {t("tabs.forgetMe")}
       </NavLink>
-      {superChickenNavLink()}
+      <SuperChickenModeNavLink />
       {requiredEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
       <SignOutButton />
-      <Subscriptions />
+      {guaranteedClubId.length === 26 ? (
+        <Subscriptions clubId={guaranteedClubId} />
+      ) : (
+        <></>
+      )}
+      {clubId ? (
+        ""
+      ) : (
+        <>
+          <label htmlFor="fallbackClubId">
+            {t("tabs.subscriptions.fallbackClubId")}
+          </label>
+          <input
+            type="text"
+            id="fallbackClubId"
+            placeholder={t("tabs.subscriptions.fallbackClubId.placeholder")}
+            onChange={handleChangeFallbackClubId}
+            data-test-id="fallbackClubId"
+          />
+        </>
+      )}
     </header>
   );
 }

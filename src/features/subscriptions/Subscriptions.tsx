@@ -9,25 +9,19 @@ import { useEffect } from "react";
 import { ClubDevice, ListClubDevicesOutput } from "../../../appsync";
 import { useAppDispatch } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
-import {
-  subscriptionCreatedClubDevice,
-  subscriptionDeletedClubDevice,
-} from "../../graphql/subscriptions";
 import { logFn } from "../../lib/logging";
-import { useClubId } from "../../lib/useClubId";
 import {
   deleteClubDevice,
   insertClubDevice,
   setClubDevices,
 } from "../clubDevices/clubDevicesSlice";
-import { setSubscriptionStatus } from "./subscriptionsSlice";
+import {
+  allSubscriptionsI,
+  setSubscriptionStatus,
+  subIdToSubGql,
+} from "./subscriptionsSlice";
 
 const log = logFn("src.features.subscriptions.Subscriptions");
-
-const subIdToSubGql: Record<string, DocumentNode> = {
-  createdClubDevice: subscriptionCreatedClubDevice,
-  deletedClubDevice: subscriptionDeletedClubDevice,
-};
 
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment */
 const fetchRecentData = async (clubId: string, dispatch: any) => {
@@ -67,10 +61,12 @@ const fetchRecentData = async (clubId: string, dispatch: any) => {
     );
   });
 };
-export default function Subscriptions() {
+export interface SubscriptionsParams {
+  clubId: string;
+}
+export default function Subscriptions({ clubId }: SubscriptionsParams) {
   const { user } = useAuthenticator((context) => [context.user]);
   const dispatch = useAppDispatch();
-  const clubId = useClubId();
   useEffect(() => {
     const subscriptions: Record<string, unknown> = {};
     const subscribeTo = <OUT,>(
@@ -103,11 +99,13 @@ export default function Subscriptions() {
         // @ts-ignore
         subscriptions[subId].unsubscribe();
         delete subscriptions[subId];
+        dispatch(setSubscriptionStatus([subId, "disconnected"]));
       }
     };
     let priorConnectionState: string;
     if (!clubId) {
-      // sneaky sneaky superchickenmode w/superAdmin will not
+      // sessionless, initially, will not
+      // sessionful w/superAdmin, initially, will not
       log("noClubId", "info", { user });
       return;
     }
@@ -131,7 +129,7 @@ export default function Subscriptions() {
       }
     });
     const subs = <T,>(
-      subId: string,
+      subId: keyof allSubscriptionsI,
       clubId: string,
       callback: (arg0: T) => void,
     ) => {

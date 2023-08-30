@@ -1,8 +1,11 @@
 import { useAppSelector } from "../../app/hooks";
-import { selectSubscriptionById } from "../subscriptions/subscriptionsSlice";
+import {
+  allSubscriptionsI,
+  selectSubscriptionById,
+} from "../subscriptions/subscriptionsSlice";
 
 export interface SubscriptionTestParams {
-  subscriptionId: string;
+  subscriptionId: keyof allSubscriptionsI;
 }
 export default function SubscriptionTest({
   subscriptionId,

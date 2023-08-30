@@ -1,12 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { DocumentNode } from "graphql/language";
 
 import { RootState } from "../../app/store";
+import {
+  subscriptionCreatedClubDevice,
+  subscriptionDeletedClubDevice,
+} from "../../graphql/subscriptions";
 
 export interface SubscriptionsState {
   value: Record<string, string>;
+  fallbackClubId: string;
 }
 
-const initialState: SubscriptionsState = { value: {} };
+const initialState: SubscriptionsState = {
+  value: {
+    createdClubDevice: "disconnected",
+    deletedClubDevice: "disconnected",
+  },
+  fallbackClubId: "",
+};
 
 export const subscriptionsSlice = createSlice({
   name: "subscriptions",
@@ -19,12 +31,28 @@ export const subscriptionsSlice = createSlice({
       // immutable state based off those changes
       state.value[action.payload[0]] = action.payload[1];
     },
+    setFallbackClubId: (state, action: PayloadAction<string>) => {
+      state.fallbackClubId = action.payload;
+    },
   },
 });
 
-export const { setSubscriptionStatus } = subscriptionsSlice.actions;
+export const { setSubscriptionStatus, setFallbackClubId } =
+  subscriptionsSlice.actions;
 
-export const selectSubscriptionById = (subId: string) => (state: RootState) =>
-  state.subscriptions.value[subId];
+export interface allSubscriptionsI {
+  createdClubDevice: DocumentNode;
+  deletedClubDevice: DocumentNode;
+}
+
+export const subIdToSubGql: allSubscriptionsI = {
+  createdClubDevice: subscriptionCreatedClubDevice,
+  deletedClubDevice: subscriptionDeletedClubDevice,
+};
+export const selectSubscriptionById =
+  (subId: keyof allSubscriptionsI) => (state: RootState) =>
+    state.subscriptions.value[subId];
+export const selectFallbackClubId = (state: RootState) =>
+  state.subscriptions.fallbackClubId;
 
 export default subscriptionsSlice.reducer;
