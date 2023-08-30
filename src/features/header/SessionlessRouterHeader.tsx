@@ -4,7 +4,6 @@ import { Navigate, NavLink, useLocation } from "react-router-dom";
 import requiredEnvVar from "../../requiredEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
-import SuperChickenModeNavLink from "./SuperChickenModeNavLink";
 export default function SessionlessRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
   const { pathname } = useLocation();
@@ -29,7 +28,6 @@ export default function SessionlessRouterHeader() {
         <span data-test-id="signUpTab" className="icon-info"></span>
         {t("tabs.signUp")}
       </NavLink>
-      <SuperChickenModeNavLink />
       {requiredEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
     </header>
   );

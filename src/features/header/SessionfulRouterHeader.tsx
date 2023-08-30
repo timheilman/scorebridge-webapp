@@ -8,7 +8,6 @@ import TypesafeTranslationT from "../../TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import SignOutButton from "../signIn/SignOutButton";
 import Subscriptions from "../subscriptions/Subscriptions";
-import SuperChickenModeNavLink from "./SuperChickenModeNavLink";
 
 // const log = logFn("src.features.header.SessionfulRouterHeader");
 
@@ -44,7 +43,6 @@ export default function SessionfulRouterHeader() {
       >
         {t("tabs.forgetMe")}
       </NavLink>
-      <SuperChickenModeNavLink />
       {requiredEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
       <SignOutButton />
       {guaranteedClubId.length === 26 ? (

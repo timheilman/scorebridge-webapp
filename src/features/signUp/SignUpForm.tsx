@@ -8,17 +8,12 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { useTranslation } from "react-i18next";
 
 import { CreateClubResponse } from "../../../appsync";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { mutationCreateClub } from "../../graphql/mutations";
 import { handleGqlReject, maybeFooterElement } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import requiredEnvVar from "../../requiredEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
-import {
-  selectSuperChickenMode,
-  setSuperChickenMode,
-} from "../superChickenMode/superChickenModeSlice";
 import styles from "./SignUpForm.module.css";
 const log = logFn("src.features.signUp.SignUpForm");
 
@@ -54,14 +49,8 @@ export default function SignUpForm() {
   } | null>(null);
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   const t = useTranslation().t as TypesafeTranslationT;
-  const dispatch = useAppDispatch();
-  const scm = useAppSelector(selectSuperChickenMode);
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault(); // we are taking over, in react, from browser event handling here
-    if (clubName === "superchickenmode" || email === "superchickenmode") {
-      dispatch(setSuperChickenMode(!scm));
-      return;
-    }
 
     setEverSubmitted(true);
     setSubmitInFlight(true);

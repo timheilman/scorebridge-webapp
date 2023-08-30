@@ -8,7 +8,6 @@ import { setFallbackClubId } from "../subscriptions/subscriptionsSlice";
 
 export default function MaybeFallbackForm() {
   const dispatch = useAppDispatch();
-  // TODO: remove tab and trigger for super chicken mode; just visit the page
   const handleChangeFallbackClubId = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch(setFallbackClubId(event.target.value));
   };
