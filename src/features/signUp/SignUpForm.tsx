@@ -114,6 +114,7 @@ export default function SignUpForm() {
                 id="email"
                 placeholder={t("signUp.email.placeholder")}
                 onChange={handleChangeEmail}
+                value={email}
                 data-test-id="formCreateClubEmailAddress"
               />
             </div>
@@ -125,6 +126,7 @@ export default function SignUpForm() {
                 id="clubName"
                 placeholder={t("signUp.clubName.placeholder")}
                 onChange={handleChangeName}
+                value={clubName}
                 data-test-id="formCreateClubClubName"
               />
             </div>

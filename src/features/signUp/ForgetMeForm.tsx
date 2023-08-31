@@ -170,6 +170,7 @@ export default function ForgetMeForm() {
                 type="text"
                 id="confirm"
                 placeholder={t("forgetMe.confirm.placeholder")}
+                value={confirm}
                 onChange={handleChangeConfirm}
                 data-test-id="formForgetMeConfirm"
               />

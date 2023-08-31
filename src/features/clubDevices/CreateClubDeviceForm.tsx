@@ -87,6 +87,7 @@ export function CreateClubDeviceForm() {
                   "clubDevices.createClubDeviceForm.deviceName.placeholder",
                 )}
                 onChange={handleChangeNewDeviceName}
+                value={deviceName}
                 data-test-id="formCreateClubDeviceDeviceName"
               />
             </div>
@@ -102,6 +103,7 @@ export function CreateClubDeviceForm() {
                   "clubDevices.createClubDeviceForm.regToken.placeholder",
                 )}
                 onChange={handleChangeRegToken}
+                value={regToken}
                 data-test-id="formCreateClubDeviceRegToken"
               />
             </div>

@@ -1,7 +1,8 @@
+import { GraphQLSubscription } from "@aws-amplify/api";
 import { CONNECTION_STATE_CHANGE, ConnectionState } from "@aws-amplify/pubsub";
 import { AuthStatus } from "@aws-amplify/ui";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { Hub } from "aws-amplify";
+import { API, graphqlOperation, Hub } from "aws-amplify";
 import gql from "graphql-tag";
 import { useEffect } from "react";
 
@@ -14,8 +15,12 @@ import {
   insertClubDevice,
   setClubDevices,
 } from "../clubDevices/clubDevicesSlice";
-import { deleteSub, subscribeTo } from "./SubscriptionLifecycle";
-import { allSubscriptionsI, setSubscriptionStatus } from "./subscriptionsSlice";
+import { deleteSub } from "./SubscriptionLifecycle";
+import {
+  allSubscriptionsI,
+  setSubscriptionStatus,
+  subIdToSubGql,
+} from "./subscriptionsSlice";
 
 const log = logFn("src.features.subscriptions.Subscriptions.");
 
@@ -139,15 +144,29 @@ export default function Subscriptions({ clubId }: SubscriptionsParams) {
       try {
         deleteSub(pool, dispatch, subId);
         log("subs.deletedAndSubscribingTo", "debug", { subId, clubId });
-        subscribeTo<T>(
-          authStatus,
-          pool,
-          subId,
-          { clubId },
-          dispatch,
-          callback,
-          errCallback,
-        );
+        if (!pool[subId]) {
+          pool[subId] = API.graphql<GraphQLSubscription<T>>({
+            authMode:
+              authStatus === "authenticated"
+                ? "AMAZON_COGNITO_USER_POOLS"
+                : "API_KEY",
+            ...graphqlOperation(subIdToSubGql[subId], { clubId }),
+          }).subscribe({
+            next: (data) => {
+              if (!data.value?.data) {
+                log("subscribeTo.noData", "error", { data });
+                return;
+              }
+              log("subScribeTo.end.success", "info", { data });
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              callback(data.value.data);
+            },
+            error: (e) => {
+              errCallback(e);
+            },
+          });
+        }
         dispatch(setSubscriptionStatus([subId, "successfullySubscribed"]));
       } catch (e: any) {
         if (e.message) {
