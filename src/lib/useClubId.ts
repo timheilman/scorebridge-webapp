@@ -6,10 +6,10 @@ import { selectFallbackClubId } from "../features/subscriptions/subscriptionsSli
 export const useClubId = () => {
   const { user } = useAuthenticator();
   const fallbackClubId = useAppSelector(selectFallbackClubId);
-  if (user && user.attributes && user.attributes["custom:tenantId"]) {
-    return user.attributes["custom:tenantId"];
-  }
   if (fallbackClubId && fallbackClubId.length === 26) {
     return fallbackClubId;
+  }
+  if (user && user.attributes && user.attributes["custom:tenantId"]) {
+    return user.attributes["custom:tenantId"];
   }
 };

@@ -17,6 +17,7 @@ function expectCognitoDetails(user: { userId: string; clubId: string }) {
   envTask<string[]>("fetchGroupsForUser", {
     userId: user.userId,
   }).then((groupNames) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     expect(groupNames).to.contain("adminClub");
   });
 }

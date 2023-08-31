@@ -5,7 +5,7 @@ import { addrs } from "./awsSesSandbox";
 import { dataTestIdSelector as d } from "./dataTestIdSelector";
 import { envTask } from "./envTask";
 import { targetTestEnvDetailsFromEnv } from "./targetTestEnvDetailsFromEnv";
-const catPrefix = "cypress.support.authUtils.";
+// const catPrefix = "cypress.support.authUtils.";
 export const randomPassword = () => {
   const pool =
     "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890!@#$%^&*()";

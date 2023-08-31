@@ -1,8 +1,7 @@
-import { GraphQLSubscription } from "@aws-amplify/api";
 import { CONNECTION_STATE_CHANGE, ConnectionState } from "@aws-amplify/pubsub";
+import { AuthStatus } from "@aws-amplify/ui";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { API, graphqlOperation, Hub } from "aws-amplify";
-import { DocumentNode } from "graphql/language";
+import { Hub } from "aws-amplify";
 import gql from "graphql-tag";
 import { useEffect } from "react";
 
@@ -15,19 +14,20 @@ import {
   insertClubDevice,
   setClubDevices,
 } from "../clubDevices/clubDevicesSlice";
-import {
-  allSubscriptionsI,
-  setSubscriptionStatus,
-  subIdToSubGql,
-} from "./subscriptionsSlice";
+import { deleteSub, subscribeTo } from "./SubscriptionLifecycle";
+import { allSubscriptionsI, setSubscriptionStatus } from "./subscriptionsSlice";
 
-const log = logFn("src.features.subscriptions.Subscriptions");
+const log = logFn("src.features.subscriptions.Subscriptions.");
 
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment */
-const fetchRecentData = async (clubId: string, dispatch: any) => {
+const fetchRecentData = async (
+  clubId: string,
+  dispatch: any,
+  authStatus: AuthStatus,
+) => {
   // Retrieve some/all data from AppSync
   return gqlMutation<ListClubDevicesOutput>(
-    "authenticated",
+    authStatus,
     gql`
       query listClubDevices($input: ListClubDevicesInput!) {
         listClubDevices(input: $input) {
@@ -64,107 +64,107 @@ const fetchRecentData = async (clubId: string, dispatch: any) => {
 export interface SubscriptionsParams {
   clubId: string;
 }
+
+function subscribeAndFetch(
+  typedSubscription: <T>(
+    subId: keyof allSubscriptionsI,
+    clubId: string,
+    callback: (arg0: T) => void,
+  ) => void,
+  clubId: string,
+  dispatch: any,
+  authStatus: "configuring" | "authenticated" | "unauthenticated",
+) {
+  log("hubListen.connected", "debug");
+  typedSubscription<{ createdClubDevice: ClubDevice }>(
+    "createdClubDevice",
+    clubId,
+    (res) => {
+      dispatch(insertClubDevice(res.createdClubDevice));
+    },
+  );
+  typedSubscription<{ deletedClubDevice: ClubDevice }>(
+    "deletedClubDevice",
+    clubId,
+    (res) => {
+      dispatch(deleteClubDevice(res.deletedClubDevice.clubDeviceId));
+    },
+  );
+
+  log("hubListen.subscribeAndFetch", "debug");
+  fetchRecentData(clubId, dispatch, authStatus)
+    .then(() => {
+      log("subscribeAndFetch.success", "debug");
+    })
+    .catch((e) => log("subscribeAndFetch.error", "error", { e }));
+}
+
 export default function Subscriptions({ clubId }: SubscriptionsParams) {
-  const { user } = useAuthenticator((context) => [context.user]);
+  const { user, authStatus } = useAuthenticator((context) => [
+    context.user,
+    context.authStatus,
+  ]);
   const dispatch = useAppDispatch();
+
   useEffect(() => {
-    const subscriptions: Record<string, unknown> = {};
-    const subscribeTo = <OUT,>(
-      subId: string,
-      subGql: DocumentNode,
-      subVars: Record<string, unknown>,
-      callback: (res: OUT) => void,
-    ) => {
-      if (!subscriptions[subId]) {
-        subscriptions[subId] = API.graphql<GraphQLSubscription<OUT>>({
-          authMode: "AMAZON_COGNITO_USER_POOLS",
-          ...graphqlOperation(subGql, subVars),
-        }).subscribe({
-          next: (data) => {
-            if (!data.value?.data) {
-              log("subscribeTo.noData", "error", { data });
-              return;
-            }
-            log("subScribeTo.end.success", "info", { data });
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            callback(data.value.data);
-          },
-        });
-      }
-    };
-    const deleteSub = (subId: string) => {
-      if (subscriptions[subId]) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        subscriptions[subId].unsubscribe();
-        delete subscriptions[subId];
-        dispatch(setSubscriptionStatus([subId, "disconnected"]));
-      }
-    };
-    let priorConnectionState: string;
-    if (!clubId) {
-      // sessionless, initially, will not
-      // sessionful w/superAdmin, initially, will not
-      log("noClubId", "info", { user });
-      return;
-    }
+    const pool: Record<string, unknown> = {};
+
     log("initialFetch", "debug");
-    fetchRecentData(clubId, dispatch).catch((e) =>
-      log("badInitialGqlQuery", "error", { e }),
-    );
-    Hub.listen("api", (data: any) => {
-      const { payload } = data;
-      if (payload.event === CONNECTION_STATE_CHANGE) {
-        if (
-          priorConnectionState === ConnectionState.Connecting &&
-          payload.data.connectionState === ConnectionState.Connected
-        ) {
-          log("refreshFetch", "debug");
-          fetchRecentData(clubId, dispatch).catch((e) =>
-            log("badRefreshGqlQuery", "error", { e }),
-          );
-        }
-        priorConnectionState = payload.data.connectionState;
-      }
-    });
-    const subs = <T,>(
+    let priorConnectionState: ConnectionState;
+    const typedSubscription = <T,>(
       subId: keyof allSubscriptionsI,
       clubId: string,
       callback: (arg0: T) => void,
     ) => {
       try {
-        subscribeTo<T>(subId, subIdToSubGql[subId], { clubId }, callback);
+        deleteSub(pool, dispatch, subId);
+        log("subs.deletedAndSubscribingTo", "debug", { subId, clubId });
+        subscribeTo<T>(pool, subId, { clubId }, dispatch, callback);
+        dispatch(setSubscriptionStatus([subId, "successfullySubscribed"]));
       } catch (e: any) {
         if (e.message) {
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          dispatch(setSubscriptionStatus([subId, `failed: ${e.message}`]));
+          dispatch(
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            setSubscriptionStatus([subId, `failed: ${e.message}`]),
+          );
         } else {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           dispatch(setSubscriptionStatus([subId, `failed: ${e}`]));
         }
         return;
       }
-      dispatch(setSubscriptionStatus([subId, "successfullySubscribed"]));
     };
-    subs<{ createdClubDevice: ClubDevice }>(
-      "createdClubDevice",
-      clubId,
-      (res) => {
-        dispatch(insertClubDevice(res.createdClubDevice));
-      },
-    );
-    subs<{ deletedClubDevice: ClubDevice }>(
-      "deletedClubDevice",
-      clubId,
-      (res) => {
-        dispatch(deleteClubDevice(res.deletedClubDevice.clubDeviceId));
-      },
-    );
+    log("hubListen.api.beforestart", "error");
+    subscribeAndFetch(typedSubscription, clubId, dispatch, authStatus);
+
+    log("hubListen.api.before", "error");
+    const stopListening = Hub.listen("api", (data: any) => {
+      // log("hubListen.api.callback", "error", { data });
+      const { payload } = data;
+      if (payload.event === CONNECTION_STATE_CHANGE) {
+        if (
+          priorConnectionState === ConnectionState.Connecting &&
+          payload.data.connectionState === ConnectionState.Connected
+        ) {
+          fetchRecentData(clubId, dispatch, authStatus)
+            .then(() => {
+              log("hublisten.api.fetchRecentData.success", "debug");
+            })
+            .catch((e) =>
+              log("hublisten.api.fetchRecentData.error", "error", { e }),
+            );
+        }
+        priorConnectionState = payload.data.connectionState;
+      } else {
+        log("hubListen.api.callback.disregardingEvent", "error", { payload });
+      }
+    });
     return () => {
-      deleteSub("createdClubDevice");
-      deleteSub("deletedClubDevice");
+      deleteSub(pool, dispatch, "createdClubDevice");
+      deleteSub(pool, dispatch, "deletedClubDevice");
+      dispatch(setClubDevices({}));
+      stopListening();
     };
-  }, [clubId, dispatch, user]);
+  }, [authStatus, clubId, dispatch, user]);
   return <></>;
 }

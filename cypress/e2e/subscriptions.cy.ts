@@ -1,42 +1,60 @@
-import {
-    randomPassword,
-    setNewPassword,
-    submitCreateClubDetails,
-    withPreexistingCredsDo,
-    withTestAccount,
-    withUnverifiedTempClubAdminDo,
-} from "../support/authUtils";
+import { withPreexistingCredsDo } from "../support/authUtils";
 import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
-import { verifyReceivedEmail } from "../support/emailUtils";
 import { envTask } from "../support/envTask";
-import { refreshSignupTab } from "../support/refreshSignupTab";
 import requiredEnvVar from "../support/requiredEnvVar";
-import { targetTestEnvDetailsFromEnv } from "../support/targetTestEnvDetailsFromEnv";
-import { expectBackendDetails, expectDdbDetails } from "../support/userUtils";
 
 const stage = requiredEnvVar("STAGE");
 
-describe("subscriptions", () => {
-    it("with API_KEY, no subscriptions allowed", () => {
-        cy.visit("http://localhost:3000/super_chicken_mode");
-        cy.get(d(''))
+function withClub00CheckSubscriptions(
+  expectedMessage: string,
+  specifyClubId = true,
+) {
+  cy.visit("http://localhost:3000/super_chicken_mode");
+  envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {
+    email: `scorebridge8+${stage}-testUser-adminClub-club00@gmail.com`,
+  }).then((user) => {
+    if (specifyClubId) {
+      cy.get(d("inputFallbackClubId")).type(user.clubId);
     }
+    cy.contains("reinitializing subscriptions...");
+    cy.contains(
+      `Status of subscription createdClubDevice is ${expectedMessage}`,
+    );
+    cy.contains(
+      `Status of subscription deletedClubDevice is ${expectedMessage}`,
+    );
+  });
+}
 
-    it("with adminSuper, passes happy path", () => {
-        const email = `scorebridge8+${stage}-testUser-adminSuper@gmail.com`;
-        withPreexistingCredsDo(stage, email, () => {
-            withTestAccount((tempAcct) => {
-                cy.visit("http://localhost:3000/super_chicken_mode");
-                const clubName = "Ace of Clubs";
-                submitCreateClubDetails(tempAcct.user, clubName);
-                cy.contains("email sent!");
-                verifyReceivedEmail(tempAcct);
-                envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {
-                    email: tempAcct.user,
-                }).then((user) => {
-                    expectBackendDetails(user, tempAcct, clubName);
-                });
-            });
-        });
-    });
+describe("subscriptions", () => {
+  it("with API_KEY, no subscriptions allowed", () => {
+    withClub00CheckSubscriptions("failed");
+  });
+  it("with adminSuper, subscriptions allowed", () => {
+    withPreexistingCredsDo(
+      stage,
+      `scorebridge8+${stage}-testUser-adminSuper@gmail.com`,
+      () => {
+        withClub00CheckSubscriptions("successfullySubscribed");
+      },
+    );
+  });
+  it("with own clubId, subscriptions allowed", () => {
+    withPreexistingCredsDo(
+      stage,
+      `scorebridge8+${stage}-testUser-adminClub-club00@gmail.com`,
+      () => {
+        withClub00CheckSubscriptions("successfullySubscribed", false);
+      },
+    );
+  });
+  it("with other clubId, subscriptions not allowed", () => {
+    withPreexistingCredsDo(
+      stage,
+      `scorebridge8+${stage}-testUser-adminClub-club01@gmail.com`,
+      () => {
+        withClub00CheckSubscriptions("failed");
+      },
+    );
+  });
 });

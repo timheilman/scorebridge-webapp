@@ -10,6 +10,7 @@ import {
 export interface SubscriptionsState {
   value: Record<string, string>;
   fallbackClubId: string;
+  failingClubId: string;
 }
 
 const initialState: SubscriptionsState = {
@@ -18,6 +19,7 @@ const initialState: SubscriptionsState = {
     deletedClubDevice: "disconnected",
   },
   fallbackClubId: "",
+  failingClubId: "01H8Z4Y5GF5DADWSC449PYFWC2",
 };
 
 export const subscriptionsSlice = createSlice({
@@ -34,10 +36,13 @@ export const subscriptionsSlice = createSlice({
     setFallbackClubId: (state, action: PayloadAction<string>) => {
       state.fallbackClubId = action.payload;
     },
+    setFailingClubId: (state, action: PayloadAction<string>) => {
+      state.failingClubId = action.payload;
+    },
   },
 });
 
-export const { setSubscriptionStatus, setFallbackClubId } =
+export const { setSubscriptionStatus, setFailingClubId, setFallbackClubId } =
   subscriptionsSlice.actions;
 
 export interface allSubscriptionsI {
@@ -54,5 +59,7 @@ export const selectSubscriptionById =
     state.subscriptions.value[subId];
 export const selectFallbackClubId = (state: RootState) =>
   state.subscriptions.fallbackClubId;
+export const selectFailingClubId = (state: RootState) =>
+  state.subscriptions.failingClubId;
 
 export default subscriptionsSlice.reducer;

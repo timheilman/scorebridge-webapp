@@ -6,7 +6,6 @@ import {
   withTestAccount,
   withUnverifiedTempClubAdminDo,
 } from "../support/authUtils";
-import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
 import { verifyReceivedEmail } from "../support/emailUtils";
 import { envTask } from "../support/envTask";
 import { refreshSignupTab } from "../support/refreshSignupTab";

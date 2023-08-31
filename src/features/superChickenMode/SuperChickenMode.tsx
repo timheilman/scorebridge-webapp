@@ -4,9 +4,9 @@ import { useAppSelector } from "../../app/hooks";
 import { useClubId } from "../../lib/useClubId";
 import ScoreBridgeAuthenticator from "../signIn/ScoreBridgeAuthenticator";
 import SignUpForm from "../signUp/SignUpForm";
+import FallbackFormWhenNonAdminSuper from "../subscriptions/FallbackFormWhenNonAdminSuper";
 import Subscriptions from "../subscriptions/Subscriptions";
 import { selectFallbackClubId } from "../subscriptions/subscriptionsSlice";
-import FallbackFormWhenUnauthenticated from "./FallbackFormWhenUnauthenticated";
 import SubscriptionDisplayer from "./SubscriptionDisplayer";
 
 export default function SuperChickenMode() {
@@ -32,7 +32,7 @@ export default function SuperChickenMode() {
     <>
       <ScoreBridgeAuthenticator />
       <SignUpForm />
-      <FallbackFormWhenUnauthenticated />
+      <FallbackFormWhenNonAdminSuper />
       <MaybeSubscriptions />
       <SubscriptionDisplayer />
     </>

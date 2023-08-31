@@ -8,8 +8,8 @@ import requiredEnvVar from "../../requiredEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import SignOutButton from "../signIn/SignOutButton";
+import { OverrideClubIdFormExpectingSuccess } from "../subscriptions/OverrideClubIdFormExpectingSuccess";
 import Subscriptions from "../subscriptions/Subscriptions";
-import { FallbackForm } from "../superChickenMode/FallbackForm";
 
 // const log = logFn("src.features.header.SessionfulRouterHeader");
 
@@ -44,7 +44,11 @@ export default function SessionfulRouterHeader() {
       {requiredEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
       <SignOutButton />
       {clubId ? <Subscriptions clubId={clubId} /> : ""}
-      {userInGroup(user, "adminSuper") ? <FallbackForm /> : ""}
+      {userInGroup(user, "adminSuper") ? (
+        <OverrideClubIdFormExpectingSuccess />
+      ) : (
+        ""
+      )}
     </header>
   );
 }

@@ -1,4 +1,5 @@
 import { useAppSelector } from "../../app/hooks";
+import { useClubId } from "../../lib/useClubId";
 import {
   allSubscriptionsI,
   selectSubscriptionById,
@@ -10,10 +11,11 @@ export interface SubscriptionTestParams {
 export default function SubscriptionTest({
   subscriptionId,
 }: SubscriptionTestParams) {
+  const clubId = useClubId();
   const subsStatus = useAppSelector(selectSubscriptionById(subscriptionId));
   return (
     <li>
-      Status of subscription {subscriptionId} is {subsStatus}
+      Subscription: {subscriptionId}; status: {subsStatus}; clubId: {clubId}
     </li>
   );
 }
