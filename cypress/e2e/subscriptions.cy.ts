@@ -20,6 +20,11 @@ function withClub00CheckSubscriptions(
       `Subscription: createdClubDevice; status: .*${expectedMessage}.*; clubId: ${user.clubId}`,
     ),
   );
+  cy.contains(
+    new RegExp(
+      `Subscription: deletedClubDevice; status: .*${expectedMessage}.*; clubId: ${user.clubId}`,
+    ),
+  );
 }
 
 describe("subscriptions", () => {
@@ -32,7 +37,7 @@ describe("subscriptions", () => {
     cy.get<{ userId: string; clubId: string }>("@club00User").then((user) => {
       withClub00CheckSubscriptions(
         user,
-        "Not Authorized to access deletedClubDevice on type Subscription",
+        "Not Authorized to access .* on type Subscription",
       );
     });
   });
@@ -64,10 +69,7 @@ describe("subscriptions", () => {
         stage,
         `scorebridge8+${stage}-testUser-adminClub-club01@gmail.com`,
         () => {
-          withClub00CheckSubscriptions(
-            user,
-            "Can only subscribe to clubDevice creations from one's own club.",
-          );
+          withClub00CheckSubscriptions(user, "401: Invalid Club Id");
         },
       );
     });
