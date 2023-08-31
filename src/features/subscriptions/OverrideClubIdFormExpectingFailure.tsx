@@ -1,32 +1,28 @@
-import { useEffect } from "react";
+import { ChangeEvent } from "react";
+import { useTranslation } from "react-i18next";
 
-import { ClubDevice } from "../../../appsync";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { subscribeTo } from "./SubscriptionLifecycle";
-import { allSubscriptionsI, selectFailingClubId } from "./subscriptionsSlice";
+import { useAppDispatch } from "../../app/hooks";
+import TypesafeTranslationT from "../../TypesafeTranslationT";
+import { setFailingClubId } from "./subscriptionsSlice";
 
-export interface OverrideClubIdFormExpectingFailureParams {
-  subscriptionId: keyof allSubscriptionsI;
-}
-export default function OverrideClubIdFormExpectingFailure({
-  subscriptionId,
-}: OverrideClubIdFormExpectingFailureParams) {
-  const failingClubId = useAppSelector(selectFailingClubId);
+export function OverrideClubIdFormExpectingFailure() {
+  const t = useTranslation().t as TypesafeTranslationT;
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    const pool: Record<string, unknown> = {};
-    subscribeTo<Record<string, ClubDevice>>(
-      pool,
-      subscriptionId,
-      { clubId: failingClubId },
-      dispatch,
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      (_res) => {
-        throw new Error(
-          "should be unreachable, since subscription failure is expected instead",
-        );
-      },
-    );
-  }, [failingClubId, dispatch, subscriptionId]);
-  return null;
+  const handleChangeFailingClubId = (event: ChangeEvent<HTMLInputElement>) => {
+    dispatch(setFailingClubId(event.target.value));
+  };
+  return (
+    <>
+      <label htmlFor="failingClubId">
+        {t("subscriptions.failingClubId.label")}
+      </label>
+      <input
+        type="text"
+        id="failingClubId"
+        placeholder={t("subscriptions.failingClubId.placeholder")}
+        onChange={handleChangeFailingClubId}
+        data-test-id="inputFailingClubId"
+      />
+    </>
+  );
 }

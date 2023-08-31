@@ -1,10 +1,10 @@
-import SubscriptionTest from "./SubscriptionTest";
+import SubscriptionResult from "./SubscriptionResult";
 
 export default function SubscriptionDisplayer() {
   return (
     <ul>
-      <SubscriptionTest subscriptionId="createdClubDevice" />
-      <SubscriptionTest subscriptionId="deletedClubDevice" />
+      <SubscriptionResult subscriptionId="createdClubDevice" />
+      <SubscriptionResult subscriptionId="deletedClubDevice" />
     </ul>
   );
 }

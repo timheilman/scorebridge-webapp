@@ -70,6 +70,7 @@ function subscribeAndFetch(
     subId: keyof allSubscriptionsI,
     clubId: string,
     callback: (arg0: T) => void,
+    errCallback: (arg0: unknown) => void,
   ) => void,
   clubId: string,
   dispatch: any,
@@ -82,12 +83,30 @@ function subscribeAndFetch(
     (res) => {
       dispatch(insertClubDevice(res.createdClubDevice));
     },
+    (e: any) => {
+      dispatch(
+        setSubscriptionStatus([
+          "createdClubDevice",
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `failed post-initialization: ${e.error.errors[0].message}`,
+        ]),
+      );
+    },
   );
   typedSubscription<{ deletedClubDevice: ClubDevice }>(
     "deletedClubDevice",
     clubId,
     (res) => {
       dispatch(deleteClubDevice(res.deletedClubDevice.clubDeviceId));
+    },
+    (e: any) => {
+      dispatch(
+        setSubscriptionStatus([
+          "deletedClubDevice",
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `failed post-initialization: ${e.error.errors[0].message}`,
+        ]),
+      );
     },
   );
 
@@ -115,21 +134,35 @@ export default function Subscriptions({ clubId }: SubscriptionsParams) {
       subId: keyof allSubscriptionsI,
       clubId: string,
       callback: (arg0: T) => void,
+      errCallback: (arg0: unknown) => void,
     ) => {
       try {
         deleteSub(pool, dispatch, subId);
         log("subs.deletedAndSubscribingTo", "debug", { subId, clubId });
-        subscribeTo<T>(pool, subId, { clubId }, dispatch, callback);
+        subscribeTo<T>(
+          authStatus,
+          pool,
+          subId,
+          { clubId },
+          dispatch,
+          callback,
+          errCallback,
+        );
         dispatch(setSubscriptionStatus([subId, "successfullySubscribed"]));
       } catch (e: any) {
         if (e.message) {
           dispatch(
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            setSubscriptionStatus([subId, `failed: ${e.message}`]),
+            setSubscriptionStatus([
+              subId,
+              // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+              `failed at initialization: ${e.message}`,
+            ]),
           );
         } else {
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          dispatch(setSubscriptionStatus([subId, `failed: ${e}`]));
+          dispatch(
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            setSubscriptionStatus([subId, `failed at initialization: ${e}`]),
+          );
         }
         return;
       }

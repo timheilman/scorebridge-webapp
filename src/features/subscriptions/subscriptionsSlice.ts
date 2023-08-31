@@ -26,7 +26,10 @@ export const subscriptionsSlice = createSlice({
   name: "subscriptions",
   initialState,
   reducers: {
-    setSubscriptionStatus: (state, action: PayloadAction<[string, string]>) => {
+    setSubscriptionStatus: (
+      state,
+      action: PayloadAction<[keyof allSubscriptionsI, string]>,
+    ) => {
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new

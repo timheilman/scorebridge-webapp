@@ -5,12 +5,12 @@ import {
   selectSubscriptionById,
 } from "../subscriptions/subscriptionsSlice";
 
-export interface SubscriptionTestParams {
+export interface SubscriptionResultParams {
   subscriptionId: keyof allSubscriptionsI;
 }
-export default function SubscriptionTest({
+export default function SubscriptionResult({
   subscriptionId,
-}: SubscriptionTestParams) {
+}: SubscriptionResultParams) {
   const clubId = useClubId();
   const subsStatus = useAppSelector(selectSubscriptionById(subscriptionId));
   return (
