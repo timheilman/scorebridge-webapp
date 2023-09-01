@@ -4,11 +4,11 @@ import { marshall } from "@aws-sdk/util-dynamodb";
 
 import { logFn } from "../../src/lib/logging";
 import { cachedCognitoIdpClient } from "../../src/scorebridge-ts-submodule/cachedCognitoIdpClient";
+import { cachedDynamoDbClient } from "../../src/scorebridge-ts-submodule/cachedDynamoDbClient";
 import {
   fetchNullableCogUser,
   fetchNullableCogUserParams,
 } from "./fetchNullableCogUser";
-import { cachedDynamoDbClient } from "./lib/cachedDynamoDbClient";
 const log = logFn("cypress.tasks.cleanupUser.");
 export interface CleanupUserParams extends fetchNullableCogUserParams {
   clubTableName: string;

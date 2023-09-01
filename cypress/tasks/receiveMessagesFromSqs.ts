@@ -3,7 +3,7 @@ import {
   ReceiveMessageCommand,
 } from "@aws-sdk/client-sqs";
 
-import { cachedSqsClient } from "./lib/cachedSqsClient";
+import { cachedSqsClient } from "../../src/scorebridge-ts-submodule/cachedSqsClient";
 
 export interface ReceiveMessagesFromSqsParams {
   awsRegion: string;

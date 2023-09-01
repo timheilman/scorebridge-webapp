@@ -1,6 +1,6 @@
 import { GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 
-import { cachedSecretsManagerClient } from "./lib/secretsManager";
+import { cachedSecretsManagerClient } from "../../src/scorebridge-ts-submodule/cachedSecretsManagerClient";
 
 export interface FetchSecretParams {
   secretName: string;
