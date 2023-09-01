@@ -3,11 +3,11 @@ import { DeleteItemCommand } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 
 import { logFn } from "../../src/lib/logging";
+import { cachedCognitoIdpClient } from "../../src/scorebridge-ts-submodule/cachedCognitoIdpClient";
 import {
   fetchNullableCogUser,
   fetchNullableCogUserParams,
 } from "./fetchNullableCogUser";
-import cachedCognitoIdpClient from "./lib/cachedCognitoIdpClient";
 import { cachedDynamoDbClient } from "./lib/cachedDynamoDbClient";
 const log = logFn("cypress.tasks.cleanupUser.");
 export interface CleanupUserParams extends fetchNullableCogUserParams {
