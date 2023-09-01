@@ -1,12 +1,12 @@
-import requiredEnvVar from "./requiredEnvVar";
+import requiredCypressEnvVar from "./requiredCypressEnvVar";
 export const targetTestEnvDetailsFromEnv = {
-  profile: requiredEnvVar("SB_TEST_AWS_CLI_PROFILE"),
-  awsRegion: requiredEnvVar("AWS_REGION"),
-  poolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-  userTableName: requiredEnvVar("USERS_TABLE"),
-  clubTableName: requiredEnvVar("CLUBS_TABLE"),
-  clubDevicesTableName: requiredEnvVar("CLUB_DEVICES_TABLE"),
-  sesSandboxSqsQueueUrl: requiredEnvVar("SES_SANDBOX_SQS_QUEUE_URL"),
-  stage: requiredEnvVar("STAGE"),
-  userPoolClientIdWeb: requiredEnvVar("COGNITO_USER_POOL_CLIENT_ID_WEB"),
+  profile: requiredCypressEnvVar("SB_TEST_AWS_CLI_PROFILE"),
+  awsRegion: requiredCypressEnvVar("AWS_REGION"),
+  poolId: requiredCypressEnvVar("COGNITO_USER_POOL_ID"),
+  userTableName: requiredCypressEnvVar("USERS_TABLE"),
+  clubTableName: requiredCypressEnvVar("CLUBS_TABLE"),
+  clubDevicesTableName: requiredCypressEnvVar("CLUB_DEVICES_TABLE"),
+  sesSandboxSqsQueueUrl: requiredCypressEnvVar("SES_SANDBOX_SQS_QUEUE_URL"),
+  stage: requiredCypressEnvVar("STAGE"),
+  userPoolClientIdWeb: requiredCypressEnvVar("COGNITO_USER_POOL_CLIENT_ID_WEB"),
 };

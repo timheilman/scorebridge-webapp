@@ -9,11 +9,11 @@ import {
 import { verifyReceivedEmail } from "../support/emailUtils";
 import { envTask } from "../support/envTask";
 import { refreshSignupTab } from "../support/refreshSignupTab";
-import requiredEnvVar from "../support/requiredEnvVar";
+import requiredCypressEnvVar from "../support/requiredCypressEnvVar";
 import { targetTestEnvDetailsFromEnv } from "../support/targetTestEnvDetailsFromEnv";
 import { expectBackendDetails, expectDdbDetails } from "../support/userUtils";
 
-const stage = requiredEnvVar("STAGE");
+const stage = requiredCypressEnvVar("STAGE");
 
 const originalClubName = "original club name should be created in club table";
 const updatedClubName = "updated name should be stored in club table";

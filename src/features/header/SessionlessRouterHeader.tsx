@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 
-import requiredEnvVar from "../../requiredEnvVar";
+import requiredReactAppEnvVar from "../../requiredReactAppEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 export default function SessionlessRouterHeader() {
@@ -28,7 +28,7 @@ export default function SessionlessRouterHeader() {
         <span data-test-id="signUpTab" className="icon-info"></span>
         {t("tabs.signUp")}
       </NavLink>
-      {requiredEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
+      {requiredReactAppEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
     </header>
   );
 }

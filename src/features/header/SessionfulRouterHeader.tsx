@@ -4,7 +4,7 @@ import { Navigate, NavLink, useLocation } from "react-router-dom";
 
 import { userInGroup } from "../../cognito";
 import { useClubId } from "../../lib/useClubId";
-import requiredEnvVar from "../../requiredEnvVar";
+import requiredReactAppEnvVar from "../../requiredReactAppEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import SignOutButton from "../signIn/SignOutButton";
@@ -41,7 +41,7 @@ export default function SessionfulRouterHeader() {
       >
         {t("tabs.forgetMe")}
       </NavLink>
-      {requiredEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
+      {requiredReactAppEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
       <SignOutButton />
       {clubId ? <Subscriptions clubId={clubId} /> : ""}
       {userInGroup(user, "adminSuper") ? (

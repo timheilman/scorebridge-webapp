@@ -1,6 +1,6 @@
 import { TempEmailAccount } from "../tasks/createTempEmailAccount";
 import { envTask } from "./envTask";
-import requiredEnvVar from "./requiredEnvVar";
+import requiredCypressEnvVar from "./requiredCypressEnvVar";
 import { targetTestEnvDetailsFromEnv } from "./targetTestEnvDetailsFromEnv";
 
 /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
@@ -15,7 +15,7 @@ function verifyReceivedEmailProd(tempAcct: TempEmailAccount) {
     expect(latestEmail).to.match(`Username: ${tempAcct.user}`);
     expect(latestEmail).to.match(/Password: [^ ]{8}/);
     expect(latestEmail).to.match(
-      `<a href="${requiredEnvVar("PORTAL_URL")}">${requiredEnvVar(
+      `<a href="${requiredCypressEnvVar("PORTAL_URL")}">${requiredCypressEnvVar(
         "PORTAL_URL",
       )}</a>`,
     );
@@ -42,18 +42,18 @@ function verifyReceivedEmailNonProd({
     const ch = parsedMessage.mail.commonHeaders;
     expect(ch.from.length).to.equal(1);
     expect(ch.from[0]).to.equal(
-      `ScoreBridge Admin Portal <scorebridge8+${requiredEnvVar(
+      `ScoreBridge Admin Portal <scorebridge8+${requiredCypressEnvVar(
         "STAGE",
       )}@gmail.com>`,
     );
     expect(ch.replyTo.length).to.equal(1);
     expect(ch.replyTo[0]).to.equal(
-      `scorebridge8+${requiredEnvVar("STAGE")}-do-not-reply@gmail.com`,
+      `scorebridge8+${requiredCypressEnvVar("STAGE")}-do-not-reply@gmail.com`,
     );
     expect(ch.to.length).to.equal(1);
     expect(ch.to[0]).to.equal(user);
     expect(ch.subject).to.equal(
-      `Welcome to the ScoreBridge-${requiredEnvVar("STAGE")} App`,
+      `Welcome to the ScoreBridge-${requiredCypressEnvVar("STAGE")} App`,
     );
   });
 }

@@ -2,13 +2,15 @@
 
 import { Amplify, Auth } from "aws-amplify";
 
-import requiredEnvVar from "../../support/requiredEnvVar";
+import requiredCypressEnvVar from "../requiredCypressEnvVar";
 
 Amplify.configure({
   Auth: {
-    region: requiredEnvVar("AWS_REGION"),
-    userPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-    userPoolWebClientId: requiredEnvVar("COGNITO_USER_POOL_CLIENT_ID_WEB"), // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+    region: requiredCypressEnvVar("AWS_REGION"),
+    userPoolId: requiredCypressEnvVar("COGNITO_USER_POOL_ID"),
+    userPoolWebClientId: requiredCypressEnvVar(
+      "COGNITO_USER_POOL_CLIENT_ID_WEB",
+    ), // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
   },
 });
 

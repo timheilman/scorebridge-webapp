@@ -12,7 +12,7 @@ import { gqlMutation } from "../../gql";
 import { mutationCreateClub } from "../../graphql/mutations";
 import { handleGqlReject, maybeFooterElement } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
-import requiredEnvVar from "../../requiredEnvVar";
+import requiredReactAppEnvVar from "../../requiredReactAppEnvVar";
 import TypesafeTranslationT from "../../TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
 const log = logFn("src.features.signUp.SignUpForm");
@@ -134,7 +134,7 @@ export default function SignUpForm() {
           <div className="row">
             <div className="col-wm">
               <ReCAPTCHA
-                sitekey={requiredEnvVar("RECAPTCHA2_SITE_KEY")}
+                sitekey={requiredReactAppEnvVar("RECAPTCHA2_SITE_KEY")}
                 onChange={handleRecaptchaChange}
                 ref={captchaRef}
                 data-test-id="recaptchaComponent"

@@ -1,4 +1,4 @@
-export default function requiredEnvVar(key: string): string {
+export default function requiredCypressEnvVar(key: string): string {
   if (!Cypress.env(key)) {
     throw new Error(`Please set ${key} in env vars.`);
   }

@@ -11,7 +11,7 @@ import { Provider as ReactReduxProvider } from "react-redux";
 import App from "./App";
 import { store } from "./app/store";
 import reportWebVitals from "./reportWebVitals";
-import requiredEnvVar from "./requiredEnvVar";
+import requiredReactAppEnvVar from "./requiredReactAppEnvVar";
 
 Amplify.configure({
   API: {
@@ -27,13 +27,15 @@ Amplify.configure({
     },
   },
   Auth: {
-    region: requiredEnvVar("AWS_REGION"),
-    userPoolId: requiredEnvVar("COGNITO_USER_POOL_ID"),
-    userPoolWebClientId: requiredEnvVar("COGNITO_USER_POOL_CLIENT_ID_WEB"), // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+    region: requiredReactAppEnvVar("AWS_REGION"),
+    userPoolId: requiredReactAppEnvVar("COGNITO_USER_POOL_ID"),
+    userPoolWebClientId: requiredReactAppEnvVar(
+      "COGNITO_USER_POOL_CLIENT_ID_WEB",
+    ), // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
   },
-  aws_appsync_graphqlEndpoint: requiredEnvVar("API_URL"),
-  aws_appsync_region: requiredEnvVar("AWS_REGION"),
-  aws_appsync_apiKey: requiredEnvVar("CREATE_CLUB_API_KEY"),
+  aws_appsync_graphqlEndpoint: requiredReactAppEnvVar("API_URL"),
+  aws_appsync_region: requiredReactAppEnvVar("AWS_REGION"),
+  aws_appsync_apiKey: requiredReactAppEnvVar("CREATE_CLUB_API_KEY"),
 });
 
 const container = document.getElementById("root");

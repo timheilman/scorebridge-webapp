@@ -1,9 +1,9 @@
 import { withPreexistingCredsDo } from "../support/authUtils";
 import { dataTestIdSelector as d } from "../support/dataTestIdSelector";
 import { envTask } from "../support/envTask";
-import requiredEnvVar from "../support/requiredEnvVar";
+import requiredCypressEnvVar from "../support/requiredCypressEnvVar";
 
-const stage = requiredEnvVar("STAGE");
+const stage = requiredCypressEnvVar("STAGE");
 
 describe("signUp", () => {
   it("with adminClub-club00, passes happy path", () => {

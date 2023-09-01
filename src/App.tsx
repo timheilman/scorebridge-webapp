@@ -11,7 +11,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import ScoreBridgeRoutes from "./features/header/ScoreBridgeRoutes";
 import SessionfulRouterHeader from "./features/header/SessionfulRouterHeader";
 import SessionlessRouterHeader from "./features/header/SessionlessRouterHeader";
-import requiredEnvVar from "./requiredEnvVar";
+import requiredReactAppEnvVar from "./requiredReactAppEnvVar";
 import TypesafeTranslationT from "./TypesafeTranslationT";
 
 // TODO: customize the Authenticator component to use our own i18n w/these translations and remove this:
@@ -53,7 +53,7 @@ export default function App() {
   if (authStatus === "configuring") {
     return <Trans>Loading user session</Trans>;
   }
-  const stage = requiredEnvVar("STAGE");
+  const stage = requiredReactAppEnvVar("STAGE");
 
   return (
     <>

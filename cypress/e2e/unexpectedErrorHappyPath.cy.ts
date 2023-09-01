@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { withPreexistingCredsDo } from "../support/authUtils";
-import requiredEnvVar from "../support/requiredEnvVar";
-const stage = requiredEnvVar("STAGE");
+import requiredCypressEnvVar from "../support/requiredCypressEnvVar";
+const stage = requiredCypressEnvVar("STAGE");
 
 describe("load of special on-purpose unexpected error page", () => {
   it("for adminSuper only, identifies the error type and displays its message", () => {
