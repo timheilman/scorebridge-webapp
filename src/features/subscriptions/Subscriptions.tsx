@@ -10,6 +10,7 @@ import { ClubDevice, ListClubDevicesOutput } from "../../../appsync";
 import { useAppDispatch } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
+import { logCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/logCompletionDecorator";
 import {
   deleteClubDevice,
   insertClubDevice,
@@ -22,6 +23,9 @@ import {
 } from "./subscriptionsSlice";
 
 const log = logFn("src.features.subscriptions.Subscriptions.");
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const lcd = logCompletionDecoratorFactory(log, false);
 
 const deleteSub = (
   subscriptions: Record<string, unknown>,
@@ -134,12 +138,10 @@ function subscribeAndFetch(
     },
   );
 
-  log("hubListen.subscribeAndFetch", "debug");
-  fetchRecentData(clubId, dispatch, authStatus)
-    .then(() => {
-      log("subscribeAndFetch.success", "debug");
-    })
-    .catch((e) => log("subscribeAndFetch.error", "error", { e }));
+  void lcd(
+    fetchRecentData(clubId, dispatch, authStatus),
+    "hubListen.subscribeAndFetch",
+  );
 }
 
 export default function Subscriptions({ clubId }: SubscriptionsParams) {
@@ -217,13 +219,10 @@ export default function Subscriptions({ clubId }: SubscriptionsParams) {
           priorConnectionState === ConnectionState.Connecting &&
           payload.data.connectionState === ConnectionState.Connected
         ) {
-          fetchRecentData(clubId, dispatch, authStatus)
-            .then(() => {
-              log("hublisten.api.fetchRecentData.success", "debug");
-            })
-            .catch((e) =>
-              log("hublisten.api.fetchRecentData.error", "error", { e }),
-            );
+          void lcd(
+            fetchRecentData(clubId, dispatch, authStatus),
+            "hublisten.api.fetchRecentData",
+          );
         }
         priorConnectionState = payload.data.connectionState;
       } else {
