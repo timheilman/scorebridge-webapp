@@ -11,8 +11,8 @@ import { BrowserRouter as Router } from "react-router-dom";
 import ScoreBridgeRoutes from "./features/header/ScoreBridgeRoutes";
 import SessionfulRouterHeader from "./features/header/SessionfulRouterHeader";
 import SessionlessRouterHeader from "./features/header/SessionlessRouterHeader";
-import requiredReactAppEnvVar from "./requiredReactAppEnvVar";
-import TypesafeTranslationT from "./TypesafeTranslationT";
+import requiredReactAppEnvVar from "./scorebridge-ts-submodule/requiredReactAppEnvVar";
+import TypesafeTranslationT from "./scorebridge-ts-submodule/TypesafeTranslationT";
 
 // TODO: customize the Authenticator component to use our own i18n w/these translations and remove this:
 amplifyI18n.putVocabularies(amplifyUiReactTranslations);

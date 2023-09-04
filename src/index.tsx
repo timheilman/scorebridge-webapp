@@ -11,7 +11,7 @@ import { Provider as ReactReduxProvider } from "react-redux";
 import App from "./App";
 import { store } from "./app/store";
 import reportWebVitals from "./reportWebVitals";
-import requiredReactAppEnvVar from "./requiredReactAppEnvVar";
+import requiredReactAppEnvVar from "./scorebridge-ts-submodule/requiredReactAppEnvVar";
 
 Amplify.configure({
   API: {

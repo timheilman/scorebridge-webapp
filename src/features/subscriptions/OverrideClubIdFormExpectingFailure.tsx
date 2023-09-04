@@ -2,7 +2,7 @@ import { ChangeEvent } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import TypesafeTranslationT from "../../TypesafeTranslationT";
+import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import { selectFailingClubId, setFailingClubId } from "./subscriptionsSlice";
 
 export function OverrideClubIdFormExpectingFailure() {

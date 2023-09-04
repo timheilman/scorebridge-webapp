@@ -1,7 +1,7 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useTranslation } from "react-i18next";
 
-import TypesafeTranslationT from "../../TypesafeTranslationT";
+import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 
 export default function SignOutButton() {
   const { signOut, authStatus } = useAuthenticator((context) => [

@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 
-import requiredReactAppEnvVar from "../../requiredReactAppEnvVar";
-import TypesafeTranslationT from "../../TypesafeTranslationT";
+import requiredReactAppEnvVar from "../../scorebridge-ts-submodule/requiredReactAppEnvVar";
+import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 export default function SessionlessRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;

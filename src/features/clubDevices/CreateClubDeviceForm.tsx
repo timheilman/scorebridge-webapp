@@ -9,7 +9,7 @@ import { mutationCreateClubDevice } from "../../graphql/mutations";
 import { handleGqlReject, maybeFooterElement } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
-import TypesafeTranslationT from "../../TypesafeTranslationT";
+import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 const log = logFn("src.features.clubDevices.createClubDeviceForm.");
 export function CreateClubDeviceForm() {
   const [submitInFlight, setSubmitInFlight] = useState(false);

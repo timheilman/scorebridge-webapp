@@ -12,8 +12,8 @@ import { gqlMutation } from "../../gql";
 import { mutationCreateClub } from "../../graphql/mutations";
 import { handleGqlReject, maybeFooterElement } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
-import requiredReactAppEnvVar from "../../requiredReactAppEnvVar";
-import TypesafeTranslationT from "../../TypesafeTranslationT";
+import requiredReactAppEnvVar from "../../scorebridge-ts-submodule/requiredReactAppEnvVar";
+import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
 const log = logFn("src.features.signUp.SignUpForm");
 

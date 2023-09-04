@@ -4,8 +4,8 @@ import { Navigate, NavLink, useLocation } from "react-router-dom";
 
 import { userInGroup } from "../../cognito";
 import { useClubId } from "../../lib/useClubId";
-import requiredReactAppEnvVar from "../../requiredReactAppEnvVar";
-import TypesafeTranslationT from "../../TypesafeTranslationT";
+import requiredReactAppEnvVar from "../../scorebridge-ts-submodule/requiredReactAppEnvVar";
+import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import SignOutButton from "../signIn/SignOutButton";
 import { OverrideClubIdFormExpectingSuccess } from "../subscriptions/OverrideClubIdFormExpectingSuccess";
