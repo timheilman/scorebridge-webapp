@@ -6,7 +6,7 @@ import { API, graphqlOperation, Hub } from "aws-amplify";
 import gql from "graphql-tag";
 import { useEffect } from "react";
 
-import { ClubDevice, ListClubDevicesOutput } from "../../../appsync";
+import { Club, ClubDevice, ListClubDevicesOutput } from "../../../appsync";
 import { useAppDispatch } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
@@ -14,6 +14,7 @@ import { logCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/lo
 import {
   deleteClubDevice,
   insertClubDevice,
+  setClub,
   setClubDevices,
 } from "../clubDevices/clubDevicesSlice";
 import {
@@ -53,41 +54,71 @@ const fetchRecentData = async (
   dispatch: any,
   authStatus: AuthStatus,
 ) => {
+  const promises: Promise<unknown>[] = [];
   // Retrieve some/all data from AppSync
-  return gqlMutation<ListClubDevicesOutput>(
-    authStatus,
-    gql`
-      query listClubDevices($input: ListClubDevicesInput!) {
-        listClubDevices(input: $input) {
-          clubDevices {
-            clubDeviceId
-            name
-            table
+  promises.push(
+    gqlMutation<ListClubDevicesOutput>(
+      authStatus,
+      gql`
+        query listClubDevices($input: ListClubDevicesInput!) {
+          listClubDevices(input: $input) {
+            clubDevices {
+              clubDeviceId
+              name
+              table
+            }
           }
         }
+      `,
+      {
+        input: { clubId },
+      },
+    ).then((res) => {
+      if (res.errors) {
+        throw new Error(JSON.stringify(res.errors, null, 2));
       }
-    `,
-    {
-      input: { clubId },
-    },
-  ).then((res) => {
-    if (res.errors) {
-      throw new Error(JSON.stringify(res.errors, null, 2));
-    }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const d = res.data.listClubDevices.clubDevices as ClubDevice[];
-    // TODO: handle nextToken etc...
-    log("dispatchingSetClubDevices", "debug", { res });
-    dispatch(
-      setClubDevices(
-        d.reduce<Record<string, ClubDevice>>((acc, cd) => {
-          acc[cd.clubDeviceId] = cd;
-          return acc;
-        }, {}),
-      ),
-    );
-  });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      const d = res.data.listClubDevices.clubDevices as ClubDevice[];
+      // TODO: handle nextToken etc...
+      log("dispatchingSetClubDevices", "debug", { res });
+      dispatch(
+        setClubDevices(
+          d.reduce<Record<string, ClubDevice>>((acc, cd) => {
+            acc[cd.clubDeviceId] = cd;
+            return acc;
+          }, {}),
+        ),
+      );
+    }),
+  );
+  promises.push(
+    gqlMutation<Club>(
+      authStatus,
+      gql`
+        query getClub($clubId: String!) {
+          getClub(clubId: $clubId) {
+            id
+            name
+            createdAt
+            updatedAt
+          }
+        }
+      `,
+      {
+        clubId,
+      },
+    ).then((res) => {
+      if (res.errors) {
+        throw new Error(JSON.stringify(res.errors, null, 2));
+      }
+      log("fetchRecentData.dispatchingSetClub", "debug", { res });
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      dispatch(setClub(res.data.getClub as Club));
+    }),
+  );
+  await Promise.all(promises);
 };
 export interface SubscriptionsParams {
   clubId: string;
@@ -99,6 +130,7 @@ function subscribeAndFetch(
     clubId: string,
     callback: (arg0: T) => void,
     errCallback: (arg0: unknown) => void,
+    clubIdVarName?: string,
   ) => void,
   clubId: string,
   dispatch: any,
@@ -137,6 +169,24 @@ function subscribeAndFetch(
       );
     },
   );
+  typedSubscription<{ updatedClub: Club }>(
+    "updatedClub",
+    clubId,
+    (res) => {
+      log("typedSubscription.updatedClubCallback", "debug", { res });
+      dispatch(setClub(res.updatedClub));
+    },
+    (e: any) => {
+      dispatch(
+        setSubscriptionStatus([
+          "updatedClub",
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `failed post-initialization: ${e.error.errors[0].message}`,
+        ]),
+      );
+    },
+    "id",
+  );
 
   void lcd(
     fetchRecentData(clubId, dispatch, authStatus),
@@ -161,17 +211,20 @@ export default function Subscriptions({ clubId }: SubscriptionsParams) {
       clubId: string,
       callback: (arg0: T) => void,
       errCallback: (arg0: unknown) => void,
+      clubIdVarName = "clubId",
     ) => {
       try {
         deleteSub(pool, dispatch, subId);
         log("subs.deletedAndSubscribingTo", "debug", { subId, clubId });
         if (!pool[subId]) {
+          const variables: Record<string, unknown> = {};
+          variables[clubIdVarName] = clubId;
           pool[subId] = API.graphql<GraphQLSubscription<T>>({
             authMode:
               authStatus === "authenticated"
                 ? "AMAZON_COGNITO_USER_POOLS"
                 : "API_KEY",
-            ...graphqlOperation(subIdToSubGql[subId], { clubId }),
+            ...graphqlOperation(subIdToSubGql[subId], variables),
           }).subscribe({
             next: (data) => {
               if (!data.value?.data) {

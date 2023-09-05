@@ -10,10 +10,11 @@ import { useCallback, useMemo, useRef } from "react";
 import { ClubDevice } from "../../../appsync";
 import { useAppSelector } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
-import { mutationDeleteClubDevice } from "../../graphql/mutations";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
+import { mutationDeleteClubDevice } from "../../scorebridge-ts-submodule/graphql/mutations";
 import { selectClubDevices } from "./clubDevicesSlice";
+import { ClubName } from "./ClubName";
 import { CreateClubDeviceForm } from "./CreateClubDeviceForm";
 const log = logFn("src.features.clubDevices.clubDevicesPage.");
 
@@ -53,6 +54,7 @@ export default function ClubDevicesPage() {
   const voidableClubDevices = useVoidableClubDevices();
   const voidableColumnDefs = useVoidableColumnDefs();
   const clubId = useClubId();
+
   const defaultColDef = useMemo(() => {
     return {
       resizable: true,
@@ -63,7 +65,6 @@ export default function ClubDevicesPage() {
     clubDeviceId: string,
     authStatus: AuthStatus,
   ) => {
-    /* create a new club */
     return gqlMutation<ClubDevice>(authStatus, mutationDeleteClubDevice, {
       input: { clubId, clubDeviceId },
     });
@@ -95,7 +96,8 @@ export default function ClubDevicesPage() {
   );
 
   return (
-    <div>
+    <>
+      <ClubName />
       <p>Your club devices:</p>
       <div
         className="ag-theme-alpine"
@@ -115,6 +117,6 @@ export default function ClubDevicesPage() {
         />
       </div>
       <CreateClubDeviceForm />
-    </div>
+    </>
   );
 }

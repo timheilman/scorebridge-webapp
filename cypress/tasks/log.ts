@@ -1,5 +1,5 @@
-import { LogLevel } from "../../src/scorebridge-ts-submodule/genericLogger";
 import { logFn } from "../../src/lib/logging";
+import { LogLevel } from "../../src/scorebridge-ts-submodule/genericLogger";
 
 export interface LogParams {
   catPrefix: string;

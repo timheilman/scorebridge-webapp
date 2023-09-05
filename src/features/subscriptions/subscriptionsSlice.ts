@@ -5,7 +5,8 @@ import { RootState } from "../../app/store";
 import {
   subscriptionCreatedClubDevice,
   subscriptionDeletedClubDevice,
-} from "../../graphql/subscriptions";
+  subscriptionUpdatedClub,
+} from "../../scorebridge-ts-submodule/graphql/subscriptions";
 
 export interface SubscriptionsState {
   value: Record<string, string>;
@@ -51,11 +52,13 @@ export const { setSubscriptionStatus, setFailingClubId, setFallbackClubId } =
 export interface allSubscriptionsI {
   createdClubDevice: DocumentNode;
   deletedClubDevice: DocumentNode;
+  updatedClub: DocumentNode;
 }
 
 export const subIdToSubGql: allSubscriptionsI = {
   createdClubDevice: subscriptionCreatedClubDevice,
   deletedClubDevice: subscriptionDeletedClubDevice,
+  updatedClub: subscriptionUpdatedClub,
 };
 export const selectSubscriptionById =
   (subId: keyof allSubscriptionsI) => (state: RootState) =>

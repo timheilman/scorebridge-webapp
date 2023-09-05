@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 
 import { CreateClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
-import { mutationDeleteClubAndAdmin } from "../../graphql/mutations";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
+import { mutationDeleteClubAndAdmin } from "../../scorebridge-ts-submodule/graphql/mutations";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
 const log = logFn("src.features.signUp.ForgetMeForm");

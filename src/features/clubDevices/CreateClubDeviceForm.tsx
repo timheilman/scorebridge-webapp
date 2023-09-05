@@ -5,10 +5,10 @@ import { useTranslation } from "react-i18next";
 
 import { ClubDevice } from "../../../appsync";
 import { gqlMutation } from "../../gql";
-import { mutationCreateClubDevice } from "../../graphql/mutations";
 import { handleGqlReject, maybeFooterElement } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
+import { mutationCreateClubDevice } from "../../scorebridge-ts-submodule/graphql/mutations";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 const log = logFn("src.features.clubDevices.createClubDeviceForm.");
 export function CreateClubDeviceForm() {

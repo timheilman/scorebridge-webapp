@@ -1,18 +1,31 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { ClubDevice } from "../../../appsync";
+import { Club, ClubDevice } from "../../../appsync";
 import { RootState } from "../../app/store";
 
 export interface ClubDevicesState {
   value: Record<string, ClubDevice>;
+  club: Club;
 }
 
-const initialState: ClubDevicesState = { value: {} };
+const initialState: ClubDevicesState = {
+  value: {},
+  club: {
+    __typename: "Club",
+    id: "awaiting loading...",
+    name: "awaiting loading...",
+    updatedAt: new Date().toJSON(),
+    createdAt: new Date().toJSON(),
+  },
+};
 
 export const clubDevicesSlice = createSlice({
   name: "clubDevices",
   initialState,
   reducers: {
+    setClub: (state, action: PayloadAction<Club>) => {
+      state.club = action.payload;
+    },
     setClubDevices: (
       state,
       action: PayloadAction<Record<string, ClubDevice>>,
@@ -33,9 +46,9 @@ export const clubDevicesSlice = createSlice({
   },
 });
 
-export const { setClubDevices, insertClubDevice, deleteClubDevice } =
+export const { setClub, setClubDevices, insertClubDevice, deleteClubDevice } =
   clubDevicesSlice.actions;
 
 export const selectClubDevices = (state: RootState) => state.clubDevices.value;
-
+export const selectClubName = (state: RootState) => state.clubDevices.club.name;
 export default clubDevicesSlice.reducer;

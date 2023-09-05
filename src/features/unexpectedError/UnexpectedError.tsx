@@ -2,7 +2,7 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect, useState } from "react";
 
 import { gqlMutation } from "../../gql";
-import { mutationUnexpectedError } from "../../graphql/mutations";
+import { mutationUnexpectedError } from "../../scorebridge-ts-submodule/graphql/mutations";
 
 export default function UnexpectedError() {
   const [callResult, setCallResult] = useState<unknown | null>(null);

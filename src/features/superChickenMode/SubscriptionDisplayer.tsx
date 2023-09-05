@@ -5,6 +5,7 @@ export default function SubscriptionDisplayer() {
     <ul>
       <SubscriptionResult subscriptionId="createdClubDevice" />
       <SubscriptionResult subscriptionId="deletedClubDevice" />
+      <SubscriptionResult subscriptionId="updatedClub" />
     </ul>
   );
 }

@@ -9,9 +9,9 @@ import { useTranslation } from "react-i18next";
 
 import { CreateClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
-import { mutationCreateClub } from "../../graphql/mutations";
 import { handleGqlReject, maybeFooterElement } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
+import { mutationCreateClub } from "../../scorebridge-ts-submodule/graphql/mutations";
 import requiredReactAppEnvVar from "../../scorebridge-ts-submodule/requiredReactAppEnvVar";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
