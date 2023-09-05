@@ -1,5 +1,5 @@
 import { useAppSelector } from "../../app/hooks";
-import { useClubId } from "../../scorebridge-ts-submodule/useClubId";
+import { useClubId } from "../../lib/useClubId";
 import {
   allSubscriptionsI,
   selectSubscriptionById,

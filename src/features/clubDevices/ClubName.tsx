@@ -6,7 +6,7 @@ import { Club } from "../../../appsync";
 import { useAppSelector } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
-import { useClubId } from "../../scorebridge-ts-submodule/useClubId";
+import { useClubId } from "../../lib/useClubId";
 import { mutationUpdateClub } from "../../scorebridge-ts-submodule/graphql/mutations";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import { selectClubName } from "./clubDevicesSlice";
