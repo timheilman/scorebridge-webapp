@@ -8,6 +8,17 @@ import {
   subscriptionUpdatedClub,
 } from "../../scorebridge-ts-submodule/graphql/subscriptions";
 
+export interface allSubscriptionsI {
+  createdClubDevice: DocumentNode;
+  deletedClubDevice: DocumentNode;
+  updatedClub: DocumentNode;
+}
+
+export const subIdToSubGql: allSubscriptionsI = {
+  createdClubDevice: subscriptionCreatedClubDevice,
+  deletedClubDevice: subscriptionDeletedClubDevice,
+  updatedClub: subscriptionUpdatedClub,
+};
 export interface SubscriptionsState {
   value: Record<string, string>;
   fallbackClubId: string;
@@ -15,10 +26,13 @@ export interface SubscriptionsState {
 }
 
 const initialState: SubscriptionsState = {
-  value: {
-    createdClubDevice: "disconnected",
-    deletedClubDevice: "disconnected",
-  },
+  value: Object.keys(subIdToSubGql).reduce(
+    (acc: Record<string, string>, subId) => {
+      acc[subId] = "disconnected";
+      return acc;
+    },
+    {},
+  ),
   fallbackClubId: "",
   failingClubId: "01H8Z4Y5GF5DADWSC449PYFWC2",
 };
@@ -49,17 +63,6 @@ export const subscriptionsSlice = createSlice({
 export const { setSubscriptionStatus, setFailingClubId, setFallbackClubId } =
   subscriptionsSlice.actions;
 
-export interface allSubscriptionsI {
-  createdClubDevice: DocumentNode;
-  deletedClubDevice: DocumentNode;
-  updatedClub: DocumentNode;
-}
-
-export const subIdToSubGql: allSubscriptionsI = {
-  createdClubDevice: subscriptionCreatedClubDevice,
-  deletedClubDevice: subscriptionDeletedClubDevice,
-  updatedClub: subscriptionUpdatedClub,
-};
 export const selectSubscriptionById =
   (subId: keyof allSubscriptionsI) => (state: RootState) =>
     state.subscriptions.value[subId];

@@ -283,8 +283,13 @@ export default function Subscriptions({ clubId }: SubscriptionsParams) {
       }
     });
     return () => {
-      deleteSub(pool, dispatch, "createdClubDevice");
-      deleteSub(pool, dispatch, "deletedClubDevice");
+      Object.keys(subIdToSubGql).forEach((subId: string) => {
+        deleteSub(
+          pool,
+          dispatch,
+          subId as keyof allSubscriptionsI /* actually safe */,
+        );
+      });
       dispatch(setClubDevices({}));
       stopListening();
     };

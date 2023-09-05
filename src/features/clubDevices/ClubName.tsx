@@ -16,7 +16,7 @@ export function ClubName() {
   const t = useTranslation().t as TypesafeTranslationT;
   const clubName = useAppSelector(selectClubName);
   const clubId = useClubId();
-  const [volatileClubName, setVolatileClubName] = useState(clubName);
+  const [volatileClubName, setVolatileClubName] = useState("");
   const { authStatus } = useAuthenticator();
   const updateClub = async (
     club: Omit<Omit<Club, "createdAt">, "updatedAt">,
@@ -44,15 +44,14 @@ export function ClubName() {
   return (
     <div>
       <p>Your club name: {clubName}</p>
-      <label htmlFor="clubNameInput">
-        {t("clubDevicesPage.clubName.label")}
-      </label>
+      <label htmlFor="clubNameInput">{t("clubDevices.clubName.label")}</label>
       <input
         style={{ width: "85%" }}
         type="text"
         id="clubNameInput"
         onChange={handleChangeClubName}
         value={volatileClubName}
+        placeholder={t("clubDevices.clubName.placeholder")}
         data-test-id="clubDevicesPageClubName"
       />
     </div>

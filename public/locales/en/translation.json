@@ -12,6 +12,10 @@
       },
       "legend": "Onboard a new device to your club:",
       "submit": "Onboard my device"
+    },
+    "clubName": {
+      "label": "Club Name",
+      "placeholder": "My Bridge Club"
     }
   },
   "forgetMe": {
