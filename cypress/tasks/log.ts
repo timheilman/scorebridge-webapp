@@ -1,4 +1,4 @@
-import { LogLevel } from "../../src/lib/genericLogger";
+import { LogLevel } from "../../src/scorebridge-ts-submodule/genericLogger";
 import { logFn } from "../../src/lib/logging";
 
 export interface LogParams {
