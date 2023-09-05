@@ -1,7 +1,7 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 
 import { useAppSelector } from "../../app/hooks";
-import { useClubId } from "../../lib/useClubId";
+import { useClubId } from "../../scorebridge-ts-submodule/useClubId";
 import ScoreBridgeAuthenticator from "../signIn/ScoreBridgeAuthenticator";
 import SignUpForm from "../signUp/SignUpForm";
 import FallbackFormWhenNonAdminSuper from "../subscriptions/FallbackFormWhenNonAdminSuper";

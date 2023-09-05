@@ -11,7 +11,7 @@ import { ClubDevice } from "../../../appsync";
 import { useAppSelector } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
-import { useClubId } from "../../lib/useClubId";
+import { useClubId } from "../../scorebridge-ts-submodule/useClubId";
 import { mutationDeleteClubDevice } from "../../scorebridge-ts-submodule/graphql/mutations";
 import { selectClubDevices } from "./clubDevicesSlice";
 import { ClubName } from "./ClubName";

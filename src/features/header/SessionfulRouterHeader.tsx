@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 
 import { userInGroup } from "../../cognito";
-import { useClubId } from "../../lib/useClubId";
+import { useClubId } from "../../scorebridge-ts-submodule/useClubId";
 import requiredReactAppEnvVar from "../../scorebridge-ts-submodule/requiredReactAppEnvVar";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";

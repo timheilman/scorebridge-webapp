@@ -7,7 +7,7 @@ import { ClubDevice } from "../../../appsync";
 import { gqlMutation } from "../../gql";
 import { handleGqlReject, maybeFooterElement } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
-import { useClubId } from "../../lib/useClubId";
+import { useClubId } from "../../scorebridge-ts-submodule/useClubId";
 import { mutationCreateClubDevice } from "../../scorebridge-ts-submodule/graphql/mutations";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 const log = logFn("src.features.clubDevices.createClubDeviceForm.");
