@@ -13,16 +13,16 @@ import { logFn } from "../../lib/logging";
 import { logCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/logCompletionDecorator";
 import { deleteSub } from "../../scorebridge-ts-submodule/subscriptions";
 import {
+  allSubscriptionsI,
+  setSubscriptionStatus,
+  subIdToSubGql,
+} from "../../scorebridge-ts-submodule/subscriptionStatesSlice";
+import {
   deleteClubDevice,
   insertClubDevice,
   setClub,
   setClubDevices,
 } from "../clubDevices/clubDevicesSlice";
-import {
-  allSubscriptionsI,
-  setSubscriptionStatus,
-  subIdToSubGql,
-} from "./subscriptionsSlice";
 
 const log = logFn("src.features.subscriptions.Subscriptions.");
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -195,7 +195,7 @@ export default function Subscriptions({ clubId }: SubscriptionsParams) {
       clubIdVarName = "clubId",
     ) => {
       try {
-        deleteSub(pool, dispatch, subId);
+        deleteSub(pool, dispatch, subId, log, "debug");
         log("subs.deletedAndSubscribingTo", "debug", { subId, clubId });
         if (!pool[subId]) {
           const variables: Record<string, unknown> = {};
@@ -269,6 +269,8 @@ export default function Subscriptions({ clubId }: SubscriptionsParams) {
           pool,
           dispatch,
           subId as keyof allSubscriptionsI /* actually safe */,
+          log,
+          "debug",
         );
       });
       dispatch(setClubDevices({}));

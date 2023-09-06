@@ -22,7 +22,8 @@
     "appsync.d.ts",
     "cypress",
     "cypress.config.ts",
-    "src/rootDirName.ts"
+    "src/rootDirName.ts",
+    "src/scorebridge-ts-submodule"
   ],
   "exclude": ["node_modules/**/*"],
   "typeAcquisition": { "include": ["jest"] }
