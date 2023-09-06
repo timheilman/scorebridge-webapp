@@ -1,4 +1,3 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { useEffect, useState } from "react";
 
 import { gqlMutation } from "../../gql";
@@ -6,9 +5,8 @@ import { mutationUnexpectedError } from "../../scorebridge-ts-submodule/graphql/
 
 export default function UnexpectedError() {
   const [callResult, setCallResult] = useState<unknown | null>(null);
-  const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   useEffect(() => {
-    gqlMutation(authStatus, mutationUnexpectedError)
+    gqlMutation(mutationUnexpectedError)
       .then(() => {
         throw new Error(
           "This code is expected never to be reached; this throw indicates a test failure.",

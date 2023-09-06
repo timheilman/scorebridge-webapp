@@ -1,8 +1,6 @@
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 
-import { AuthStatus } from "@aws-amplify/ui";
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { CellClickedEvent } from "ag-grid-community";
 import { AgGridReact } from "ag-grid-react";
 import { useCallback, useMemo, useRef } from "react";
@@ -50,7 +48,6 @@ const useVoidableClubDevices = () => {
 
 export default function ClubDevicesPage() {
   const gridRef = useRef();
-  const { authStatus } = useAuthenticator();
   const voidableClubDevices = useVoidableClubDevices();
   const voidableColumnDefs = useVoidableColumnDefs();
   const clubId = useClubId();
@@ -60,12 +57,8 @@ export default function ClubDevicesPage() {
       resizable: true,
     };
   }, []);
-  const deleteClubDevice = async (
-    clubId: string,
-    clubDeviceId: string,
-    authStatus: AuthStatus,
-  ) => {
-    return gqlMutation<ClubDevice>(authStatus, mutationDeleteClubDevice, {
+  const deleteClubDevice = async (clubId: string, clubDeviceId: string) => {
+    return gqlMutation<ClubDevice>(mutationDeleteClubDevice, {
       input: { clubId, clubDeviceId },
     });
   };
@@ -83,16 +76,14 @@ export default function ClubDevicesPage() {
         if (!clubId) {
           return;
         }
-        deleteClubDevice(clubId, event.data.clubDeviceId, authStatus).catch(
-          (e) => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            log("onCellClicked.deleteClubDevice.end.error", "error", { e });
-          },
-        );
+        deleteClubDevice(clubId, event.data.clubDeviceId).catch((e) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          log("onCellClicked.deleteClubDevice.end.error", "error", { e });
+        });
       }
       log("onCellClicked", "info", event);
     },
-    [authStatus, clubId],
+    [clubId],
   );
 
   return (

@@ -18,7 +18,14 @@ export default function SuperChickenMode() {
       return (
         <>
           <p>reinitializing subscriptions...</p>
-          <Subscriptions clubId={clubId} />
+          <Subscriptions
+            clubId={clubId}
+            authMode={
+              authStatus === "authenticated"
+                ? "AMAZON_COGNITO_USER_POOLS"
+                : "API_KEY"
+            }
+          />
         </>
       );
     } else if (authStatus !== "authenticated") {

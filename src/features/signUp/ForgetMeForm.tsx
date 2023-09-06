@@ -1,4 +1,3 @@
-import { AuthStatus } from "@aws-amplify/ui";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -12,19 +11,11 @@ import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTransla
 import styles from "./SignUpForm.module.css";
 const log = logFn("src.features.signUp.ForgetMeForm");
 
-const deleteClubAndAdmin = async (
-  clubId: string,
-  userId: string,
-  authStatus: AuthStatus,
-) => {
+const deleteClubAndAdmin = async (clubId: string, userId: string) => {
   /* create a new club */
-  return gqlMutation<CreateClubResponse>(
-    authStatus,
-    mutationDeleteClubAndAdmin,
-    {
-      input: { clubId, userId },
-    },
-  );
+  return gqlMutation<CreateClubResponse>(mutationDeleteClubAndAdmin, {
+    input: { clubId, userId },
+  });
 };
 
 interface MaybeErrorElementParams {
@@ -61,8 +52,7 @@ export default function ForgetMeForm() {
     string | null
   >(null);
   const [confirm, setConfirm] = useState("");
-  const { authStatus, user, signOut } = useAuthenticator((context) => [
-    context.authStatus,
+  const { user, signOut } = useAuthenticator((context) => [
     context.user,
     context.signOut,
   ]);
@@ -123,7 +113,6 @@ export default function ForgetMeForm() {
     deleteClubAndAdmin(
       clubId as string /* adminSuper: don't do this */,
       user.username,
-      authStatus,
     )
       .then((result) => {
         setDeleteClubAndAdminError(null);

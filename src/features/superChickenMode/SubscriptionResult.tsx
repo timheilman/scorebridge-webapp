@@ -12,6 +12,7 @@ export default function SubscriptionResult({
   subscriptionId,
 }: SubscriptionResultParams) {
   const clubId = useClubId();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const subsStatus = useAppSelector(
     selectSubscriptionStateById(subscriptionId),
   );

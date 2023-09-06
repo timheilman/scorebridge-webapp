@@ -1,5 +1,4 @@
 import { GraphQLQuery, GraphQLResult } from "@aws-amplify/api";
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -20,11 +19,9 @@ export function CreateClubDeviceForm() {
   const [createdDeviceName, setCreatedDeviceName] = useState("");
   const [regToken, setRegToken] = useState("");
   const clubId = useClubId();
-  const { authStatus } = useAuthenticator();
   const createClubDevice = async (deviceName: string, regToken: string) => {
     /* create a new club */
     return gqlMutation<{ createClubDevice: ClubDevice }>(
-      authStatus,
       mutationCreateClubDevice,
       {
         input: {

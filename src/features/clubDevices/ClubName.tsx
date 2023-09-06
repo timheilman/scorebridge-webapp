@@ -1,4 +1,3 @@
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { ChangeEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,11 +16,10 @@ export function ClubName() {
   const clubName = useAppSelector(selectClubName);
   const clubId = useClubId();
   const [volatileClubName, setVolatileClubName] = useState("");
-  const { authStatus } = useAuthenticator();
   const updateClub = async (
     club: Omit<Omit<Club, "createdAt">, "updatedAt">,
   ) => {
-    return gqlMutation<{ updateClub: Club }>(authStatus, mutationUpdateClub, {
+    return gqlMutation<{ updateClub: Club }>(mutationUpdateClub, {
       input: {
         id: club.id,
         name: club.name,

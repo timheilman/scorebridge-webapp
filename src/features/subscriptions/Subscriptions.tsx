@@ -1,6 +1,4 @@
 import { CONNECTION_STATE_CHANGE, ConnectionState } from "@aws-amplify/pubsub";
-import { AuthStatus } from "@aws-amplify/ui";
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { Hub } from "aws-amplify";
 import gql from "graphql-tag";
 import { useEffect } from "react";
@@ -11,6 +9,7 @@ import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { logCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/logCompletionDecorator";
 import {
+  AuthModeType,
   deleteAllSubs,
   typedSubscription,
 } from "../../scorebridge-ts-submodule/subscriptions";
@@ -30,13 +29,12 @@ const lcd = logCompletionDecoratorFactory(log, false);
 const fetchRecentData = async (
   clubId: string,
   dispatch: any,
-  authStatus: AuthStatus,
+  authMode?: AuthModeType,
 ) => {
   const promises: Promise<unknown>[] = [];
   // Retrieve some/all data from AppSync
   promises.push(
     gqlMutation<ListClubDevicesOutput>(
-      authStatus,
       gql`
         query listClubDevices($input: ListClubDevicesInput!) {
           listClubDevices(input: $input) {
@@ -51,6 +49,7 @@ const fetchRecentData = async (
       {
         input: { clubId },
       },
+      authMode,
     ).then((res) => {
       if (res.errors) {
         throw new Error(JSON.stringify(res.errors, null, 2));
@@ -72,7 +71,6 @@ const fetchRecentData = async (
   );
   promises.push(
     gqlMutation<Club>(
-      authStatus,
       gql`
         query getClub($clubId: String!) {
           getClub(clubId: $clubId) {
@@ -86,6 +84,7 @@ const fetchRecentData = async (
       {
         clubId,
       },
+      authMode,
     ).then((res) => {
       if (res.errors) {
         throw new Error(JSON.stringify(res.errors, null, 2));
@@ -100,12 +99,13 @@ const fetchRecentData = async (
 };
 export interface SubscriptionsParams {
   clubId: string;
+  authMode?: AuthModeType;
 }
 
 function subscribeAndFetch(
   clubId: string,
   appDispatch: any,
-  authStatus: "configuring" | "authenticated" | "unauthenticated",
+  authMode?: AuthModeType,
 ) {
   log("hubListen.connected", "debug");
   typedSubscription({
@@ -115,6 +115,7 @@ function subscribeAndFetch(
       appDispatch(insertClubDevice(res.createdClubDevice));
     },
     appDispatch,
+    authMode,
   });
   typedSubscription({
     subId: "deletedClubDevice",
@@ -123,6 +124,7 @@ function subscribeAndFetch(
       appDispatch(deleteClubDevice(res.deletedClubDevice.clubDeviceId));
     },
     appDispatch,
+    authMode,
   });
   typedSubscription({
     subId: "updatedClub",
@@ -133,23 +135,26 @@ function subscribeAndFetch(
     },
     clubIdVarName: "id",
     appDispatch,
+    authMode,
   });
 
   void lcd(
-    fetchRecentData(clubId, appDispatch, authStatus),
+    fetchRecentData(clubId, appDispatch, authMode),
     "hubListen.subscribeAndFetch",
   );
 }
 
-export default function Subscriptions({ clubId }: SubscriptionsParams) {
-  const { authStatus } = useAuthenticator((context) => [context.authStatus]);
+export default function Subscriptions({
+  clubId,
+  authMode,
+}: SubscriptionsParams) {
   const appDispatch = useAppDispatch();
 
   useEffect(() => {
     log("initialFetch", "debug");
     let priorConnectionState: ConnectionState;
     log("hubListen.api.beforestart", "error");
-    subscribeAndFetch(clubId, appDispatch, authStatus);
+    subscribeAndFetch(clubId, appDispatch, authMode);
 
     log("hubListen.api.before", "error");
     const stopListening = Hub.listen("api", (data: any) => {
@@ -161,7 +166,7 @@ export default function Subscriptions({ clubId }: SubscriptionsParams) {
           payload.data.connectionState === ConnectionState.Connected
         ) {
           void lcd(
-            fetchRecentData(clubId, appDispatch, authStatus),
+            fetchRecentData(clubId, appDispatch, authMode),
             "hublisten.api.fetchRecentData",
           );
         }
@@ -175,6 +180,6 @@ export default function Subscriptions({ clubId }: SubscriptionsParams) {
       appDispatch(setClubDevices({}));
       stopListening();
     };
-  }, [authStatus, clubId, appDispatch]);
+  }, [authMode, clubId, appDispatch]);
   return <></>;
 }

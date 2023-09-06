@@ -1,6 +1,4 @@
 import { GraphQLQuery, GraphQLResult } from "@aws-amplify/api";
-import { AuthStatus } from "@aws-amplify/ui";
-import { useAuthenticator } from "@aws-amplify/ui-react";
 import { ChangeEvent, SyntheticEvent, useRef, useState } from "react";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -20,18 +18,21 @@ const log = logFn("src.features.signUp.SignUpForm");
 const createClub = async (
   newAdminEmail: string,
   newClubName: string,
-  authStatus: AuthStatus,
   recaptchaToken?: string,
 ) => {
   /* create a new club */
-  return gqlMutation<CreateClubResponse>(authStatus, mutationCreateClub, {
-    input: {
-      newAdminEmail,
-      newClubName,
-      suppressInvitationEmail: false,
-      recaptchaToken,
+  return gqlMutation<CreateClubResponse>(
+    mutationCreateClub,
+    {
+      input: {
+        newAdminEmail,
+        newClubName,
+        suppressInvitationEmail: false,
+        recaptchaToken,
+      },
     },
-  });
+    "API_KEY",
+  );
 };
 
 export default function SignUpForm() {
@@ -47,7 +48,6 @@ export default function SignUpForm() {
     getValue: () => string;
     reset: () => void;
   } | null>(null);
-  const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   const t = useTranslation().t as TypesafeTranslationT;
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault(); // we are taking over, in react, from browser event handling here
@@ -55,7 +55,7 @@ export default function SignUpForm() {
     setEverSubmitted(true);
     setSubmitInFlight(true);
     log("handleSubmit.start", "debug");
-    createClub(email, clubName, authStatus, captchaRef.current?.getValue())
+    createClub(email, clubName, captchaRef.current?.getValue())
       .then((result: GraphQLResult<GraphQLQuery<CreateClubResponse>>) => {
         captchaRef.current?.reset();
         setErrStr(null);
