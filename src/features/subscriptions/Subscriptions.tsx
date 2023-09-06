@@ -108,7 +108,7 @@ function subscribeAndFetch(
   authStatus: "configuring" | "authenticated" | "unauthenticated",
 ) {
   log("hubListen.connected", "debug");
-  typedSubscription<{ createdClubDevice: ClubDevice }>({
+  typedSubscription({
     subId: "createdClubDevice",
     clubId,
     callback: (res) => {
@@ -116,7 +116,7 @@ function subscribeAndFetch(
     },
     appDispatch,
   });
-  typedSubscription<{ deletedClubDevice: ClubDevice }>({
+  typedSubscription({
     subId: "deletedClubDevice",
     clubId,
     callback: (res) => {
@@ -124,7 +124,7 @@ function subscribeAndFetch(
     },
     appDispatch,
   });
-  typedSubscription<{ updatedClub: Club }>({
+  typedSubscription({
     subId: "updatedClub",
     clubId,
     callback: (res) => {
