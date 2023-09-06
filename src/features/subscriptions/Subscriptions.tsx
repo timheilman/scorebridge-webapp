@@ -11,6 +11,7 @@ import { useAppDispatch } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { logCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/logCompletionDecorator";
+import { deleteSub } from "../../scorebridge-ts-submodule/subscriptions";
 import {
   deleteClubDevice,
   insertClubDevice,
@@ -27,26 +28,6 @@ const log = logFn("src.features.subscriptions.Subscriptions.");
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const lcd = logCompletionDecoratorFactory(log, false);
-
-const deleteSub = (
-  subscriptions: Record<string, unknown>,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dispatch: any,
-  subId: keyof allSubscriptionsI,
-) => {
-  if (subscriptions[subId]) {
-    log("deleteSub.foundSubId", "debug", { subId });
-    /* eslint-disable @typescript-eslint/no-unsafe-call */
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    subscriptions[subId].unsubscribe();
-    /* eslint-enable @typescript-eslint/no-unsafe-call */
-    delete subscriptions[subId];
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    dispatch(setSubscriptionStatus([subId, "disconnected"]));
-  }
-  log("deleteSub.noSuchSubId", "debug", { subId });
-};
 
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment */
 const fetchRecentData = async (
