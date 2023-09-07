@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import { selectFallbackClubId, setFallbackClubId } from "./subscriptionsSlice";
 
-export function OverrideClubIdFormExpectingSuccess() {
+export function OverrideClubIdForm() {
   const t = useTranslation().t as TypesafeTranslationT;
   const dispatch = useAppDispatch();
   const fallbackClubId = useAppSelector(selectFallbackClubId);

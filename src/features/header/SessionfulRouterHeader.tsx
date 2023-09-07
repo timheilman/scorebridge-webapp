@@ -8,17 +8,19 @@ import requiredReactAppEnvVar from "../../scorebridge-ts-submodule/requiredReact
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import SignOutButton from "../signIn/SignOutButton";
-import { OverrideClubIdFormExpectingSuccess } from "../subscriptions/OverrideClubIdFormExpectingSuccess";
-import useSubscriptions from "../subscriptions/useSubscriptions";
+import { OverrideClubIdForm } from "../subscriptions/OverrideClubIdForm";
+import { SubscriptionComponent } from "../superChickenMode/SubscriptionComponent";
 
 // const log = logFn("src.features.header.SessionfulRouterHeader");
 
 export default function SessionfulRouterHeader() {
   const t = useTranslation().t as TypesafeTranslationT;
   const { pathname } = useLocation();
-  const clubId = useClubId();
   const { user } = useAuthenticator((context) => [context.user]);
-  useSubscriptions(clubId);
+  const clubId = useClubId();
+  if (!clubId && userInGroup(user, "adminClub")) {
+    throw new Error("adminClub member has no clubId");
+  }
   if (["/signin", "/signup"].includes(pathname)) {
     // naturally move to this page when logging in, and so the above tabs disappear:
     return <Navigate to="/club_devices" />;
@@ -43,8 +45,12 @@ export default function SessionfulRouterHeader() {
       </NavLink>
       {requiredReactAppEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
       <SignOutButton />
-      {userInGroup(user, "adminSuper") ? (
-        <OverrideClubIdFormExpectingSuccess />
+      {userInGroup(user, "adminSuper") ? <OverrideClubIdForm /> : ""}
+      {userInGroup(user, "adminClub") ? (
+        <SubscriptionComponent
+          clubId={clubId as string}
+          authMode="AMAZON_COGNITO_USER_POOLS"
+        />
       ) : (
         ""
       )}

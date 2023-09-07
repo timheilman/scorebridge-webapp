@@ -1,7 +1,7 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 
 import { userInGroup } from "../../cognito";
-import { OverrideClubIdFormExpectingSuccess } from "./OverrideClubIdFormExpectingSuccess";
+import { OverrideClubIdForm } from "../subscriptions/OverrideClubIdForm";
 
 export default function FallbackFormWhenNonAdminSuper() {
   const { authStatus, user } = useAuthenticator((context) => [
@@ -12,7 +12,7 @@ export default function FallbackFormWhenNonAdminSuper() {
     return (
       <>
         <p>Sessionless visit to SuperChickenMode!</p>
-        <OverrideClubIdFormExpectingSuccess />
+        <OverrideClubIdForm />
       </>
     );
   }
@@ -20,7 +20,7 @@ export default function FallbackFormWhenNonAdminSuper() {
     return (
       <>
         <p>AdminClub visit to SuperChickenMode!</p>
-        <OverrideClubIdFormExpectingSuccess />
+        <OverrideClubIdForm />
       </>
     );
   }
