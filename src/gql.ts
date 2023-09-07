@@ -1,7 +1,7 @@
 import { GraphQLQuery } from "@aws-amplify/api";
 import { API, graphqlOperation } from "aws-amplify";
 
-export type AuthMode = "AMAZON_COGNITO_USER_POOLS" | "API_KEY";
+import { AuthMode } from "./scorebridge-ts-submodule/authMode";
 
 export function gqlMutation<OUT>(
   gqlOpString: unknown,

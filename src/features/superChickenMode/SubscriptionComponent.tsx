@@ -1,4 +1,4 @@
-import { AuthMode } from "../../gql";
+import { AuthMode } from "../../scorebridge-ts-submodule/authMode";
 import useSubscriptions from "../subscriptions/useSubscriptions";
 export interface SubscriptionComponentParams {
   clubId: string;

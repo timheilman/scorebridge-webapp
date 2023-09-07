@@ -5,8 +5,9 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 import { Club, ClubDevice, ListClubDevicesOutput } from "../../../appsync";
-import { AuthMode, gqlMutation } from "../../gql";
+import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
+import { AuthMode } from "../../scorebridge-ts-submodule/authMode";
 import { logCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/logCompletionDecorator";
 import {
   deleteAllSubs,
