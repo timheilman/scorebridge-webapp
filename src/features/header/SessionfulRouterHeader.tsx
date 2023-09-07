@@ -9,7 +9,7 @@ import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTransla
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import SignOutButton from "../signIn/SignOutButton";
 import { OverrideClubIdFormExpectingSuccess } from "../subscriptions/OverrideClubIdFormExpectingSuccess";
-import Subscriptions from "../subscriptions/Subscriptions";
+import useSubscriptions from "../subscriptions/useSubscriptions";
 
 // const log = logFn("src.features.header.SessionfulRouterHeader");
 
@@ -18,7 +18,7 @@ export default function SessionfulRouterHeader() {
   const { pathname } = useLocation();
   const clubId = useClubId();
   const { user } = useAuthenticator((context) => [context.user]);
-
+  useSubscriptions(clubId);
   if (["/signin", "/signup"].includes(pathname)) {
     // naturally move to this page when logging in, and so the above tabs disappear:
     return <Navigate to="/club_devices" />;
@@ -43,7 +43,6 @@ export default function SessionfulRouterHeader() {
       </NavLink>
       {requiredReactAppEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
       <SignOutButton />
-      {clubId ? <Subscriptions clubId={clubId} /> : ""}
       {userInGroup(user, "adminSuper") ? (
         <OverrideClubIdFormExpectingSuccess />
       ) : (

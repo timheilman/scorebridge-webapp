@@ -9,7 +9,6 @@ import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { logCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/logCompletionDecorator";
 import {
-  AuthModeType,
   deleteAllSubs,
   typedSubscription,
 } from "../../scorebridge-ts-submodule/subscriptions";
@@ -26,31 +25,24 @@ const log = logFn("src.features.subscriptions.Subscriptions.");
 const lcd = logCompletionDecoratorFactory(log, false);
 
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment */
-const fetchRecentData = async (
-  clubId: string,
-  dispatch: any,
-  authMode?: AuthModeType,
-) => {
+const fetchRecentData = async (dispatch: any, clubId?: string) => {
   const promises: Promise<unknown>[] = [];
   // Retrieve some/all data from AppSync
-  promises.push(
-    gqlMutation<ListClubDevicesOutput>(
-      gql`
-        query listClubDevices($input: ListClubDevicesInput!) {
-          listClubDevices(input: $input) {
-            clubDevices {
-              clubDeviceId
-              name
-              table
-            }
-          }
+  const listClubDevicesGql = gql`
+    query listClubDevices($input: ListClubDevicesInput!) {
+      listClubDevices(input: $input) {
+        clubDevices {
+          clubDeviceId
+          name
+          table
         }
-      `,
-      {
-        input: { clubId },
-      },
-      authMode,
-    ).then((res) => {
+      }
+    }
+  `;
+  promises.push(
+    gqlMutation<ListClubDevicesOutput>(listClubDevicesGql, {
+      input: { clubId },
+    }).then((res) => {
       if (res.errors) {
         throw new Error(JSON.stringify(res.errors, null, 2));
       }
@@ -84,7 +76,6 @@ const fetchRecentData = async (
       {
         clubId,
       },
-      authMode,
     ).then((res) => {
       if (res.errors) {
         throw new Error(JSON.stringify(res.errors, null, 2));
@@ -97,16 +88,7 @@ const fetchRecentData = async (
   );
   await Promise.all(promises);
 };
-export interface SubscriptionsParams {
-  clubId: string;
-  authMode?: AuthModeType;
-}
-
-function subscribeAndFetch(
-  clubId: string,
-  appDispatch: any,
-  authMode?: AuthModeType,
-) {
+function subscribeAndFetch(appDispatch: any, clubId?: string) {
   log("hubListen.connected", "debug");
   typedSubscription({
     subId: "createdClubDevice",
@@ -115,7 +97,6 @@ function subscribeAndFetch(
       appDispatch(insertClubDevice(res.createdClubDevice));
     },
     appDispatch,
-    authMode,
   });
   typedSubscription({
     subId: "deletedClubDevice",
@@ -124,7 +105,6 @@ function subscribeAndFetch(
       appDispatch(deleteClubDevice(res.deletedClubDevice.clubDeviceId));
     },
     appDispatch,
-    authMode,
   });
   typedSubscription({
     subId: "updatedClub",
@@ -135,26 +115,19 @@ function subscribeAndFetch(
     },
     clubIdVarName: "id",
     appDispatch,
-    authMode,
   });
 
-  void lcd(
-    fetchRecentData(clubId, appDispatch, authMode),
-    "hubListen.subscribeAndFetch",
-  );
+  void lcd(fetchRecentData(appDispatch, clubId), "hubListen.subscribeAndFetch");
 }
 
-export default function Subscriptions({
-  clubId,
-  authMode,
-}: SubscriptionsParams) {
-  const appDispatch = useAppDispatch();
+export default function useSubscriptions(clubId?: string) {
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     log("initialFetch", "debug");
     let priorConnectionState: ConnectionState;
     log("hubListen.api.beforestart", "error");
-    subscribeAndFetch(clubId, appDispatch, authMode);
+    subscribeAndFetch(dispatch, clubId);
 
     log("hubListen.api.before", "error");
     const stopListening = Hub.listen("api", (data: any) => {
@@ -166,7 +139,7 @@ export default function Subscriptions({
           payload.data.connectionState === ConnectionState.Connected
         ) {
           void lcd(
-            fetchRecentData(clubId, appDispatch, authMode),
+            fetchRecentData(dispatch, clubId),
             "hublisten.api.fetchRecentData",
           );
         }
@@ -176,10 +149,9 @@ export default function Subscriptions({
       }
     });
     return () => {
-      deleteAllSubs(appDispatch);
-      appDispatch(setClubDevices({}));
+      deleteAllSubs(dispatch);
+      dispatch(setClubDevices({}));
       stopListening();
     };
-  }, [authMode, clubId, appDispatch]);
-  return <></>;
+  }, [clubId, dispatch]);
 }

@@ -5,27 +5,20 @@ import { useClubId } from "../../lib/useClubId";
 import ScoreBridgeAuthenticator from "../signIn/ScoreBridgeAuthenticator";
 import SignUpForm from "../signUp/SignUpForm";
 import FallbackFormWhenNonAdminSuper from "../subscriptions/FallbackFormWhenNonAdminSuper";
-import Subscriptions from "../subscriptions/Subscriptions";
 import { selectFallbackClubId } from "../subscriptions/subscriptionsSlice";
+import useSubscriptions from "../subscriptions/useSubscriptions";
 import SubscriptionDisplayer from "./SubscriptionDisplayer";
 
 export default function SuperChickenMode() {
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   const clubId = useClubId();
   const fallbackClubId = useAppSelector(selectFallbackClubId);
+  useSubscriptions(clubId);
   const MaybeSubscriptions = () => {
     if (clubId) {
       return (
         <>
           <p>reinitializing subscriptions...</p>
-          <Subscriptions
-            clubId={clubId}
-            authMode={
-              authStatus === "authenticated"
-                ? "AMAZON_COGNITO_USER_POOLS"
-                : "API_KEY"
-            }
-          />
         </>
       );
     } else if (authStatus !== "authenticated") {
