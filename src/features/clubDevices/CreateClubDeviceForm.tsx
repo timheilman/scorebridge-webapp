@@ -62,7 +62,7 @@ export function CreateClubDeviceForm() {
   };
 
   const handleChangeRegToken = (event: ChangeEvent<HTMLInputElement>) => {
-    setRegToken(event.target.value);
+    setRegToken(event.target.value.toLocaleUpperCase());
   };
 
   const t = useTranslation().t as TypesafeTranslationT;

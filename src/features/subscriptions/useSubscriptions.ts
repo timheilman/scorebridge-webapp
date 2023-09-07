@@ -2,9 +2,9 @@ import { CONNECTION_STATE_CHANGE, ConnectionState } from "@aws-amplify/pubsub";
 import { Hub } from "aws-amplify";
 import gql from "graphql-tag";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 import { Club, ClubDevice, ListClubDevicesOutput } from "../../../appsync";
-import { useAppDispatch } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { logCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/logCompletionDecorator";
@@ -88,70 +88,75 @@ const fetchRecentData = async (dispatch: any, clubId?: string) => {
   );
   await Promise.all(promises);
 };
-function subscribeAndFetch(appDispatch: any, clubId?: string) {
+function subscribeAndFetch(dispatch: any, clubId?: string) {
   log("hubListen.connected", "debug");
   typedSubscription({
     subId: "createdClubDevice",
     clubId,
     callback: (res) => {
-      appDispatch(insertClubDevice(res.createdClubDevice));
+      dispatch(insertClubDevice(res.createdClubDevice));
     },
-    appDispatch,
+    dispatch,
   });
   typedSubscription({
     subId: "deletedClubDevice",
     clubId,
     callback: (res) => {
-      appDispatch(deleteClubDevice(res.deletedClubDevice.clubDeviceId));
+      dispatch(deleteClubDevice(res.deletedClubDevice.clubDeviceId));
     },
-    appDispatch,
+    dispatch,
   });
   typedSubscription({
     subId: "updatedClub",
     clubId,
     callback: (res) => {
       log("typedSubscription.updatedClubCallback", "debug", { res });
-      appDispatch(setClub(res.updatedClub));
+      dispatch(setClub(res.updatedClub));
     },
+    dispatch,
     clubIdVarName: "id",
-    appDispatch,
   });
 
-  void lcd(fetchRecentData(appDispatch, clubId), "hubListen.subscribeAndFetch");
+  void lcd(fetchRecentData(dispatch, clubId), "hubListen.subscribeAndFetch");
 }
 
 export default function useSubscriptions(clubId?: string) {
-  const dispatch = useAppDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    log("initialFetch", "debug");
-    let priorConnectionState: ConnectionState;
-    log("hubListen.api.beforestart", "error");
-    subscribeAndFetch(dispatch, clubId);
+    if (clubId) {
+      log("initialFetch", "debug");
+      let priorConnectionState: ConnectionState;
+      log("hubListen.api.beforestart", "debug");
+      subscribeAndFetch(dispatch, clubId);
 
-    log("hubListen.api.before", "error");
-    const stopListening = Hub.listen("api", (data: any) => {
-      // log("hubListen.api.callback", "error", { data });
-      const { payload } = data;
-      if (payload.event === CONNECTION_STATE_CHANGE) {
-        if (
-          priorConnectionState === ConnectionState.Connecting &&
-          payload.data.connectionState === ConnectionState.Connected
-        ) {
-          void lcd(
-            fetchRecentData(dispatch, clubId),
-            "hublisten.api.fetchRecentData",
-          );
+      log("hubListen.api.before", "debug");
+      const stopListening = Hub.listen("api", (data: any) => {
+        // log("hubListen.api.callback", "error", { data });
+        const { payload } = data;
+        if (payload.event === CONNECTION_STATE_CHANGE) {
+          if (
+            priorConnectionState === ConnectionState.Connecting &&
+            payload.data.connectionState === ConnectionState.Connected
+          ) {
+            void lcd(
+              fetchRecentData(dispatch, clubId),
+              "hublisten.api.fetchRecentData",
+            );
+          }
+          priorConnectionState = payload.data.connectionState;
+        } else {
+          log("hubListen.api.callback.disregardingEvent", "error", { payload });
         }
-        priorConnectionState = payload.data.connectionState;
-      } else {
-        log("hubListen.api.callback.disregardingEvent", "error", { payload });
-      }
-    });
-    return () => {
-      deleteAllSubs(dispatch);
-      dispatch(setClubDevices({}));
-      stopListening();
-    };
-  }, [clubId, dispatch]);
+      });
+      return () => {
+        deleteAllSubs(dispatch);
+        dispatch(setClubDevices({}));
+        stopListening();
+      };
+    } else {
+      log("useSubscriptions.noClubId", "error");
+    }
+  }, [dispatch, clubId]);
 }
+/* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment */
