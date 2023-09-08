@@ -5,7 +5,7 @@ import { useClubId } from "../../lib/useClubId";
 import { selectLanguageResolved } from "../languageSelector/selectedLanguageSlice";
 import ScoreBridgeAuthenticator from "../signIn/ScoreBridgeAuthenticator";
 import SignUpForm from "../signUp/SignUpForm";
-import { SubscriptionComponent } from "../subscriptions/SubscriptionComponent";
+import { SubscriptionsComponent } from "../subscriptions/SubscriptionsComponent";
 import FallbackFormWhenNonAdminSuper from "./FallbackFormWhenNonAdminSuper";
 import SubscriptionDisplayer from "./SubscriptionDisplayer";
 
@@ -18,7 +18,7 @@ export default function SuperChickenMode() {
       return (
         <>
           <p>initializing subscriptions for api key...</p>
-          <SubscriptionComponent clubId={clubId} authMode="API_KEY" />
+          <SubscriptionsComponent clubId={clubId} authMode="API_KEY" />
         </>
       );
     } else if (authStatus !== "authenticated") {

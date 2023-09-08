@@ -10,9 +10,9 @@ import {
 } from "../../scorebridge-ts-submodule/subscriptions";
 import {
   deleteClubDevice,
-  insertClubDevice,
   setClub,
   setClubDevices,
+  upsertClubDevice,
 } from "../clubDevices/clubDevicesSlice";
 import { getClubGql } from "./gql/getClub";
 import { listClubDevicesGql } from "./gql/listClubDevices";
@@ -21,7 +21,7 @@ export interface SubscriptionComponentParams {
   clubId: string;
   authMode: AuthMode;
 }
-export function SubscriptionComponent({
+export function SubscriptionsComponent({
   clubId,
   authMode,
 }: SubscriptionComponentParams) {
@@ -32,7 +32,12 @@ export function SubscriptionComponent({
 
     generateTypedSubscription(accessParams, "createdClubDevice", (res) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      accessParams.dispatch(insertClubDevice(res.createdClubDevice));
+      accessParams.dispatch(upsertClubDevice(res.createdClubDevice));
+    });
+
+    generateTypedSubscription(accessParams, "updatedClubDevice", (res) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      accessParams.dispatch(upsertClubDevice(res.updatedClubDevice));
     });
 
     generateTypedSubscription(accessParams, "deletedClubDevice", (res) => {

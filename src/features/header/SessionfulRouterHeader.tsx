@@ -10,7 +10,7 @@ import LanguageSelector from "../languageSelector/LanguageSelector";
 import { selectLanguageResolved } from "../languageSelector/selectedLanguageSlice";
 import SignOutButton from "../signIn/SignOutButton";
 import { OverrideClubIdForm } from "../subscriptions/OverrideClubIdForm";
-import { SubscriptionComponent } from "../subscriptions/SubscriptionComponent";
+import { SubscriptionsComponent } from "../subscriptions/SubscriptionsComponent";
 
 // const log = logFn("src.features.header.SessionfulRouterHeader");
 
@@ -53,7 +53,7 @@ export default function SessionfulRouterHeader() {
       {userInGroup(user, "adminSuper") ? <OverrideClubIdForm /> : ""}
       {/*only start subscriptions once selectedLanguage is established */}
       {authStatus === "authenticated" && clubId && languageResolved ? (
-        <SubscriptionComponent
+        <SubscriptionsComponent
           clubId={clubId}
           authMode="AMAZON_COGNITO_USER_POOLS"
         />
