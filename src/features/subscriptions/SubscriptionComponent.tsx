@@ -1,5 +1,3 @@
-import gql from "graphql-tag";
-
 import { Club, ClubDevice, ListClubDevicesOutput } from "../../../appsync";
 import { useAppDispatch } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
@@ -16,6 +14,8 @@ import {
   setClub,
   setClubDevices,
 } from "../clubDevices/clubDevicesSlice";
+import { listClubDevicesGql } from "./gql/listClubDevices";
+import { getClubGql } from "./gql/getClub";
 const log = logFn("src.features.subscriptions.SubscriptionComponent.");
 export interface SubscriptionComponentParams {
   clubId: string;
@@ -62,17 +62,6 @@ export function SubscriptionComponent({
   }: AccessParams) => {
     const promises: Promise<unknown>[] = [];
     // Retrieve some/all data from AppSync
-    const listClubDevicesGql = gql`
-      query listClubDevices($input: ListClubDevicesInput!) {
-        listClubDevices(input: $input) {
-          clubDevices {
-            clubDeviceId
-            name
-            table
-          }
-        }
-      }
-    `;
     promises.push(
       gqlMutation<ListClubDevicesOutput>(listClubDevicesGql, {
         input: { clubId },
@@ -100,16 +89,7 @@ export function SubscriptionComponent({
     );
     promises.push(
       gqlMutation<Club>(
-        gql`
-          query getClub($clubId: String!) {
-            getClub(clubId: $clubId) {
-              id
-              name
-              createdAt
-              updatedAt
-            }
-          }
-        `,
+        getClubGql,
         {
           clubId,
         },
