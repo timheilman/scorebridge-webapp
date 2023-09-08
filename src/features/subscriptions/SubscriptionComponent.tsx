@@ -14,8 +14,8 @@ import {
   setClub,
   setClubDevices,
 } from "../clubDevices/clubDevicesSlice";
-import { listClubDevicesGql } from "./gql/listClubDevices";
 import { getClubGql } from "./gql/getClub";
+import { listClubDevicesGql } from "./gql/listClubDevices";
 const log = logFn("src.features.subscriptions.SubscriptionComponent.");
 export interface SubscriptionComponentParams {
   clubId: string;
