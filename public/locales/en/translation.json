@@ -7,14 +7,14 @@
         "placeholder": "2021-08-samsung-s3-00"
       },
       "regToken": {
-        "label": "Enter the registration key displayed by the app on the device awaiting registration.  To protect your club's data, do not share this key with anyone else!",
+        "label": "Enter the registration key displayed by the app on the device awaiting registration:",
         "placeholder": "IREYFFNVSBSAMXFF"
       },
       "legend": "Onboard a new device to your club:",
       "submit": "Onboard my device"
     },
     "clubName": {
-      "label": "Club Name",
+      "label": "Updated Club Name:",
       "submit": "Change my club name"
     }
   },

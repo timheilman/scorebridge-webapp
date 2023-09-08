@@ -5,7 +5,7 @@ import { RootState } from "../../app/store";
 
 export interface ClubDevicesState {
   value: Record<string, ClubDevice>;
-  club: Club;
+  club: Club | null;
 }
 
 const initialState: ClubDevicesState = {
@@ -23,7 +23,7 @@ export const clubDevicesSlice = createSlice({
   name: "clubDevices",
   initialState,
   reducers: {
-    setClub: (state, action: PayloadAction<Club>) => {
+    setClub: (state, action: PayloadAction<Club | null>) => {
       state.club = action.payload;
     },
     setClubDevices: (
@@ -50,5 +50,6 @@ export const { setClub, setClubDevices, insertClubDevice, deleteClubDevice } =
   clubDevicesSlice.actions;
 
 export const selectClubDevices = (state: RootState) => state.clubDevices.value;
-export const selectClubName = (state: RootState) => state.clubDevices.club.name;
+export const selectClubName = (state: RootState) =>
+  state.clubDevices.club?.name;
 export default clubDevicesSlice.reducer;

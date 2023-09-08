@@ -10,7 +10,7 @@ import LanguageSelector from "../languageSelector/LanguageSelector";
 import { selectLanguageResolved } from "../languageSelector/selectedLanguageSlice";
 import SignOutButton from "../signIn/SignOutButton";
 import { OverrideClubIdForm } from "../subscriptions/OverrideClubIdForm";
-import { SubscriptionComponent } from "../superChickenMode/SubscriptionComponent";
+import { SubscriptionComponent } from "../subscriptions/SubscriptionComponent";
 
 // const log = logFn("src.features.header.SessionfulRouterHeader");
 

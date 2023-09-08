@@ -5,8 +5,8 @@ import { useClubId } from "../../lib/useClubId";
 import { selectLanguageResolved } from "../languageSelector/selectedLanguageSlice";
 import ScoreBridgeAuthenticator from "../signIn/ScoreBridgeAuthenticator";
 import SignUpForm from "../signUp/SignUpForm";
+import { SubscriptionComponent } from "../subscriptions/SubscriptionComponent";
 import FallbackFormWhenNonAdminSuper from "./FallbackFormWhenNonAdminSuper";
-import { SubscriptionComponent } from "./SubscriptionComponent";
 import SubscriptionDisplayer from "./SubscriptionDisplayer";
 
 export default function SuperChickenMode() {

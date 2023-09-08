@@ -1,4 +1,4 @@
-import { ChangeEvent, SyntheticEvent, useState } from "react";
+import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Club } from "../../../appsync";
@@ -17,6 +17,11 @@ export function ClubName() {
   const clubName = useAppSelector(selectClubName);
   const clubId = useClubId();
   const [volatileClubName, setVolatileClubName] = useState("");
+  useEffect(
+    () => setVolatileClubName(clubName || "loading club name..."),
+    [clubName],
+  );
+
   const updateClub = async (
     club: Omit<Omit<Club, "createdAt">, "updatedAt">,
   ) => {

@@ -89,6 +89,7 @@ export default function ClubDevicesPage() {
   return (
     <>
       <ClubName />
+      <CreateClubDeviceForm />
       <p>Your club devices:</p>
       <div
         className="ag-theme-alpine"
@@ -107,7 +108,6 @@ export default function ClubDevicesPage() {
           // onFirstDataRendered={onFirstDataRendered}
         />
       </div>
-      <CreateClubDeviceForm />
     </>
   );
 }
