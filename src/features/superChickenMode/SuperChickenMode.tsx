@@ -2,9 +2,9 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 
 import { useAppSelector } from "../../app/hooks";
 import { useClubId } from "../../lib/useClubId";
+import { selectLanguageResolved } from "../languageSelector/selectedLanguageSlice";
 import ScoreBridgeAuthenticator from "../signIn/ScoreBridgeAuthenticator";
 import SignUpForm from "../signUp/SignUpForm";
-import { selectFallbackClubId } from "../subscriptions/subscriptionsSlice";
 import FallbackFormWhenNonAdminSuper from "./FallbackFormWhenNonAdminSuper";
 import { SubscriptionComponent } from "./SubscriptionComponent";
 import SubscriptionDisplayer from "./SubscriptionDisplayer";
@@ -12,25 +12,18 @@ import SubscriptionDisplayer from "./SubscriptionDisplayer";
 export default function SuperChickenMode() {
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   const clubId = useClubId();
-  const fallbackClubId = useAppSelector(selectFallbackClubId);
+  const languageResolved = useAppSelector(selectLanguageResolved);
   const MaybeSubscriptions = () => {
-    if (clubId) {
+    if (authStatus !== "authenticated" && clubId && languageResolved) {
       return (
         <>
-          <p>reinitializing subscriptions...</p>
-          <SubscriptionComponent
-            clubId={clubId}
-            authMode={
-              authStatus === "authenticated"
-                ? "AMAZON_COGNITO_USER_POOLS"
-                : "API_KEY"
-            }
-          />
+          <p>initializing subscriptions for api key...</p>
+          <SubscriptionComponent clubId={clubId} authMode="API_KEY" />
         </>
       );
     } else if (authStatus !== "authenticated") {
       return (
-        <p>clubId not yet 26 chars: {fallbackClubId.split("").join(",")}</p>
+        <p>subscriptions handled by sessionful header when authenticated</p>
       );
     }
     return null;

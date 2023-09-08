@@ -10,9 +10,13 @@ import { logFn } from "../../lib/logging";
 import { AuthMode } from "../../scorebridge-ts-submodule/authMode";
 import { logCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/logCompletionDecorator";
 import {
+  AccessParams,
   deleteAllSubs,
+  SUBSCRIPTION_CALLBACK_TYPE,
   typedSubscription,
+  TypedSubscriptionParams,
 } from "../../scorebridge-ts-submodule/subscriptions";
+import { allSubscriptionsI } from "../../scorebridge-ts-submodule/subscriptionStatesSlice";
 import {
   deleteClubDevice,
   insertClubDevice,
@@ -21,16 +25,33 @@ import {
 } from "../clubDevices/clubDevicesSlice";
 
 const log = logFn("src.features.subscriptions.Subscriptions.");
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+
+// ignoring that log's type cannot have its argument restricted to true logLevel strings,
+// because logLevel is not part of shared (yet)
+/* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment */
 // @ts-ignore
 const lcd = logCompletionDecoratorFactory(log, false);
 
-/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment */
-const fetchRecentData = async (
-  dispatch: any,
-  clubId: string,
-  authMode?: AuthMode,
+export const generateTypedSubscription = <T extends keyof allSubscriptionsI>(
+  ap: AccessParams,
+  subId: T,
+  callback: (res: SUBSCRIPTION_CALLBACK_TYPE<T>) => void,
+  clubIdVarName?: string,
 ) => {
+  const subscriptionParams: TypedSubscriptionParams<T> = {
+    subId,
+    callback,
+    clubIdVarName,
+    ...ap,
+  };
+  typedSubscription(subscriptionParams);
+};
+
+const fetchRecentData = async ({
+  dispatch,
+  clubId,
+  authMode,
+}: AccessParams) => {
   const promises: Promise<unknown>[] = [];
   // Retrieve some/all data from AppSync
   const listClubDevicesGql = gql`
@@ -88,63 +109,46 @@ const fetchRecentData = async (
         throw new Error(JSON.stringify(res.errors, null, 2));
       }
       log("fetchRecentData.dispatchingSetClub", "debug", { res });
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       dispatch(setClub(res.data.getClub as Club));
     }),
   );
   await Promise.all(promises);
 };
-function subscribeAndFetch(dispatch: any, clubId: string, authMode?: AuthMode) {
-  log("hubListen.connected", "debug");
-  typedSubscription({
-    subId: "createdClubDevice",
-    clubId,
-    callback: (res) => {
-      dispatch(insertClubDevice(res.createdClubDevice));
-    },
-    dispatch,
-    authMode,
-  });
-  typedSubscription({
-    subId: "deletedClubDevice",
-    clubId,
-    callback: (res) => {
-      dispatch(deleteClubDevice(res.deletedClubDevice.clubDeviceId));
-    },
-    dispatch,
-    authMode,
-  });
-  typedSubscription({
-    subId: "updatedClub",
-    clubId,
-    callback: (res) => {
-      log("typedSubscription.updatedClubCallback", "debug", { res });
-      dispatch(setClub(res.updatedClub));
-    },
-    dispatch,
-    clubIdVarName: "id",
-    authMode,
+
+function subscribeToAll(accessParams: AccessParams) {
+  log("subscribeToAll", "debug");
+
+  generateTypedSubscription(accessParams, "createdClubDevice", (res) => {
+    accessParams.dispatch(insertClubDevice(res.createdClubDevice));
   });
 
-  void lcd(
-    fetchRecentData(dispatch, clubId, "AMAZON_COGNITO_USER_POOLS"),
-    "hubListen.subscribeAndFetch",
+  generateTypedSubscription(accessParams, "deletedClubDevice", (res) => {
+    accessParams.dispatch(deleteClubDevice(res.deletedClubDevice.clubDeviceId));
+  });
+
+  generateTypedSubscription(
+    accessParams,
+    "updatedClub",
+    (res) => {
+      log("typedSubscription.updatedClubCallback", "debug", { res });
+      accessParams.dispatch(setClub(res.updatedClub));
+    },
+    "id",
   );
+  log("doneSubscribing", "debug");
 }
 
 export default function useSubscriptions(clubId: string, authMode?: AuthMode) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    log("initialFetch", "debug");
+    log("useEffect", "debug");
     let priorConnectionState: ConnectionState;
-    log("hubListen.api.beforestart", "debug");
-    subscribeAndFetch(dispatch, clubId, authMode);
+    subscribeToAll({ dispatch, clubId, authMode });
 
-    log("hubListen.api.before", "debug");
     const stopListening = Hub.listen("api", (data: any) => {
-      // log("hubListen.api.callback", "error", { data });
+      log("hubListen", "debug", { data });
       const { payload } = data;
       if (payload.event === CONNECTION_STATE_CHANGE) {
         if (
@@ -152,13 +156,13 @@ export default function useSubscriptions(clubId: string, authMode?: AuthMode) {
           payload.data.connectionState === ConnectionState.Connected
         ) {
           void lcd(
-            fetchRecentData(dispatch, clubId, authMode),
+            fetchRecentData({ dispatch, clubId, authMode }),
             "hublisten.api.fetchRecentData",
           );
         }
         priorConnectionState = payload.data.connectionState;
       } else {
-        log("hubListen.api.callback.disregardingEvent", "error", { payload });
+        log("hubListen.api.callback.disregardingEvent", "debug", { payload });
       }
     });
     return () => {
@@ -166,6 +170,6 @@ export default function useSubscriptions(clubId: string, authMode?: AuthMode) {
       dispatch(setClubDevices({}));
       stopListening();
     };
-  }, [dispatch, clubId, authMode]);
+  }, [authMode, clubId, dispatch]);
 }
-/* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment */
+/* eslint-enable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment */

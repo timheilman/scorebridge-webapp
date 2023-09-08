@@ -15,7 +15,7 @@
     },
     "clubName": {
       "label": "Club Name",
-      "placeholder": "My Bridge Club"
+      "submit": "Change my club name"
     }
   },
   "forgetMe": {

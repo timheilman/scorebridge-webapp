@@ -1,16 +1,23 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
-import { selectFallbackClubId, setFallbackClubId } from "./subscriptionsSlice";
+import { setFallbackClubId } from "./subscriptionsSlice";
 
 export function OverrideClubIdForm() {
   const t = useTranslation().t as TypesafeTranslationT;
   const dispatch = useAppDispatch();
-  const fallbackClubId = useAppSelector(selectFallbackClubId);
+  const [volatileFallbackClubId, setVolatileFallbackClubId] =
+    useState<string>("");
   const handleChangeFallbackClubId = (event: ChangeEvent<HTMLInputElement>) => {
-    dispatch(setFallbackClubId(event.target.value));
+    setVolatileFallbackClubId(event.target.value);
+  };
+  const handleSubmit = (event: SyntheticEvent) => {
+    event.preventDefault(); // we are taking over, in react, from browser event handling here
+    if (volatileFallbackClubId) {
+      dispatch(setFallbackClubId(volatileFallbackClubId));
+    }
   };
   return (
     <>
@@ -22,9 +29,12 @@ export function OverrideClubIdForm() {
         id="fallbackClubId"
         placeholder={t("subscriptions.fallbackClubId.placeholder")}
         onChange={handleChangeFallbackClubId}
-        value={fallbackClubId}
+        value={volatileFallbackClubId}
         data-test-id="inputFallbackClubId"
       />{" "}
+      <button onClick={handleSubmit} data-test-id="buttonSubmitFallbackClubId">
+        set club id
+      </button>
     </>
   );
 }

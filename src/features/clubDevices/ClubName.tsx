@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Club } from "../../../appsync";
@@ -8,6 +8,7 @@ import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
 import { mutationUpdateClub } from "../../scorebridge-ts-submodule/graphql/mutations";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
+import styles from "../signUp/SignUpForm.module.css";
 import { selectClubName } from "./clubDevicesSlice";
 const log = logFn("src.features.clubDevices.clubName.");
 
@@ -28,10 +29,14 @@ export function ClubName() {
   };
   const handleChangeClubName = (event: ChangeEvent<HTMLInputElement>) => {
     setVolatileClubName(event.target.value);
+  };
+
+  const handleSubmitClubName = (event: SyntheticEvent) => {
+    event.preventDefault(); // we are taking over, in react, from browser event handling here
     if (!clubId) {
-      throw new Error("No clubId for handleChangeClubName");
+      throw new Error("No clubId for handleSubmitClubName");
     }
-    const args = { id: clubId, name: event.target.value };
+    const args = { id: clubId, name: volatileClubName };
     log("handleChangeClubName.updateClub", "debug", args);
     updateClub(args).catch((e) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -42,16 +47,34 @@ export function ClubName() {
   return (
     <div>
       <p>Your club name: {clubName}</p>
-      <label htmlFor="clubNameInput">{t("clubDevices.clubName.label")}</label>
-      <input
-        style={{ width: "85%" }}
-        type="text"
-        id="clubNameInput"
-        onChange={handleChangeClubName}
-        value={volatileClubName}
-        placeholder={t("clubDevices.clubName.placeholder")}
-        data-test-id="clubDevicesPageClubName"
-      />
+      <form className="input-group horizontal" onSubmit={handleSubmitClubName}>
+        <fieldset>
+          <div className="row">
+            <div className="col-sm-12 col-md-6">
+              <label htmlFor="clubNameInput">
+                {t("clubDevices.clubName.label")}
+              </label>
+              <input
+                className={styles.myInputWidth}
+                type="text"
+                id="clubNameInput"
+                onChange={handleChangeClubName}
+                value={volatileClubName}
+                data-test-id="clubDevicesPageClubName"
+              />
+            </div>
+            <div className="col-sm">
+              <button
+                disabled={volatileClubName.length === 0}
+                className="primary"
+                data-test-id="clubDevicesPageClubNameSubmit"
+              >
+                {t("clubDevices.clubName.submit")}
+              </button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
     </div>
   );
 }

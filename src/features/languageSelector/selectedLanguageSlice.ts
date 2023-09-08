@@ -4,10 +4,12 @@ import { RootState } from "../../app/store";
 
 export interface SelectedLanguageState {
   value: string | undefined;
+  resolved: boolean;
 }
 
 const initialState: SelectedLanguageState = {
   value: undefined,
+  resolved: false,
 };
 
 export const selectedLanguageSlice = createSlice({
@@ -21,12 +23,18 @@ export const selectedLanguageSlice = createSlice({
       // immutable state based off those changes
       state.value = action.payload;
     },
+    setLanguageResolved: (state, action: PayloadAction<boolean>) => {
+      state.resolved = action.payload;
+    },
   },
 });
 
-export const { setLanguage } = selectedLanguageSlice.actions;
+export const { setLanguage, setLanguageResolved } =
+  selectedLanguageSlice.actions;
 
 export const selectLanguage = (state: RootState) =>
   state.selectedLanguage.value;
+export const selectLanguageResolved = (state: RootState) =>
+  state.selectedLanguage.resolved;
 
 export default selectedLanguageSlice.reducer;

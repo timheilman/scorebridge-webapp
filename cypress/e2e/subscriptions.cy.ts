@@ -13,8 +13,8 @@ function withClub00CheckSubscriptions(
   cy.visit("http://localhost:3000/super_chicken_mode");
   if (specifyClubId) {
     cy.get(d("inputFallbackClubId")).type(user.clubId);
+    cy.get(d("buttonSubmitFallbackClubId")).click();
   }
-  cy.contains("reinitializing subscriptions...");
   cy.contains(
     new RegExp(
       `Subscription: createdClubDevice; status: .*${expectedMessage}.*; clubId: ${user.clubId}`,
@@ -23,6 +23,11 @@ function withClub00CheckSubscriptions(
   cy.contains(
     new RegExp(
       `Subscription: deletedClubDevice; status: .*${expectedMessage}.*; clubId: ${user.clubId}`,
+    ),
+  );
+  cy.contains(
+    new RegExp(
+      `Subscription: updatedClub; status: .*${expectedMessage}.*; clubId: ${user.clubId}`,
     ),
   );
 }
@@ -58,7 +63,7 @@ describe("subscriptions", () => {
         stage,
         `scorebridge8+${stage}-testUser-adminClub-club00@gmail.com`,
         () => {
-          withClub00CheckSubscriptions(user, "successfullySubscribed");
+          withClub00CheckSubscriptions(user, "successfullySubscribed", false);
         },
       );
     });
