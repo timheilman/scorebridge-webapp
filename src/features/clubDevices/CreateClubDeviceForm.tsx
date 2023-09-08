@@ -4,11 +4,13 @@ import { useTranslation } from "react-i18next";
 
 import { ClubDevice } from "../../../appsync";
 import { gqlMutation } from "../../gql";
-import { handleGqlReject, maybeFooterElement } from "../../lib/gql";
+import { handleGqlReject } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
 import { mutationCreateClubDevice } from "../../scorebridge-ts-submodule/graphql/mutations";
+import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
+
 const log = logFn("src.features.clubDevices.createClubDeviceForm.");
 export function CreateClubDeviceForm() {
   const [submitInFlight, setSubmitInFlight] = useState(false);
@@ -37,7 +39,6 @@ export function CreateClubDeviceForm() {
     event.preventDefault(); // we are taking over, in react, from browser event handling here
     setSubmitInFlight(true);
     setEverSubmitted(true);
-    setSubmitInFlight(true);
     log("handleSubmit.start", "debug");
     createClubDevice(deviceName, regToken)
       .then(
@@ -120,18 +121,18 @@ export function CreateClubDeviceForm() {
           </div>
         </fieldset>
       </form>
-      {maybeFooterElement({
-        errStr,
-        submitInFlight,
-        everSubmitted,
-        submitInFlightElt: <div>creating device in cloud...</div>,
-        errElt: <div>Problem: {errStr}</div>,
-        successElt: (
+      <MaybeFooterElement
+        errStr={errStr}
+        submitInFlight={submitInFlight}
+        everSubmitted={everSubmitted}
+        submitInFlightElt={<div>creating device in cloud...</div>}
+        errElt={<div>Problem: {errStr}</div>}
+        successElt={
           <div>
             device {createdDeviceName}: {deviceId} created
           </div>
-        ),
-      })}
+        }
+      />
     </>
   );
 }

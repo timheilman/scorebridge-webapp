@@ -7,6 +7,7 @@ import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
 import { mutationDeleteClubAndAdmin } from "../../scorebridge-ts-submodule/graphql/mutations";
+import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
 const log = logFn("src.features.signUp.ForgetMeForm");
@@ -18,39 +19,10 @@ const deleteClubAndAdmin = async (clubId: string, userId: string) => {
   });
 };
 
-interface MaybeErrorElementParams {
-  submitInFlight: boolean;
-  everSubmitted: boolean;
-  deleteClubAndAdminError: string | null;
-  t: TypesafeTranslationT;
-}
-function maybeFooterElement({
-  deleteClubAndAdminError,
-  submitInFlight,
-  everSubmitted,
-  t,
-}: MaybeErrorElementParams) {
-  if (submitInFlight) {
-    return <div>{t("forgetMe.deletingAccount")}</div>;
-  }
-  if (deleteClubAndAdminError) {
-    return (
-      <div>
-        {t("problemWithLastSubmission")} <pre>{deleteClubAndAdminError}</pre>
-      </div>
-    );
-  }
-  if (everSubmitted) {
-    return <div>{t("forgetMe.accountDeleted")}</div>;
-  }
-}
-
 export default function ForgetMeForm() {
   const [submitInFlight, setSubmitInFlight] = useState(false);
   const [everSubmitted, setEverSubmitted] = useState(false);
-  const [deleteClubAndAdminError, setDeleteClubAndAdminError] = useState<
-    string | null
-  >(null);
+  const [errStr, setErrStr] = useState("");
   const [confirm, setConfirm] = useState("");
   const { user, signOut } = useAuthenticator((context) => [
     context.user,
@@ -68,7 +40,7 @@ export default function ForgetMeForm() {
 
   /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
   function handleExpectedGqlReject(errors: Array<any>) {
-    setDeleteClubAndAdminError(
+    setErrStr(
       errors
         .map((error) => {
           if (error.message) {
@@ -90,10 +62,10 @@ export default function ForgetMeForm() {
     if (reason.errors && Array.isArray(reason.errors)) {
       handleExpectedGqlReject(reason.errors as Array<unknown>);
     } else if (reason.message) {
-      setDeleteClubAndAdminError(reason.message as string);
+      setErrStr(reason.message as string);
     } else {
       log("handleGqlReject.error", "error", reason);
-      setDeleteClubAndAdminError(JSON.stringify(reason, null, 2));
+      setErrStr(JSON.stringify(reason, null, 2));
     }
   }
   /* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
@@ -115,7 +87,7 @@ export default function ForgetMeForm() {
       user.username,
     )
       .then((result) => {
-        setDeleteClubAndAdminError(null);
+        setErrStr("");
         setSubmitInFlight(false);
         log("deleteClubAndAdmin.success", "debug", { result });
         signOut();
@@ -132,7 +104,7 @@ export default function ForgetMeForm() {
           reason.errors[0].errorType === "UserAlreadyExistsError"
           /* eslint-enable @typescript-eslint/no-unsafe-member-access */
         ) {
-          setDeleteClubAndAdminError(t("signUp.userAlreadyExists"));
+          setErrStr(t("signUp.userAlreadyExists"));
         } else {
           handleGqlReject(reason);
         }
@@ -178,12 +150,14 @@ export default function ForgetMeForm() {
           </div>
         </fieldset>
       </form>
-      {maybeFooterElement({
-        everSubmitted,
-        submitInFlight,
-        deleteClubAndAdminError,
-        t,
-      })}
+      <MaybeFooterElement
+        everSubmitted={everSubmitted}
+        submitInFlight={submitInFlight}
+        errStr={errStr}
+        successElt={<div>{t("forgetMe.accountDeleted")}</div>}
+        errElt={<div>{t("problemWithLastSubmission")}</div>}
+        submitInFlightElt={<div>{t("forgetMe.deletingAccount")}</div>}
+      />
     </div>
   );
 }

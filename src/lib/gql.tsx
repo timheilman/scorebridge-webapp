@@ -1,4 +1,4 @@
-import { JSX, useState } from "react";
+import { useState } from "react";
 
 import { logFn } from "./logging";
 
@@ -40,33 +40,6 @@ export const handleGqlReject = (
   }
 };
 /* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
-
-export interface MaybeFooterElementParams {
-  submitInFlight: boolean;
-  everSubmitted: boolean;
-  errStr: string | null;
-  submitInFlightElt: JSX.Element;
-  errElt: JSX.Element;
-  successElt: JSX.Element;
-}
-export const maybeFooterElement = ({
-  errStr,
-  submitInFlight,
-  everSubmitted,
-  submitInFlightElt,
-  errElt,
-  successElt,
-}: MaybeFooterElementParams) => {
-  if (submitInFlight) {
-    return submitInFlightElt;
-  }
-  if (errStr) {
-    return errElt;
-  }
-  if (everSubmitted) {
-    return successElt;
-  }
-};
 
 export const useStatefulForm = () => {
   const [submitInFlight, setSubmitInFlight] = useState(false);

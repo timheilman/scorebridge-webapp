@@ -7,12 +7,14 @@ import { useTranslation } from "react-i18next";
 
 import { CreateClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
-import { handleGqlReject, maybeFooterElement } from "../../lib/gql";
+import { handleGqlReject } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import { mutationCreateClub } from "../../scorebridge-ts-submodule/graphql/mutations";
+import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
 import requiredReactAppEnvVar from "../../scorebridge-ts-submodule/requiredReactAppEnvVar";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
+
 const log = logFn("src.features.signUp.SignUpForm");
 
 const createClub = async (
@@ -158,18 +160,18 @@ export default function SignUpForm() {
           </div>
         </fieldset>
       </form>
-      {maybeFooterElement({
-        everSubmitted,
-        submitInFlight,
-        errStr,
-        submitInFlightElt: <div>sending email...</div>,
-        errElt: (
+      <MaybeFooterElement
+        everSubmitted={everSubmitted}
+        submitInFlight={submitInFlight}
+        errStr={errStr}
+        submitInFlightElt={<div>sending email...</div>}
+        errElt={
           <div>
             Problem with last submission: <pre>{errStr}</pre>
           </div>
-        ),
-        successElt: <div>email sent!</div>,
-      })}
+        }
+        successElt={<div>email sent!</div>}
+      />
     </div>
   );
 }
