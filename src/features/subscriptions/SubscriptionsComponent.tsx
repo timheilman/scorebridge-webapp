@@ -113,15 +113,15 @@ export function SubscriptionsComponent({
     await Promise.all(promises);
   };
 
-  useSubscriptions(
+  useSubscriptions({
     clubId,
     subscribeToAll,
     fetchRecentData,
-    () => {
+    clearFetchedData: () => {
       dispatch(setClubDevices({}));
       dispatch(setClub(null));
     },
     authMode,
-  );
+  });
   return <></>;
 }
