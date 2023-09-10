@@ -134,3 +134,8 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+## captcha
+
+Go here to get the key under the scorebridge8 account w/google
+https://developers.google.com/recaptcha/intro
