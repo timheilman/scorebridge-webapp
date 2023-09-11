@@ -104,6 +104,14 @@ export default function SignUpForm() {
   };
   return (
     <div>
+      <div className="row">
+        <div className="col-sm-6">
+          <a href="/terms_of_service">{t("signUp.termsOfService")}</a>
+        </div>
+        <div className="col-sm-6">
+          <a href="/privacy_policy">{t("signUp.privacyPolicy")}</a>
+        </div>
+      </div>
       <form className="input-group vertical" onSubmit={handleSubmit}>
         <fieldset>
           <legend>{t("signUp.legend")}</legend>

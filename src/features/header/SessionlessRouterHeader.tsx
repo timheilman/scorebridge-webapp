@@ -14,6 +14,8 @@ export default function SessionlessRouterHeader() {
       "/signup",
       "/unexpected_error",
       "/super_chicken_mode",
+      "/terms_of_service",
+      "/privacy_policy",
     ].includes(pathname)
   ) {
     return <Navigate to="/signin" />;

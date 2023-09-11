@@ -33,6 +33,8 @@
   },
   "problemWithLastSubmission": "There was a problem with your last submission:",
   "signUp": {
+    "termsOfService": "Our terms of service",
+    "privacyPolicy": "Our privacy policy",
     "userAlreadyExists": "'That email address has already been registered.  Please use the SIGN IN tab and choose \"forgot password\"'",
     "legend": "Sign Up to administer your club's duplicate bridge games",
     "email": { "label": "Email address", "placeholder": "email" },

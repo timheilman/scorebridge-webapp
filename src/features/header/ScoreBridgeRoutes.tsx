@@ -8,6 +8,8 @@ import RotationPage from "../rotation/RotationPage";
 import ScoreBridgeAuthenticator from "../signIn/ScoreBridgeAuthenticator";
 import ForgetMeForm from "../signUp/ForgetMeForm";
 import SignUpForm from "../signUp/SignUpForm";
+import PrivacyPolicy from "../staticFile/PrivacyPolicy";
+import TermsOfService from "../staticFile/TermsOfService";
 import UnexpectedError from "../unexpectedError/UnexpectedError";
 
 export default function ScoreBridgeRoutes() {
@@ -34,6 +36,8 @@ export default function ScoreBridgeRoutes() {
       <Route path="/rotation" element={<RotationPage />} />
       <Route path="/unexpected_error" element={<UnexpectedError />} />
       <Route path="/super_chicken_mode" element={<SuperChickenMode />} />
+      <Route path="/terms_of_service" element={<TermsOfService />} />
+      <Route path="/privacy_policy" element={<PrivacyPolicy />} />
     </Routes>
   );
 }

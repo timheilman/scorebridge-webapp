@@ -1,3 +1,7 @@
+import React from "react";
+import ReactMarkdown from "react-markdown";
+
+const markdownContent = `
 # Terms of Service Agreement
 
 Last Updated: 2023-09-10
@@ -16,11 +20,11 @@ Commercial use may be negotiated separately in writing, but otherwise than such,
 
 You agree not to:
 
-Violate any applicable laws or regulations.
-Impersonate any person or entity or falsely represent your affiliation with any person or entity.
-Attempt to gain unauthorized access to any part of our software.
-Interfere with or disrupt the software or servers.
-Collect or store personal information of other users, except as designed for club admins to store personal information of their clubs' players.
+* Violate any applicable laws or regulations.
+* Impersonate any person or entity or falsely represent your affiliation with any person or entity.
+* Attempt to gain unauthorized access to any part of our software.
+* Interfere with or disrupt the software or servers.
+* Collect or store personal information of other users, except as designed for club admins to store personal information of their clubs' players.
 
 ## 4. Intellectual Property
 
@@ -60,3 +64,14 @@ Timothy Dharma Heilman
 scorebridge8@gmail.com
 
 Effective Date: 2023-09-11
+`;
+
+const TermsOfService = () => {
+  return (
+    <div className="markdown-container">
+      <ReactMarkdown>{markdownContent}</ReactMarkdown>
+    </div>
+  );
+};
+
+export default TermsOfService;
