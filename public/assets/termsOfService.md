@@ -6,11 +6,11 @@ Welcome to working name: ScoreBridge! Please read this Terms of Service Agreemen
 
 ## 1. Acceptance of Terms
 
-By accessing or using ScoreBridge, you agree to comply with and be bound by these Terms of Service. If you do not agree to these terms, please do not use our software and services.
+By accessing or using ScoreBridge (webapp or device app), you agree to comply with and be bound by these Terms of Service. If you do not agree to these terms, please do not use our software and services.
 
 ## 2. Use of the Software
 
-You may use ScoreBridge for personal, non-commercial purposes only. You may not use it for any illegal or unauthorized purpose.
+Commercial use may be negotiated separately in writing, but otherwise than such, you may use ScoreBridge for personal, non-commercial purposes only. You may not use it for any illegal or unauthorized purpose.
 
 ## 3. User Conduct
 
@@ -20,7 +20,7 @@ Violate any applicable laws or regulations.
 Impersonate any person or entity or falsely represent your affiliation with any person or entity.
 Attempt to gain unauthorized access to any part of our software.
 Interfere with or disrupt the software or servers.
-Collect or store personal information of other users.
+Collect or store personal information of other users, except as designed for club admins to store personal information of their clubs' players.
 
 ## 4. Intellectual Property
 
@@ -59,4 +59,4 @@ By using ScoreBridge, you acknowledge that you have read and understood these Te
 Timothy Dharma Heilman
 scorebridge8@gmail.com
 
-Effective Date: 2023-09-10
+Effective Date: 2023-09-11
