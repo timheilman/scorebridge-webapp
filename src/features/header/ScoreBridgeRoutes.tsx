@@ -11,6 +11,7 @@ import SignUpForm from "../signUp/SignUpForm";
 import PrivacyPolicy from "../staticFile/PrivacyPolicy";
 import TermsOfService from "../staticFile/TermsOfService";
 import UnexpectedError from "../unexpectedError/UnexpectedError";
+import SheetsQuickStart from "./SheetsQuickStart";
 
 export default function ScoreBridgeRoutes() {
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
@@ -38,6 +39,7 @@ export default function ScoreBridgeRoutes() {
       <Route path="/super_chicken_mode" element={<SuperChickenMode />} />
       <Route path="/terms_of_service" element={<TermsOfService />} />
       <Route path="/privacy_policy" element={<PrivacyPolicy />} />
+      <Route path="/sheets_quick_start" element={<SheetsQuickStart />} />
     </Routes>
   );
 }
