@@ -24,3 +24,6 @@ yarn-error.log*
 
 # Tim likes jetbrains
 .idea
+
+.env
+cypress.env.json
