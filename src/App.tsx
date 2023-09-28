@@ -4,6 +4,7 @@ import {
   translations as amplifyUiReactTranslations,
   useAuthenticator,
 } from "@aws-amplify/ui-react";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { I18n as amplifyI18n } from "aws-amplify";
 import { Trans, useTranslation } from "react-i18next";
 import { BrowserRouter as Router } from "react-router-dom";
@@ -56,7 +57,7 @@ export default function App() {
   const stage = requiredReactAppEnvVar("STAGE");
 
   return (
-    <>
+    <GoogleOAuthProvider clientId="197224543742-1fu9arngc27f3mm84k72vl0acqr46o7o.apps.googleusercontent.com">
       <h2>
         {t("appTitle")}
         {stage === "prod" ? "" : `-${stage}`}
@@ -71,6 +72,6 @@ export default function App() {
           <ScoreBridgeRoutes />
         </div>
       </Router>
-    </>
+    </GoogleOAuthProvider>
   );
 }

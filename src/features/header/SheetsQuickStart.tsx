@@ -1,7 +1,10 @@
+import { googleLogout, useGoogleLogin } from "@react-oauth/google";
 import { useState } from "react";
 
 import { logFn } from "../../lib/logging";
+import { logCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/logCompletionDecorator";
 const log = logFn("src.features.header.SheetsQuickStart");
+const lcd = logCompletionDecoratorFactory(log);
 /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/ban-ts-comment */
 export default function SheetsQuickStart() {
   // // TODO(developer): Set to client ID and API key from the Developer Console
@@ -23,82 +26,16 @@ export default function SheetsQuickStart() {
   // // included, separated by spaces.
   // const SCOPES = "https://www.googleapis.com/auth/spreadsheets.readonly";
 
-  let tokenClient: any;
-
-  // /**
-  //  * Callback after api.js is loaded.
-  //  */
-  // function gapiLoaded() {
-  //   log("gapiLoaded", "debug");
-  //   // @ts-ignore
-  //   gapi.load("client", initializeGapiClient);
-  // }
-
-  // /**
-  //  * Callback after the API client is loaded. Loads the
-  //  * discovery doc to initialize the API.
-  //  */
-  // async function initializeGapiClient() {
-  //   // @ts-ignore
-  //   await gapi.client.init({
-  //     apiKey: API_KEY,
-  //     discoveryDocs: [DISCOVERY_DOC],
-  //   });
-  //   setGapiInited(true);
-  // }
-
-  // /**
-  //  * Callback after Google Identity Services are loaded.
-  //  */
-  // function gisLoaded() {
-  //   // @ts-ignore
-  //   tokenClient = google.accounts.oauth2.initTokenClient({
-  //     client_id: CLIENT_ID,
-  //     scope: SCOPES,
-  //     callback: "", // defined later
-  //   });
-  //   setGisInited(true);
-  // }
-
-  /**
-   *  Sign in the user upon button click.
-   */
-  function handleAuthClick() {
-    log("handleAuthClick.begin", "debug");
-    tokenClient.callback = async (resp: any) => {
-      if (resp.error !== undefined) {
-        throw resp;
-      }
-      setTokenClientCallbackReceived(true);
-      await listMajors();
-    };
-
-    // @ts-ignore
-    if (gapi.client.getToken() === null) {
-      // Prompt the user to select a Google Account and ask for consent to share their data
-      // when establishing a new session.
-      tokenClient.requestAccessToken({ prompt: "consent" });
-    } else {
-      // Skip display of account chooser and consent dialog for an existing session.
-      tokenClient.requestAccessToken({ prompt: "" });
-    }
+  function sendCodeToCloud(codeResponse: unknown) {
+    setTokenClientCallbackReceived(true);
+    void lcd(listMajors(), "useGoogleLogin.success.sendCodeToCloud", {
+      codeResponse,
+    });
   }
-
-  /**
-   *  Sign out the user upon button click.
-   */
-  function handleSignoutClick() {
-    // @ts-ignore
-    const token = gapi.client.getToken();
-    if (token !== null) {
-      // @ts-ignore
-      google.accounts.oauth2.revoke(token.access_token);
-      // @ts-ignore
-      gapi.client.setToken("");
-      setTokenClientCallbackReceived(false);
-      setContent("");
-    }
-  }
+  const login = useGoogleLogin({
+    onSuccess: (codeResponse) => sendCodeToCloud(codeResponse),
+    flow: "auth-code",
+  });
 
   /**
    * Print the names and majors of students in a sample spreadsheet:
@@ -134,18 +71,18 @@ export default function SheetsQuickStart() {
         <p>Sheets API Quickstart</p>
         <button
           id="authorize_button"
-          onClick={handleAuthClick}
+          onClick={login}
           // style={
           //   !(gapiInited && gisInited)
           //     ? { visibility: "hidden" }
           //     : { visibility: "visible" }
           // }
         >
-          {tokenClientCallbackReceived ? "Refresh" : "Authorize"}
+          Authorize Access to Google Sheets API
         </button>
         <button
           id="signout_button"
-          onClick={handleSignoutClick}
+          onClick={googleLogout}
           style={
             !tokenClientCallbackReceived
               ? { visibility: "hidden" }
