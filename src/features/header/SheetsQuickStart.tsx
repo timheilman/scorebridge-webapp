@@ -28,6 +28,9 @@ export default function SheetsQuickStart() {
 
   function sendCodeToCloud(codeResponse: unknown) {
     setTokenClientCallbackReceived(true);
+    log("useGoogleLogin.success.sendCodeToCloud.preLcd", "debug", {
+      codeResponse,
+    });
     void lcd(listMajors(), "useGoogleLogin.success.sendCodeToCloud", {
       codeResponse,
     });
@@ -35,6 +38,7 @@ export default function SheetsQuickStart() {
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => sendCodeToCloud(codeResponse),
     flow: "auth-code",
+    scope: "https://www.googleapis.com/auth/spreadsheets.readonly",
   });
 
   /**
