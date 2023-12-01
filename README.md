@@ -1,4 +1,32 @@
-# Getting Started with Create React App
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [Welcome to ScoreBridge-Webapp](#welcome-to-scorebridge-webapp)
+- [Getting Started with Create React App](#getting-started-with-create-react-app)
+- [Linting](#linting)
+- [Updating TypeScript Types for GQL Types](#updating-typescript-types-for-gql-types)
+- [Testing](#testing)
+- [Available Scripts](#available-scripts)
+   * [`npm start`](#npm-start)
+   * [`npm test`](#npm-test)
+   * [`npm run cypress:open`](#npm-run-cypressopen)
+   * [`npm run build`](#npm-run-build)
+   * [`npm run eject`](#npm-run-eject)
+- [Learn More](#learn-more)
+- [captcha](#captcha)
+
+<!-- TOC end -->
+
+## Welcome to ScoreBridge-Webapp
+
+In Portland, Oregon, USA there is a [duplicate bridge](https://en.wikipedia.org/wiki/Duplicate_bridge) club run by a guy named Zack.  It is not sanctioned by the [ACBL](https://acbl.org/) and Zack charges no dues – it's purely social and for-fun.  I (Tim) am a club member.  Different club members take turns hosting the game at their homes.
+
+Presently we use Google sheets and extensive macros that Zack has written in them to score the games.  However, it is awkward and error-prone using Google Sheets to enter player identities and scores so I undertook this project to make things easier and less error-prone.
+
+As of December 1, 2023, this project is very much a work-in-progress; it is not yet capable of doing what it intends, which is to replace the Google Sheets and macros. Someday I hope it will be.
+
+The project is in three parts: this webapp, a [device app](https://github.com/timheilman/scorebridge-device), and a [cloud backend](https://github.com/timheilman/scorebridge-cloud). The club admin (Zack) uses this webapp to administer the game and players use the device app to enter identities and scores.  The device app is a React Native app using [Expo](https://docs.expo.dev/tutorial/introduction/) that runs on iOS and Android.  This webapp is a React app that runs in a browser. The cloud backend coordinates interaction between the webapp and device app.
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 Then handsonreact.com examples
@@ -139,3 +167,4 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 Go here to get the key under the scorebridge8 account w/google
 https://developers.google.com/recaptcha/intro
+
