@@ -48,9 +48,6 @@ export default function SessionfulRouterHeader() {
       >
         {t("tabs.forgetMe")}
       </NavLink>
-      <NavLink to="/sheets_quick_start" className="button rounded">
-        {t("tabs.sheetsQuickStart")}
-      </NavLink>
       <LanguageSelector />
       <SignOutButton />
       {userInGroup(user, "adminSuper") ? <OverrideClubIdForm /> : ""}
