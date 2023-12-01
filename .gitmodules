@@ -1,3 +1,6 @@
 [submodule "src/scorebridge-ts-submodule"]
 	path = src/scorebridge-ts-submodule
 	url = git@github.com:timheilman/scorebridge-ts-submodule.git
+[submodule "src/--force"]
+	path = src/--force
+	url = git@github.com:timheilman/scorebridge-ts-submodule.git
