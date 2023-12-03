@@ -1,3 +1,4 @@
 [submodule "src/scorebridge-ts-submodule"]
 	path = src/scorebridge-ts-submodule
 	url = https://github.com/timheilman/scorebridge-ts-submodule
+	branch = main
