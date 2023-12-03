@@ -6,11 +6,11 @@
 - [Updating TypeScript Types for GQL Types](#updating-typescript-types-for-gql-types)
 - [Testing](#testing)
 - [Available Scripts](#available-scripts)
-   * [`npm start`](#npm-start)
-   * [`npm test`](#npm-test)
-   * [`npm run cypress:open`](#npm-run-cypressopen)
-   * [`npm run build`](#npm-run-build)
-   * [`npm run eject`](#npm-run-eject)
+  - [`npm start`](#npm-start)
+  - [`npm test`](#npm-test)
+  - [`npm run cypress:open`](#npm-run-cypressopen)
+  - [`npm run build`](#npm-run-build)
+  - [`npm run eject`](#npm-run-eject)
 - [Learn More](#learn-more)
 - [captcha](#captcha)
 
@@ -161,5 +161,3 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 Go here to get the key under the scorebridge8 account w/google
 https://developers.google.com/recaptcha/intro
-
-
