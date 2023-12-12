@@ -91,5 +91,8 @@
     "imap": "^0.8.19",
     "nodemailer": "^6.9.4",
     "prettier": "^3.0.0"
+  },
+  "overrides": {
+    "react-refresh": "^0.12.0"
   }
 }
