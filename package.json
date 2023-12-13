@@ -43,7 +43,8 @@
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0 --fix",
     "format": "prettier --write .",
     "tidy": "npm run lint; npm run format",
-    "cypress:open": "ELECTRON_EXTRA_LAUNCH_ARGS=--lang=en cypress open"
+    "cypress:open": "ELECTRON_EXTRA_LAUNCH_ARGS=--lang=en cypress open",
+    "cypress:run": "ELECTRON_EXTRA_LAUNCH_ARGS=--lang=en cypress run"
   },
   "eslintConfig": {
     "extends": [
@@ -78,7 +79,7 @@
     "@types/nodemailer": "^6.4.9",
     "aws-amplify": "^5.3.6",
     "chance": "^1.1.11",
-    "cypress": "^12.17.3",
+    "cypress": "^13.6.1",
     "cypress-localstorage-commands": "^2.2.4",
     "eslint": "^8.45.0",
     "eslint-plugin-chai-friendly": "^0.7.2",
