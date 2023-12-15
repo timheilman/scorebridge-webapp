@@ -114,7 +114,6 @@ export function CreateClubDeviceForm() {
                 className="primary"
                 data-test-id="formCreateClubDeviceSubmit"
               >
-                {/* eslint-enable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */}
                 {t("clubDevices.createClubDeviceForm.submit")}
               </button>
             </div>

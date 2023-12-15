@@ -8,6 +8,7 @@ import { useClubId } from "../../lib/useClubId";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import { selectLanguageResolved } from "../languageSelector/selectedLanguageSlice";
+import OnlineStatus from "../onlineStatus/OnlineStatus";
 import SignOutButton from "../signIn/SignOutButton";
 import { OverrideClubIdForm } from "../subscriptions/OverrideClubIdForm";
 import { SubscriptionsComponent } from "../subscriptions/SubscriptionsComponent";
@@ -53,14 +54,20 @@ export default function SessionfulRouterHeader() {
       {userInGroup(user, "adminSuper") ? <OverrideClubIdForm /> : ""}
       {/*only start subscriptions once selectedLanguage is established */}
       {authStatus === "authenticated" && clubId && languageResolved ? (
-        <SubscriptionsComponent
-          clubId={clubId}
-          authMode="AMAZON_COGNITO_USER_POOLS"
-        />
+        <>
+          <SubscriptionsComponent
+            clubId={clubId}
+            authMode="AMAZON_COGNITO_USER_POOLS"
+          />
+          <OnlineStatus />
+        </>
+      ) : !languageResolved ? (
+        <span>Awaiting language...</span>
+      ) : !clubId ? (
+        <span>Awaiting clubId...</span>
       ) : (
         ""
       )}
     </header>
   );
 }
-/* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment */

@@ -3,6 +3,7 @@ import { useAppDispatch } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { AuthMode } from "../../scorebridge-ts-submodule/authMode";
+import { retryPromise } from "../../scorebridge-ts-submodule/retryPromise";
 import {
   AccessParams,
   generateTypedSubscription,
@@ -21,6 +22,52 @@ export interface SubscriptionComponentParams {
   clubId: string;
   authMode: AuthMode;
 }
+
+function listClubDevices({ clubId, authMode, dispatch }: AccessParams) {
+  return gqlMutation<ListClubDevicesOutput>(listClubDevicesGql, {
+    input: { clubId },
+    authMode,
+  }).then((res) => {
+    if (res.errors) {
+      throw new Error(JSON.stringify(res.errors, null, 2));
+    }
+    /* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-member-access */
+    // @ts-ignore
+    const d = res.data.listClubDevices.clubDevices as ClubDevice[];
+    /* eslint-enable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-member-access */
+    // TODO: handle nextToken etc...
+    log("dispatchingSetClubDevices", "debug", { res });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    dispatch(
+      setClubDevices(
+        d.reduce<Record<string, ClubDevice>>((acc, cd) => {
+          acc[cd.clubDeviceId] = cd;
+          return acc;
+        }, {}),
+      ),
+    );
+  });
+}
+
+function getClub({ clubId, authMode, dispatch }: AccessParams) {
+  return gqlMutation<Club>(
+    getClubGql,
+    {
+      clubId,
+    },
+    authMode,
+  ).then((res) => {
+    if (res.errors) {
+      throw new Error(JSON.stringify(res.errors, null, 2));
+    }
+    log("fetchRecentData.dispatchingSetClub", "debug", { res });
+    /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/ban-ts-comment */
+    // @ts-ignore
+    dispatch(setClub(res.data.getClub as Club));
+    /* eslint-enable @typescript-eslint/no-unsafe-call,@typescript-eslint/ban-ts-comment */
+  });
+}
+
 export function SubscriptionsComponent({
   clubId,
   authMode,
@@ -60,56 +107,14 @@ export function SubscriptionsComponent({
     log("doneSubscribing", "debug");
   }
 
-  const fetchRecentData = async ({
-    dispatch,
-    clubId,
-    authMode,
-  }: AccessParams) => {
+  const fetchRecentData = async (accessParams: AccessParams) => {
     const promises: Promise<unknown>[] = [];
     // Retrieve some/all data from AppSync
-    promises.push(
-      gqlMutation<ListClubDevicesOutput>(listClubDevicesGql, {
-        input: { clubId },
-        authMode,
-      }).then((res) => {
-        if (res.errors) {
-          throw new Error(JSON.stringify(res.errors, null, 2));
-        }
-        /* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-member-access */
-        // @ts-ignore
-        const d = res.data.listClubDevices.clubDevices as ClubDevice[];
-        /* eslint-enable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-member-access */
-        // TODO: handle nextToken etc...
-        log("dispatchingSetClubDevices", "debug", { res });
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        dispatch(
-          setClubDevices(
-            d.reduce<Record<string, ClubDevice>>((acc, cd) => {
-              acc[cd.clubDeviceId] = cd;
-              return acc;
-            }, {}),
-          ),
-        );
-      }),
-    );
-    promises.push(
-      gqlMutation<Club>(
-        getClubGql,
-        {
-          clubId,
-        },
-        authMode,
-      ).then((res) => {
-        if (res.errors) {
-          throw new Error(JSON.stringify(res.errors, null, 2));
-        }
-        log("fetchRecentData.dispatchingSetClub", "debug", { res });
-        /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/ban-ts-comment */
-        // @ts-ignore
-        dispatch(setClub(res.data.getClub as Club));
-        /* eslint-enable @typescript-eslint/no-unsafe-call,@typescript-eslint/ban-ts-comment */
-      }),
-    );
+    // these must be retried because sometimes after an internet outage the
+    // subscriptions will become healthy again before domain-name-service is
+    // ready, so the initial refetch of data will fail
+    promises.push(retryPromise(() => listClubDevices(accessParams)));
+    promises.push(retryPromise(() => getClub(accessParams)));
     await Promise.all(promises);
   };
 
@@ -123,5 +128,6 @@ export function SubscriptionsComponent({
     },
     authMode,
   });
+
   return <></>;
 }

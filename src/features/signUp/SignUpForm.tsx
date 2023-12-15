@@ -161,7 +161,6 @@ export default function SignUpForm() {
                 className="primary"
                 data-test-id="formCreateClubSubmit"
               >
-                {/* eslint-enable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */}
                 {t("signUp.submit")}
               </button>
             </div>
