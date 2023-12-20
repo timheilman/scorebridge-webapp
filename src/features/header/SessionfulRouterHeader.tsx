@@ -1,4 +1,7 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import FeatherIcon from "feather-icons-react";
 import { useTranslation } from "react-i18next";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 
@@ -6,6 +9,7 @@ import { useAppSelector } from "../../app/hooks";
 import { userInGroup } from "../../cognito";
 import { useClubId } from "../../lib/useClubId";
 import OnlineStatus from "../../scorebridge-ts-submodule/OnlineStatus";
+import { subIdToSubGql } from "../../scorebridge-ts-submodule/subscriptionStatesSlice";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 import { selectLanguageResolved } from "../languageSelector/selectedLanguageSlice";
@@ -59,7 +63,11 @@ export default function SessionfulRouterHeader() {
             clubId={clubId}
             authMode="AMAZON_COGNITO_USER_POOLS"
           />
-          <OnlineStatus />
+          <OnlineStatus
+            upIcon={<FeatherIcon icon="wifi" />}
+            downIcon={<FeatherIcon icon="wifi-off" />}
+            subscriptionIds={Object.keys(subIdToSubGql)}
+          />
         </>
       ) : !languageResolved ? (
         <span>Awaiting language...</span>
