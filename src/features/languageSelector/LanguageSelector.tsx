@@ -25,11 +25,7 @@ const options: Option[] = ["en", "fr", "zh", "he"]
   .map((amplifyUiReactXlationLangCode) => {
     return {
       value: amplifyUiReactXlationLangCode,
-      // type safety of this cast is ostensibly guaranteed by the filter and the library
-
-      label: `${
-        getLangNameFromCode(amplifyUiReactXlationLangCode)?.native as string
-      }`,
+      label: `${getLangNameFromCode(amplifyUiReactXlationLangCode)?.native ?? "langNameNotFound"}`,
     };
   })
   .sort((vl1, vl2) =>

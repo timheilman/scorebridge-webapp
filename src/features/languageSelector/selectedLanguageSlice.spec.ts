@@ -9,7 +9,6 @@ describe("languageSelector reducer", () => {
     resolved: false,
   };
   it("should handle initial state", () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     expect(selectedLanguageReducer(undefined, { type: "unknown" })).to.equal({
       value: "en",
     });
@@ -17,7 +16,7 @@ describe("languageSelector reducer", () => {
 
   it("should handle setLanguage", () => {
     const actual = selectedLanguageReducer(initialState, setLanguage("de"));
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+
     expect(actual.value).to.equal("de");
   });
 });

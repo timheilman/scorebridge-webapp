@@ -9,7 +9,7 @@ export const useClubId = () => {
   if (fallbackClubId && fallbackClubId.length === 26) {
     return fallbackClubId;
   }
-  if (user && user.attributes && user.attributes["custom:tenantId"]) {
+  if (user?.attributes?.["custom:tenantId"]) {
     return user.attributes["custom:tenantId"];
   }
 };

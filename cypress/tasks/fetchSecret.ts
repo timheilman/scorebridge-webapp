@@ -18,5 +18,5 @@ export const fetchSecret = async ({
     }),
   );
   const secretJson = response.SecretString;
-  return JSON.parse(secretJson as string) as Record<string, unknown>;
+  return JSON.parse(secretJson!) as Record<string, unknown>;
 };

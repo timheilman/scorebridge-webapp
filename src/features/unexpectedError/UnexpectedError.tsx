@@ -4,7 +4,7 @@ import { gqlMutation } from "../../gql";
 import { mutationUnexpectedError } from "../../scorebridge-ts-submodule/graphql/mutations";
 
 export default function UnexpectedError() {
-  const [callResult, setCallResult] = useState<unknown | null>(null);
+  const [callResult, setCallResult] = useState<unknown>(null);
   useEffect(() => {
     gqlMutation(mutationUnexpectedError)
       .then(() => {
@@ -17,8 +17,7 @@ export default function UnexpectedError() {
       });
   });
   return callResult ? (
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    <pre>{`${callResult}`}</pre>
+    <pre>{`${JSON.stringify(callResult)}`}</pre>
   ) : (
     <p>awaiting an &quot;unexpected&quot; Error...</p>
   );

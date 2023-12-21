@@ -45,7 +45,6 @@ describe("trying to speed up cypress", () => {
           envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {
             email: tempAcct.user,
           }).then((user) => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             expect(user).to.be.null;
           });
         },

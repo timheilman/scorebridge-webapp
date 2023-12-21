@@ -1,14 +1,13 @@
 import { AmplifyUser } from "@aws-amplify/ui";
 
 export function userInGroup(user: AmplifyUser, group: string): boolean {
-  if (
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-    !user
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return (
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    user
       ?.getSignInUserSession()
       ?.getIdToken()
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       ?.payload["cognito:groups"]?.includes(group)
-  ) {
-    return false;
-  }
-  return true;
+  );
 }

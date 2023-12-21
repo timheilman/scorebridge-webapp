@@ -34,7 +34,7 @@ Cypress.Commands.add(
       // The following is some voodoo found on webpages from before TypeScript
       // also, it seems as though this was all before Cognito got a good API
       // in place, and just slurps from internals.  It's ugly but it works.
-      /* eslint-disable @typescript-eslint/restrict-template-expressions,@typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
+      /* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
       // @ts-ignore
       const keyPrefixWithUsername = `${cognitoResponse.keyPrefix}.${cognitoResponse.username}`;
 
@@ -68,7 +68,7 @@ Cypress.Commands.add(
         // @ts-ignore
         cognitoResponse.username,
       );
-      /* eslint-enable @typescript-eslint/restrict-template-expressions,@typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
+      /* eslint-enable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
 
       window.localStorage.setItem(
         "amplify-authenticator-authState",

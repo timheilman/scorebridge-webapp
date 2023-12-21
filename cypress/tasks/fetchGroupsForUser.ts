@@ -29,7 +29,5 @@ export const fetchGroupsForUser = async ({
   if (!result.Groups) {
     return [];
   }
-  return result.Groups.filter((g) => g.GroupName).map(
-    (g) => g.GroupName as string,
-  );
+  return result.Groups.filter((g) => g.GroupName).map((g) => g.GroupName!);
 };

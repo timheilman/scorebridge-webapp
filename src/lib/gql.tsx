@@ -3,9 +3,9 @@ import { useState } from "react";
 import { logFn } from "./logging";
 
 const log = logFn("src.lib.gql.");
-/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access */
 const handleExpectedGqlReject = (
-  errors: Array<any>,
+  errors: any[],
   errStrSetter: (errStr: string) => void,
 ) => {
   errStrSetter(
@@ -31,7 +31,7 @@ export const handleGqlReject = (
   errStrSetter: (errStr: string) => void,
 ) => {
   if (reason.errors && Array.isArray(reason.errors)) {
-    handleExpectedGqlReject(reason.errors as Array<unknown>, errStrSetter);
+    handleExpectedGqlReject(reason.errors as unknown[], errStrSetter);
   } else if (reason.message) {
     errStrSetter(reason.message as string);
   } else {
@@ -39,7 +39,7 @@ export const handleGqlReject = (
     errStrSetter(JSON.stringify(reason, null, 2));
   }
 };
-/* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
+/* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access */
 
 export const useStatefulForm = () => {
   const [submitInFlight, setSubmitInFlight] = useState(false);

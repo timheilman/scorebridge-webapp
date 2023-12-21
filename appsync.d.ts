@@ -1,6 +1,6 @@
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = {
+export type Exact<T extends Record<string, unknown>> = {
   [K in keyof T]: T[K];
 };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
@@ -9,17 +9,16 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>;
 };
-export type MakeEmpty<
-  T extends { [key: string]: unknown },
-  K extends keyof T,
-> = { [_ in K]?: never };
+export type MakeEmpty<T extends Record<string, unknown>, K extends keyof T> = {
+  [_ in K]?: never;
+};
 export type Incremental<T> =
   | T
   | {
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
     };
 /** All built-in and custom scalars, mapped to their actual values */
-export type Scalars = {
+export interface Scalars {
   ID: { input: string; output: string };
   String: { input: string; output: string };
   Boolean: { input: boolean; output: boolean };
@@ -34,17 +33,17 @@ export type Scalars = {
   AWSTime: { input: string; output: string };
   AWSTimestamp: { input: number; output: number };
   AWSURL: { input: string; output: string };
-};
+}
 
-export type Club = {
+export interface Club {
   __typename?: "Club";
   createdAt: Scalars["AWSDateTime"]["output"];
   id: Scalars["String"]["output"];
   name: Scalars["String"]["output"];
   updatedAt: Scalars["AWSDateTime"]["output"];
-};
+}
 
-export type ClubDevice = {
+export interface ClubDevice {
   __typename?: "ClubDevice";
   clubDeviceId: Scalars["String"]["output"];
   clubId: Scalars["String"]["output"];
@@ -53,55 +52,55 @@ export type ClubDevice = {
   name: Scalars["String"]["output"];
   table?: Maybe<Scalars["Int"]["output"]>;
   updatedAt: Scalars["AWSDateTime"]["output"];
-};
+}
 
-export type CreateClubDeviceInput = {
+export interface CreateClubDeviceInput {
   clubId: Scalars["String"]["input"];
   deviceName: Scalars["String"]["input"];
   regToken: Scalars["String"]["input"];
-};
+}
 
-export type CreateClubInput = {
+export interface CreateClubInput {
   newAdminEmail: Scalars["AWSEmail"]["input"];
   newClubName: Scalars["String"]["input"];
   recaptchaToken: Scalars["String"]["input"];
   suppressInvitationEmail?: InputMaybe<Scalars["Boolean"]["input"]>;
-};
+}
 
-export type CreateClubResponse = {
+export interface CreateClubResponse {
   __typename?: "CreateClubResponse";
   clubId: Scalars["String"]["output"];
   userId: Scalars["String"]["output"];
-};
+}
 
-export type DeleteClubAndAdminInput = {
+export interface DeleteClubAndAdminInput {
   clubId: Scalars["String"]["input"];
   userId: Scalars["String"]["input"];
-};
+}
 
-export type DeleteClubAndAdminResponse = {
+export interface DeleteClubAndAdminResponse {
   __typename?: "DeleteClubAndAdminResponse";
   status: Scalars["String"]["output"];
-};
+}
 
-export type DeleteClubDeviceInput = {
+export interface DeleteClubDeviceInput {
   clubDeviceId: Scalars["String"]["input"];
   clubId: Scalars["String"]["input"];
-};
+}
 
-export type ListClubDevicesInput = {
+export interface ListClubDevicesInput {
   clubId: Scalars["String"]["input"];
   limit?: InputMaybe<Scalars["Int"]["input"]>;
   nextToken?: InputMaybe<Scalars["String"]["input"]>;
-};
+}
 
-export type ListClubDevicesOutput = {
+export interface ListClubDevicesOutput {
   __typename?: "ListClubDevicesOutput";
-  clubDevices: Array<Maybe<ClubDevice>>;
+  clubDevices: Maybe<ClubDevice>[];
   nextToken?: Maybe<Scalars["String"]["output"]>;
-};
+}
 
-export type Mutation = {
+export interface Mutation {
   __typename?: "Mutation";
   createClub: CreateClubResponse;
   createClubDevice: ClubDevice;
@@ -109,67 +108,67 @@ export type Mutation = {
   deleteClubDevice: ClubDevice;
   unexpectedError: UnexpectedErrorResponse;
   updateClub: Club;
-};
+}
 
-export type MutationCreateClubArgs = {
+export interface MutationCreateClubArgs {
   input: CreateClubInput;
-};
+}
 
-export type MutationCreateClubDeviceArgs = {
+export interface MutationCreateClubDeviceArgs {
   input: CreateClubDeviceInput;
-};
+}
 
-export type MutationDeleteClubAndAdminArgs = {
+export interface MutationDeleteClubAndAdminArgs {
   input: DeleteClubAndAdminInput;
-};
+}
 
-export type MutationDeleteClubDeviceArgs = {
+export interface MutationDeleteClubDeviceArgs {
   input: DeleteClubDeviceInput;
-};
+}
 
-export type MutationUpdateClubArgs = {
+export interface MutationUpdateClubArgs {
   input: UpdateClubInput;
-};
+}
 
-export type Query = {
+export interface Query {
   __typename?: "Query";
   getClub: Club;
   listClubDevices: ListClubDevicesOutput;
-};
+}
 
-export type QueryGetClubArgs = {
+export interface QueryGetClubArgs {
   clubId: Scalars["String"]["input"];
-};
+}
 
-export type QueryListClubDevicesArgs = {
+export interface QueryListClubDevicesArgs {
   input: ListClubDevicesInput;
-};
+}
 
-export type Subscription = {
+export interface Subscription {
   __typename?: "Subscription";
   createdClubDevice?: Maybe<ClubDevice>;
   deletedClubDevice?: Maybe<ClubDevice>;
   updatedClub?: Maybe<Club>;
-};
+}
 
-export type SubscriptionCreatedClubDeviceArgs = {
+export interface SubscriptionCreatedClubDeviceArgs {
   clubId: Scalars["String"]["input"];
-};
+}
 
-export type SubscriptionDeletedClubDeviceArgs = {
+export interface SubscriptionDeletedClubDeviceArgs {
   clubId: Scalars["String"]["input"];
-};
+}
 
-export type SubscriptionUpdatedClubArgs = {
+export interface SubscriptionUpdatedClubArgs {
   id: Scalars["String"]["input"];
-};
+}
 
-export type UnexpectedErrorResponse = {
+export interface UnexpectedErrorResponse {
   __typename?: "UnexpectedErrorResponse";
   neverGetsReturned: Scalars["String"]["output"];
-};
+}
 
-export type UpdateClubInput = {
+export interface UpdateClubInput {
   id: Scalars["String"]["input"];
   name?: InputMaybe<Scalars["String"]["input"]>;
-};
+}

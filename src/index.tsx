@@ -1,5 +1,4 @@
 import "./index.css";
-import "@aws-amplify/ui-react"; // TODO: can this be deleted?
 import "./i18n";
 
 import { Authenticator } from "@aws-amplify/ui-react";

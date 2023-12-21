@@ -36,13 +36,13 @@ export const fetchNullableCogUser = async ({
     throw e;
   }
 
-  const userId = adminGetUserCommandOutput.Username as string;
+  const userId = adminGetUserCommandOutput.Username!;
   if (adminGetUserCommandOutput.UserAttributes) {
     const foundClub = adminGetUserCommandOutput.UserAttributes.find(
       (v) => v.Name === "custom:tenantId",
     );
     if (foundClub) {
-      return { userId, clubId: foundClub.Value as string };
+      return { userId, clubId: foundClub.Value! };
     } else {
       return { userId };
     }

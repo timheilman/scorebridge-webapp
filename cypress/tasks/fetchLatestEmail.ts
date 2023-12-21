@@ -14,7 +14,7 @@ export const fetchLatestEmail = async (tempEmailAccount: TempEmailAccount) => {
       return null;
     }
   }
-  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+
   throw new Error(`Expected nothing to fetch but fetched ${latestEmail}`);
 };
 

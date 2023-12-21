@@ -3,7 +3,7 @@ import { envTask } from "./envTask";
 import requiredCypressEnvVar from "./requiredCypressEnvVar";
 import { targetTestEnvDetailsFromEnv } from "./targetTestEnvDetailsFromEnv";
 
-/* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 function verifyReceivedEmailProd(tempAcct: TempEmailAccount) {
   // eslint-disable-next-line cypress/no-unnecessary-waiting
   cy.wait(500);
@@ -57,7 +57,7 @@ function verifyReceivedEmailNonProd({
     );
   });
 }
-/* eslint-enable @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
+/* eslint-enable @typescript-eslint/no-unsafe-member-access */
 
 export function verifyReceivedEmail(tempAcct: TempEmailAccount) {
   if (targetTestEnvDetailsFromEnv.stage === "prod") {

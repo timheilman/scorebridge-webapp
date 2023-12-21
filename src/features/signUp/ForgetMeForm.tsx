@@ -38,8 +38,8 @@ export default function ForgetMeForm() {
     setConfirm(event.target.value);
   };
 
-  /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
-  function handleExpectedGqlReject(errors: Array<any>) {
+  /* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access */
+  function handleExpectedGqlReject(errors: any[]) {
     setErrStr(
       errors
         .map((error) => {
@@ -60,7 +60,7 @@ export default function ForgetMeForm() {
 
   function handleGqlReject(reason: any) {
     if (reason.errors && Array.isArray(reason.errors)) {
-      handleExpectedGqlReject(reason.errors as Array<unknown>);
+      handleExpectedGqlReject(reason.errors as unknown[]);
     } else if (reason.message) {
       setErrStr(reason.message as string);
     } else {
@@ -68,7 +68,7 @@ export default function ForgetMeForm() {
       setErrStr(JSON.stringify(reason, null, 2));
     }
   }
-  /* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/restrict-template-expressions */
+  /* eslint-enable @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-member-access */
 
   const handleSubmit = (event: SyntheticEvent) => {
     event.preventDefault(); // we are taking over, in react, from browser event handling here
@@ -82,10 +82,7 @@ export default function ForgetMeForm() {
       throw new Error("no attributes in ForgetMeForm");
     }
 
-    deleteClubAndAdmin(
-      clubId as string /* adminSuper: don't do this */,
-      user.username,
-    )
+    deleteClubAndAdmin(clubId! /* adminSuper: don't do this */, user.username)
       .then((result) => {
         setErrStr("");
         setSubmitInFlight(false);

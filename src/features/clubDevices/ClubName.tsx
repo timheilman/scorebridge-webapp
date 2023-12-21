@@ -18,7 +18,7 @@ export function ClubName() {
   const clubId = useClubId();
   const [volatileClubName, setVolatileClubName] = useState("");
   useEffect(
-    () => setVolatileClubName(clubName || "loading club name..."),
+    () => setVolatileClubName(clubName ?? "loading club name..."),
     [clubName],
   );
 
