@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 
-import requiredReactAppEnvVar from "../../scorebridge-ts-submodule/requiredReactAppEnvVar";
+import requiredViteEnvVar from "../../lib/requiredViteEnvVar";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";
 export default function SessionlessRouterHeader() {
@@ -30,7 +30,7 @@ export default function SessionlessRouterHeader() {
         <span data-test-id="signUpTab" className="icon-info"></span>
         {t("tabs.signUp")}
       </NavLink>
-      {requiredReactAppEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
+      {requiredViteEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
     </header>
   );
 }

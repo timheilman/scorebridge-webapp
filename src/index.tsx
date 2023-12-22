@@ -9,8 +9,8 @@ import { Provider as ReactReduxProvider } from "react-redux";
 
 import App from "./App";
 import { store } from "./app/store";
+import requiredViteEnvVar from "./lib/requiredViteEnvVar";
 import reportWebVitals from "./reportWebVitals";
-import requiredReactAppEnvVar from "./scorebridge-ts-submodule/requiredReactAppEnvVar";
 
 Amplify.configure({
   API: {
@@ -26,15 +26,15 @@ Amplify.configure({
     },
   },
   Auth: {
-    region: requiredReactAppEnvVar("AWS_REGION"),
-    userPoolId: requiredReactAppEnvVar("COGNITO_USER_POOL_ID"),
-    userPoolWebClientId: requiredReactAppEnvVar(
+    region: requiredViteEnvVar("AWS_REGION"),
+    userPoolId: requiredViteEnvVar("COGNITO_USER_POOL_ID"),
+    userPoolWebClientId: requiredViteEnvVar(
       "COGNITO_USER_POOL_CLIENT_ID_WEB",
     ), // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
   },
-  aws_appsync_graphqlEndpoint: requiredReactAppEnvVar("API_URL"),
-  aws_appsync_region: requiredReactAppEnvVar("AWS_REGION"),
-  aws_appsync_apiKey: requiredReactAppEnvVar("CREATE_CLUB_API_KEY"),
+  aws_appsync_graphqlEndpoint: requiredViteEnvVar("API_URL"),
+  aws_appsync_region: requiredViteEnvVar("AWS_REGION"),
+  aws_appsync_apiKey: requiredViteEnvVar("CREATE_CLUB_API_KEY"),
 });
 
 const container = document.getElementById("root");

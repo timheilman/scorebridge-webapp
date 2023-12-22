@@ -9,9 +9,9 @@ import { CreateClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
 import { handleGqlReject } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
+import requiredViteEnvVar from "../../lib/requiredViteEnvVar";
 import { mutationCreateClub } from "../../scorebridge-ts-submodule/graphql/mutations";
 import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
-import requiredReactAppEnvVar from "../../scorebridge-ts-submodule/requiredReactAppEnvVar";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
 
@@ -144,7 +144,7 @@ export default function SignUpForm() {
           <div className="row">
             <div className="col-wm">
               <ReCAPTCHA
-                sitekey={requiredReactAppEnvVar("RECAPTCHA2_SITE_KEY")}
+                sitekey={requiredViteEnvVar("RECAPTCHA2_SITE_KEY")}
                 onChange={handleRecaptchaChange}
                 ref={captchaRef}
                 data-test-id="recaptchaComponent"
