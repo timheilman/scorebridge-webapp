@@ -39,7 +39,7 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "nvm use 18 && tsc && vite build",
+    "build": "tsc && vite build",
     "test": "vitest",
     "test:coverage": "vitest run --coverage --watch=false",
     "serve": "vite preview",
