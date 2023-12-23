@@ -4,9 +4,9 @@ import {
   PurgeQueueInProgress,
 } from "@aws-sdk/client-sqs";
 
-import { logFn } from "../../src/lib/logging";
 import { cachedSqsClient } from "../../src/scorebridge-ts-submodule/cachedSqsClient";
-const log = logFn("cypress.tasks.purgeSqsQueue.");
+import { cypressTaskLogFn } from "../support/cypressTaskLogFn";
+const log = cypressTaskLogFn("cypress.tasks.purgeSqsQueue.");
 
 export interface PurgeSqsQueueParams {
   awsRegion: string;

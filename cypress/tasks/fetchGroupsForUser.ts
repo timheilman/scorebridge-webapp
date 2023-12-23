@@ -1,8 +1,8 @@
 import { AdminListGroupsForUserCommand } from "@aws-sdk/client-cognito-identity-provider";
 
-import { logFn } from "../../src/lib/logging";
 import { cachedCognitoIdpClient } from "../../src/scorebridge-ts-submodule/cachedCognitoIdpClient";
-const log = logFn("cypress.tasks.fetchGroupsForUser.");
+import { cypressTaskLogFn } from "../support/cypressTaskLogFn";
+const log = cypressTaskLogFn("cypress.tasks.fetchGroupsForUser.");
 
 export interface FetchGroupsForUserParams {
   awsRegion: string;

@@ -4,7 +4,7 @@ const frenchTitle = "Portail d'administration";
 const frenchUsernamePrompt = "Nom d'utilisateur";
 describe("initial load of page", () => {
   it("Handles language detection then override after reload", () => {
-    cy.visit("http://localhost:3000");
+    cy.visit("http://localhost:5173");
     // language en is forced for Electron launch regardless of test running machine's locale
     cy.contains("Admin Portal"); // outside Authenticator component
     cy.contains("Username"); // inside Authenticator component

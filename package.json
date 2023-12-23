@@ -80,6 +80,7 @@
     "chance": "^1.1.11",
     "cypress": "^13.6.1",
     "cypress-localstorage-commands": "^2.2.4",
+    "dotenv": "^16.3.1",
     "eslint": "^8.56.0",
     "eslint-plugin-chai-friendly": "^0.7.2",
     "eslint-plugin-cypress": "^2.14.0",

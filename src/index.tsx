@@ -28,9 +28,7 @@ Amplify.configure({
   Auth: {
     region: requiredViteEnvVar("AWS_REGION"),
     userPoolId: requiredViteEnvVar("COGNITO_USER_POOL_ID"),
-    userPoolWebClientId: requiredViteEnvVar(
-      "COGNITO_USER_POOL_CLIENT_ID_WEB",
-    ), // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+    userPoolWebClientId: requiredViteEnvVar("COGNITO_USER_POOL_CLIENT_ID_WEB"), // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
   },
   aws_appsync_graphqlEndpoint: requiredViteEnvVar("API_URL"),
   aws_appsync_region: requiredViteEnvVar("AWS_REGION"),

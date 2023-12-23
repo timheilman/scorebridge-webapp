@@ -18,7 +18,7 @@ export default defineConfig({
   chromeWebSecurity: false, // so we can get the iFrame inside recaptcha2
   defaultCommandTimeout: 10000,
   e2e: {
-    baseUrl: "http://localhost:3000/",
+    baseUrl: "http://localhost:5173/",
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setupNodeEvents(on, _config) {
       on("task", {

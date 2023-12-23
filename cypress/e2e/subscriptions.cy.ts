@@ -10,7 +10,7 @@ function withClub00CheckSubscriptions(
   expectedMessage: string,
   specifyClubId = true,
 ) {
-  cy.visit("http://localhost:3000/super_chicken_mode");
+  cy.visit("http://localhost:5173/super_chicken_mode");
   if (specifyClubId) {
     cy.get(d("inputFallbackClubId")).type(user.clubId);
     cy.get(d("buttonSubmitFallbackClubId")).click();

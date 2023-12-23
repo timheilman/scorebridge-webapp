@@ -22,7 +22,7 @@ const failedClubName =
 
 describe("signUp", () => {
   it("with API_KEY, signUp new address=>sends email; FORCE_RESET_PASSWORD address=>sends email; confirmed address=>already registered", () => {
-    cy.visit("http://localhost:3000");
+    cy.visit("http://localhost:5173");
     const newPassword = randomPassword();
     withUnverifiedTempClubAdminDo(originalClubName, (tempAcct, user) => {
       verifyReceivedEmail(tempAcct);
@@ -56,7 +56,7 @@ describe("signUp", () => {
     const email = `scorebridge8+${stage}-testUser-adminSuper@gmail.com`;
     withPreexistingCredsDo(stage, email, () => {
       withTestAccount((tempAcct) => {
-        cy.visit("http://localhost:3000/super_chicken_mode");
+        cy.visit("http://localhost:5173/super_chicken_mode");
         const clubName = "Ace of Clubs";
         submitCreateClubDetails(tempAcct.user, clubName);
         cy.contains("email sent!");

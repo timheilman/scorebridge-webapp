@@ -1,8 +1,8 @@
 import Imap, { Config } from "imap";
 
-import { logFn } from "../../src/lib/logging";
+import { cypressTaskLogFn } from "../support/cypressTaskLogFn";
 import { TempEmailAccount } from "./createTempEmailAccount";
-const log = logFn("cypress.tasks.fetchLatestEmail.");
+const log = cypressTaskLogFn("cypress.tasks.fetchLatestEmail.");
 export const fetchLatestEmail = async (tempEmailAccount: TempEmailAccount) => {
   let latestEmail;
   try {

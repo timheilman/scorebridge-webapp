@@ -10,7 +10,7 @@ import { expectBackendDetails } from "../support/userUtils";
 describe("trying to speed up cypress", () => {
   it("actually-deletes things when account deleted", () => {
     const clubName = "My club";
-    cy.visit("http://localhost:3000/");
+    cy.visit("http://localhost:5173/");
     withVerifiedTempClubAdminDo(clubName, (newPassword, tempAcct, user) => {
       verifyReceivedEmail(tempAcct);
       expectBackendDetails(user, tempAcct, clubName);

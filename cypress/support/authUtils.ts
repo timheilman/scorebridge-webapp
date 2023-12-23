@@ -106,7 +106,7 @@ export function withCredentialsRun(
   /* eslint-disable @typescript-eslint/no-unsafe-call,@typescript-eslint/ban-ts-comment */
   // @ts-ignore
   cy.loginByCognitoApi(email, password);
-  cy.visit("http://localhost:3000");
+  cy.visit("http://localhost:5173");
   testFn();
 }
 

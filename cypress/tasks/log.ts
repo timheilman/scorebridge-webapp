@@ -1,5 +1,5 @@
-import { logFn } from "../../src/lib/logging";
 import { LogLevel } from "../../src/scorebridge-ts-submodule/genericLogger";
+import { cypressTaskLogFn } from "../support/cypressTaskLogFn";
 
 export interface LogParams {
   catPrefix: string;
@@ -14,7 +14,7 @@ export const log = ({
   logLevel,
   addlParams,
 }: LogParams) => {
-  const log = logFn(catPrefix);
+  const log = cypressTaskLogFn(catPrefix);
   log(catSuffix, logLevel, ...addlParams);
 
   return null;

@@ -25,7 +25,10 @@ const options: Option[] = ["en", "fr", "zh", "he"]
   .map((amplifyUiReactXlationLangCode) => {
     return {
       value: amplifyUiReactXlationLangCode,
-      label: `${getLangNameFromCode(amplifyUiReactXlationLangCode)?.native ?? "langNameNotFound"}`,
+      label: `${
+        getLangNameFromCode(amplifyUiReactXlationLangCode)?.native ??
+        "langNameNotFound"
+      }`,
     };
   })
   .sort((vl1, vl2) =>

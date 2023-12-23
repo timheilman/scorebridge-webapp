@@ -1,7 +1,7 @@
 import { createTestAccount } from "nodemailer";
 
-import { logFn } from "../../src/lib/logging";
-const log = logFn("cypress.tasks.createTempEmailAccount.");
+import { cypressTaskLogFn } from "../support/cypressTaskLogFn";
+const log = cypressTaskLogFn("cypress.tasks.createTempEmailAccount.");
 export interface TempEmailAccount {
   user: string;
   password?: string;
