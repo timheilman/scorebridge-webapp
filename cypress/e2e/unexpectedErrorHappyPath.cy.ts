@@ -12,7 +12,7 @@ describe("load of special on-purpose unexpected error page", () => {
       cy.contains(
         "This error is a synthetic unexpected error from a lambda implementation.",
       );
-      cy.contains('"errorType": "UnexpectedError"');
+      cy.contains('"errorType":"UnexpectedError"');
     });
   });
 });

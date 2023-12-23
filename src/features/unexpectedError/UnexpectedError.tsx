@@ -13,7 +13,7 @@ export default function UnexpectedError() {
         );
       })
       .catch((e) => {
-        setCallResult(`Error received: ${JSON.stringify(e, null, 2)}`);
+        setCallResult(e);
       });
   }, []);
   return callResult ? (
