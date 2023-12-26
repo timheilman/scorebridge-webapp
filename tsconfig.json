@@ -19,7 +19,6 @@
   },
   "include": [
     "src",
-    "appsync.d.ts",
     "cypress",
     "cypress.config.ts",
     "vite.config.ts",

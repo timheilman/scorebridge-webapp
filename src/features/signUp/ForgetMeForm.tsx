@@ -2,10 +2,10 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { CreateClubResponse } from "../../../appsync";
 import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
+import { CreateClubResponse } from "../../scorebridge-ts-submodule/graphql/appsync";
 import { mutationDeleteClubAndAdmin } from "../../scorebridge-ts-submodule/graphql/mutations";
 import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
@@ -82,7 +82,7 @@ export default function ForgetMeForm() {
       throw new Error("no attributes in ForgetMeForm");
     }
 
-    deleteClubAndAdmin(clubId! /* adminSuper: don't do this */, user.username)
+    deleteClubAndAdmin(clubId /* adminSuper: don't do this */, user.username)
       .then((result) => {
         setErrStr("");
         setSubmitInFlight(false);

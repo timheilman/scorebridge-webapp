@@ -77,11 +77,9 @@ Or with no preceding attribute on the element:
 
 ## Updating TypeScript Types for GQL Types
 
-When changes occur in the cloud gql api, they need to be refreshed here:
+When changes occur in the cloud gql api, they need to be refreshed via the scorebridge-ts-submodule repo.
 
-- `cp ../scorebridge-cloud/appsync.d.ts .`
-
-Or use the `scorebridge-cloud` facility:
+TODO: SCOR-146 fix this and make sure it works, once vite and amplify v6 are in place and deployable to amplify frontend:
 
 - `export SCOREBRIDGE_WEBAPP_CLONE_LOCATION=../scorebridge-webapp`
 - `npm run codegen-gql-types # this creates/updates appsync.d.ts`

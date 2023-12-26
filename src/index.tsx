@@ -2,7 +2,8 @@ import "./index.css";
 import "./i18n";
 
 import { Authenticator } from "@aws-amplify/ui-react";
-import { Amplify, Auth } from "aws-amplify";
+import { Amplify } from "aws-amplify";
+import { fetchAuthSession } from "aws-amplify/auth";
 import React from "react"; // this is the only place this import should be needed on v18 of react
 import { createRoot } from "react-dom/client";
 import { Provider as ReactReduxProvider } from "react-redux";
@@ -12,28 +13,40 @@ import { store } from "./app/store";
 import requiredViteEnvVar from "./lib/requiredViteEnvVar";
 import reportWebVitals from "./reportWebVitals";
 
-Amplify.configure({
-  API: {
-    graphql_headers: async () => {
-      try {
-        const session = await Auth.currentSession();
-        return {
-          Authorization: session.getIdToken().getJwtToken(),
-        };
-      } catch (e) {
-        return {};
-      }
+Amplify.configure(
+  {
+    API: {
+      GraphQL: {
+        endpoint: requiredViteEnvVar("API_URL"),
+        region: requiredViteEnvVar("AWS_REGION"),
+        defaultAuthMode: "userPool",
+        apiKey: requiredViteEnvVar("CREATE_CLUB_API_KEY"),
+      },
+    },
+    Auth: {
+      Cognito: {
+        userPoolClientId: requiredViteEnvVar("COGNITO_USER_POOL_CLIENT_ID_WEB"),
+        userPoolId: requiredViteEnvVar("COGNITO_USER_POOL_ID"),
+      },
     },
   },
-  Auth: {
-    region: requiredViteEnvVar("AWS_REGION"),
-    userPoolId: requiredViteEnvVar("COGNITO_USER_POOL_ID"),
-    userPoolWebClientId: requiredViteEnvVar("COGNITO_USER_POOL_CLIENT_ID_WEB"), // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+  {
+    API: {
+      GraphQL: {
+        headers: async () => {
+          try {
+            const session = await fetchAuthSession();
+            return {
+              Authorization: session?.tokens?.idToken?.toString(),
+            };
+          } catch (e) {
+            return {};
+          }
+        },
+      },
+    },
   },
-  aws_appsync_graphqlEndpoint: requiredViteEnvVar("API_URL"),
-  aws_appsync_region: requiredViteEnvVar("AWS_REGION"),
-  aws_appsync_apiKey: requiredViteEnvVar("CREATE_CLUB_API_KEY"),
-});
+);
 
 const container = document.getElementById("root");
 if (!container) {

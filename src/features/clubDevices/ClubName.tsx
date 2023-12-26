@@ -1,11 +1,11 @@
 import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Club } from "../../../appsync";
 import { useAppSelector } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
+import { Club } from "../../scorebridge-ts-submodule/graphql/appsync";
 import { mutationUpdateClub } from "../../scorebridge-ts-submodule/graphql/mutations";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import styles from "../signUp/SignUpForm.module.css";

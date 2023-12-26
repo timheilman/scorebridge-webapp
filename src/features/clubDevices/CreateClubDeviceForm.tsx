@@ -2,11 +2,11 @@ import { GraphQLQuery, GraphQLResult } from "@aws-amplify/api";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ClubDevice } from "../../../appsync";
 import { gqlMutation } from "../../gql";
 import { handleGqlReject } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
+import { ClubDevice } from "../../scorebridge-ts-submodule/graphql/appsync";
 import { mutationCreateClubDevice } from "../../scorebridge-ts-submodule/graphql/mutations";
 import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";

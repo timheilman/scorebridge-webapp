@@ -1,7 +1,7 @@
 import "@aws-amplify/ui-react/styles.css";
 
 import { Authenticator } from "@aws-amplify/ui-react";
-import { I18n as amplifyI18n } from "aws-amplify";
+import { I18n as amplifyI18n } from "aws-amplify/utils";
 import { useEffect, useState } from "react";
 
 import { useAppSelector } from "../../app/hooks";
