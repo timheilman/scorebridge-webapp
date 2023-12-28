@@ -1,10 +1,7 @@
-import {
-  GeneratedSubscription,
-  GraphQLVariablesV6,
-} from "@aws-amplify/api-graphql/src/types";
+import { GraphQLVariablesV6 } from "@aws-amplify/api-graphql/src/types";
 import { GraphQLAuthMode } from "@aws-amplify/core/internals/utils";
 import { generateClient } from "aws-amplify/api";
-const client = generateClient();
+export const client = generateClient();
 
 // left off here; need to use https://docs.amplify.aws/javascript/build-a-backend/troubleshooting/migrate-from-javascript-v5-to-v6/#api-graphql
 // I probably will need to use an experimental project including the amplify CLI to
@@ -23,21 +20,4 @@ export function gqlMutation<
     variables: gqlOpVars,
     authMode,
   });
-}
-
-export function gqlSubscription<
-  FALLBACK_TYPES,
-  TYPED_GQL_STRING extends GeneratedSubscription<IN, SUB_OUT>,
->(
-  gqlOpString: TYPED_GQL_STRING,
-  gqlOpVars: GraphQLVariablesV6<FALLBACK_TYPES, TYPED_GQL_STRING>,
-  authMode: GraphQLAuthMode = "userPool",
-) {
-  return client
-    .graphql({
-      query: gqlOpString,
-      variables: gqlOpVars,
-      authMode,
-    })
-    .subscribe();
 }

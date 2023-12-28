@@ -1,16 +1,18 @@
 // cypress/support/auth-provider-commands/cognito.ts
 
-import { Amplify, Auth } from "aws-amplify";
+import { Amplify } from "aws-amplify";
 
 import requiredCypressEnvVar from "../requiredCypressEnvVar";
 
 Amplify.configure({
   Auth: {
-    region: requiredCypressEnvVar("AWS_REGION"),
-    userPoolId: requiredCypressEnvVar("COGNITO_USER_POOL_ID"),
-    userPoolWebClientId: requiredCypressEnvVar(
-      "COGNITO_USER_POOL_CLIENT_ID_WEB",
-    ), // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
+    Cognito: {
+      userPoolId: requiredCypressEnvVar("COGNITO_USER_POOL_ID"),
+      userPoolClientId: requiredCypressEnvVar(
+        "COGNITO_USER_POOL_CLIENT_ID_WEB",
+      ),
+      // worrisome: in v5 we had to specify region here; in v6 there is no way to...
+    },
   },
 });
 
@@ -28,6 +30,7 @@ Cypress.Commands.add(
 
     log.snapshot("before");
 
+    // TODO: SCOR-143 oh crap.  This ain't gonna work any more with v6 of amplify
     const signIn = Auth.signIn({ username, password });
 
     cy.wrap(signIn, { log: false }).then((cognitoResponse) => {

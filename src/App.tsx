@@ -4,10 +4,11 @@ import {
   translations as amplifyUiReactTranslations,
   useAuthenticator,
 } from "@aws-amplify/ui-react";
-import { I18n as amplifyI18n } from "aws-amplify";
+import { I18n as amplifyI18n } from "aws-amplify/utils";
 import { Trans, useTranslation } from "react-i18next";
 import { BrowserRouter as Router } from "react-router-dom";
 
+import { IdTokenFetcher } from "./features/header/IdTokenFetcher";
 import ScoreBridgeRoutes from "./features/header/ScoreBridgeRoutes";
 import SessionfulRouterHeader from "./features/header/SessionfulRouterHeader";
 import SessionlessRouterHeader from "./features/header/SessionlessRouterHeader";
@@ -63,7 +64,7 @@ export default function App() {
       </h2>
       <Router>
         {authStatus === "authenticated" ? (
-          <SessionfulRouterHeader />
+          <IdTokenFetcher />
         ) : (
           <SessionlessRouterHeader />
         )}

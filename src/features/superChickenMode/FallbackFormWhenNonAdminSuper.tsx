@@ -1,13 +1,12 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
 
-import { userInGroup } from "../../cognito";
+import { useAppSelector } from "../../app/hooks";
+import { selectCognitoGroups } from "../header/idTokenSlice";
 import { OverrideClubIdForm } from "../subscriptions/OverrideClubIdForm";
 
 export default function FallbackFormWhenNonAdminSuper() {
-  const { authStatus, user } = useAuthenticator((context) => [
-    context.authStatus,
-    context.user,
-  ]);
+  const { authStatus } = useAuthenticator((context) => [context.authStatus]);
+  const cognitoGroups = useAppSelector(selectCognitoGroups);
   if (authStatus !== "authenticated") {
     return (
       <>
@@ -16,7 +15,12 @@ export default function FallbackFormWhenNonAdminSuper() {
       </>
     );
   }
-  if (!userInGroup(user, "adminSuper")) {
+  if (!cognitoGroups) {
+    throw new Error(
+      "cognitoGroups is null in unauthenticated FallbackFormWhenNonAdminSuper",
+    );
+  }
+  if (!cognitoGroups.includes("adminSuper")) {
     return (
       <>
         <p>AdminClub visit to SuperChickenMode!</p>

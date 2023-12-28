@@ -1,6 +1,7 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
 
 import clubDevicesReducer from "../features/clubDevices/clubDevicesSlice";
+import idTokenReducer from "../features/header/idTokenSlice";
 import selectedLanguageReducer from "../features/languageSelector/selectedLanguageSlice";
 import subscriptionsReducer from "../features/subscriptions/subscriptionsSlice";
 import subscriptionStatesReducer from "../scorebridge-ts-submodule/subscriptionStatesSlice";
@@ -11,6 +12,7 @@ export const store = configureStore({
     clubDevices: clubDevicesReducer,
     subscriptions: subscriptionsReducer,
     subscriptionStates: subscriptionStatesReducer,
+    idToken: idTokenReducer,
   },
 });
 
