@@ -1,15 +1,13 @@
-import { GraphQLQuery, GraphQLResult } from "@aws-amplify/api";
 import { ChangeEvent, SyntheticEvent, useRef, useState } from "react";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import ReCAPTCHA from "react-google-recaptcha";
 import { useTranslation } from "react-i18next";
 
-import { gqlMutation } from "../../gql";
+import { client } from "../../gql";
 import { handleGqlReject } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import requiredViteEnvVar from "../../lib/requiredViteEnvVar";
-import { CreateClubResponse } from "../../scorebridge-ts-submodule/graphql/appsync";
 import { mutationCreateClub } from "../../scorebridge-ts-submodule/graphql/mutations";
 import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
@@ -20,12 +18,12 @@ const log = logFn("src.features.signUp.SignUpForm");
 const createClub = async (
   newAdminEmail: string,
   newClubName: string,
-  recaptchaToken?: string,
+  recaptchaToken: string,
 ) => {
   /* create a new club */
-  return gqlMutation<CreateClubResponse>(
-    mutationCreateClub,
-    {
+  return client.graphql({
+    query: mutationCreateClub,
+    variables: {
       input: {
         newAdminEmail,
         newClubName,
@@ -33,8 +31,8 @@ const createClub = async (
         recaptchaToken,
       },
     },
-    "apiKey",
-  );
+    authMode: "apiKey",
+  });
 };
 
 export default function SignUpForm() {
@@ -57,6 +55,9 @@ export default function SignUpForm() {
     setEverSubmitted(true);
     setSubmitInFlight(true);
     log("handleSubmit.start", "debug");
+    if (!captchaRef.current?.getValue()) {
+      throw new Error("No captchaRef.current?.getValue() for handleSubmit");
+    }
     createClub(email, clubName, captchaRef.current?.getValue())
       .then((result) => {
         captchaRef.current?.reset();

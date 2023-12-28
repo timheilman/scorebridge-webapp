@@ -3,21 +3,25 @@ import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppSelector } from "../../app/hooks";
-import { gqlMutation } from "../../gql";
+import { client } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
-import { CreateClubResponse } from "../../scorebridge-ts-submodule/graphql/appsync";
 import { mutationDeleteClubAndAdmin } from "../../scorebridge-ts-submodule/graphql/mutations";
 import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import { selectCognitoGroups } from "../header/idTokenSlice";
 import styles from "./SignUpForm.module.css";
+
 const log = logFn("src.features.signUp.ForgetMeForm");
 
 const deleteClubAndAdmin = async (clubId: string, userId: string) => {
   /* create a new club */
-  return gqlMutation<CreateClubResponse>(mutationDeleteClubAndAdmin, {
-    input: { clubId, userId },
+  return client.graphql({
+    query: mutationDeleteClubAndAdmin,
+    variables: {
+      input: { clubId, userId },
+    },
+    authMode: "userPool",
   });
 };
 

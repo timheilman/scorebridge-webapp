@@ -1,7 +1,5 @@
-import { GraphQLAuthMode } from "@aws-amplify/core/internals/utils";
-
 import { useAppDispatch } from "../../app/hooks";
-import { client, gqlMutation } from "../../gql";
+import { client } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { ClubDevice } from "../../scorebridge-ts-submodule/graphql/appsync";
 import {
@@ -12,6 +10,7 @@ import { retryPromise } from "../../scorebridge-ts-submodule/retryPromise";
 import {
   AccessParams,
   deleteSub,
+  GraphQLAuthMode,
   handleAmplifySubscriptionError,
   handleUnexpectedSubscriptionError,
   pool,
@@ -36,63 +35,67 @@ export interface SubscriptionComponentParams {
 }
 
 function listClubDevices({ clubId, authMode, dispatch }: AccessParams) {
-  return gqlMutation(
-    listClubDevicesGql,
-    {
-      input: { clubId },
-    },
-    authMode,
-  ).then((res) => {
-    if (res.errors) {
-      throw new Error(JSON.stringify(res.errors, null, 2));
-    }
-    // TODO: SCOR-143 search for SCOR-143 and cleanup comments
-    // SCOR-143
-    // in cloud, we're using DynamoDBQueryRequest to fulfill this request,
-    // and we'd rather not go to lambda for it. My old way, this resulted
-    // in res.data.listClubDevices.clubDevices holding the result. However,
-    // the @model flavor when using amplify for the backend in the tutorial
-    // instead integrates with the Amplify v6 TypeScript Type systems to
-    // involve the "ModelTodoConnection" __typename and "items" rather than
-    // "clubDevices"; this then uses PagedList<ClubDevice>. I thus needed
-    // to remove the translation from "items" to "clubDevices" over in cloud,
-    // which seemed to imply I just return the whole ctx.result as-is; see
-    // cloud's mapping-templates-ts/Query.listClubDevices.ts for more info.
-    const d = res.data.listClubDevices.items;
-    // TODO: handle nextToken etc...
-    log("dispatchingSetClubDevices", "debug", { res });
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    dispatch(
-      setClubDevices(
-        d.reduce(
-          (acc, cd) => {
-            if (cd) {
-              acc[cd.clubDeviceId] = cd;
-            }
-            return acc;
-          },
-          {} as Record<string, ClubDevice>,
+  return client
+    .graphql({
+      query: listClubDevicesGql,
+      variables: {
+        input: { clubId },
+      },
+      authMode,
+    })
+    .then((res) => {
+      if (res.errors) {
+        throw new Error(JSON.stringify(res.errors, null, 2));
+      }
+      // TODO: SCOR-143 search for SCOR-143 and cleanup comments
+      // SCOR-143
+      // in cloud, we're using DynamoDBQueryRequest to fulfill this request,
+      // and we'd rather not go to lambda for it. My old way, this resulted
+      // in res.data.listClubDevices.clubDevices holding the result. However,
+      // the @model flavor when using amplify for the backend in the tutorial
+      // instead integrates with the Amplify v6 TypeScript Type systems to
+      // involve the "ModelTodoConnection" __typename and "items" rather than
+      // "clubDevices"; this then uses PagedList<ClubDevice>. I thus needed
+      // to remove the translation from "items" to "clubDevices" over in cloud,
+      // which seemed to imply I just return the whole ctx.result as-is; see
+      // cloud's mapping-templates-ts/Query.listClubDevices.ts for more info.
+      const d = res.data.listClubDevices.items;
+      // TODO: handle nextToken etc...
+      log("dispatchingSetClubDevices", "debug", { res });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      dispatch(
+        setClubDevices(
+          d.reduce(
+            (acc, cd) => {
+              if (cd) {
+                acc[cd.clubDeviceId] = cd;
+              }
+              return acc;
+            },
+            {} as Record<string, ClubDevice>,
+          ),
         ),
-      ),
-    );
-  });
+      );
+    });
 }
 
 function getClub({ clubId, authMode, dispatch }: AccessParams) {
-  return gqlMutation(
-    getClubGql,
-    {
-      clubId,
-    },
-    authMode,
-  ).then((res) => {
-    if (res.errors) {
-      throw new Error(JSON.stringify(res.errors, null, 2));
-    }
-    log("fetchRecentData.dispatchingSetClub", "debug", { res });
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    dispatch(setClub(res.data.getClub!));
-  });
+  return client
+    .graphql({
+      query: getClubGql,
+      variables: {
+        clubId,
+      },
+      authMode,
+    })
+    .then((res) => {
+      if (res.errors) {
+        throw new Error(JSON.stringify(res.errors, null, 2));
+      }
+      log("fetchRecentData.dispatchingSetClub", "debug", { res });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      dispatch(setClub(res.data.getClub!));
+    });
 }
 
 export function SubscriptionsComponent({

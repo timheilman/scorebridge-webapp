@@ -6,7 +6,7 @@ import { AgGridReact } from "ag-grid-react";
 import { useCallback, useMemo, useRef } from "react";
 
 import { useAppSelector } from "../../app/hooks";
-import { gqlMutation } from "../../gql";
+import { client } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
 import { ClubDevice } from "../../scorebridge-ts-submodule/graphql/appsync";
@@ -14,6 +14,7 @@ import { mutationDeleteClubDevice } from "../../scorebridge-ts-submodule/graphql
 import { selectClubDevices } from "./clubDevicesSlice";
 import { ClubName } from "./ClubName";
 import { CreateClubDeviceForm } from "./CreateClubDeviceForm";
+
 const log = logFn("src.features.clubDevices.clubDevicesPage.");
 
 const columnDefsWithRows = [
@@ -58,8 +59,12 @@ export default function ClubDevicesPage() {
     };
   }, []);
   const deleteClubDevice = async (clubId: string, clubDeviceId: string) => {
-    return gqlMutation(mutationDeleteClubDevice, {
-      input: { clubId, clubDeviceId },
+    return client.graphql({
+      query: mutationDeleteClubDevice,
+      variables: {
+        input: { clubId, clubDeviceId },
+      },
+      authMode: "userPool",
     });
   };
   const agGridRowId = ({ data }: { data: Record<string, string> }) => {

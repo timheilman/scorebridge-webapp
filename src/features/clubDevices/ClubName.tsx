@@ -2,7 +2,7 @@ import { ChangeEvent, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppSelector } from "../../app/hooks";
-import { gqlMutation } from "../../gql";
+import { client } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
 import { Club } from "../../scorebridge-ts-submodule/graphql/appsync";
@@ -10,6 +10,7 @@ import { mutationUpdateClub } from "../../scorebridge-ts-submodule/graphql/mutat
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import styles from "../signUp/SignUpForm.module.css";
 import { selectClubName } from "./clubDevicesSlice";
+
 const log = logFn("src.features.clubDevices.clubName.");
 
 export function ClubName() {
@@ -25,11 +26,15 @@ export function ClubName() {
   const updateClub = async (
     club: Omit<Omit<Club, "createdAt">, "updatedAt">,
   ) => {
-    return gqlMutation<{ updateClub: Club }>(mutationUpdateClub, {
-      input: {
-        id: club.id,
-        name: club.name,
+    return client.graphql({
+      query: mutationUpdateClub,
+      variables: {
+        input: {
+          id: club.id,
+          name: club.name,
+        },
       },
+      authMode: "userPool",
     });
   };
   const handleChangeClubName = (event: ChangeEvent<HTMLInputElement>) => {
