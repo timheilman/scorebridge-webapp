@@ -145,13 +145,11 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ## package.json and .nvmrc commentary
 
-The version of node is locked to 18.13.0 because [Amplify frontend hosting is fastest with 
-this version of node 18](
-https://github.com/aws-amplify/amplify-hosting/issues/3109#issuecomment-1509264093), and vite 
-depends on node to do its stuff.  Any later versions would require building node from source on
-every build, which failed when I tried it with v18.19.0 anyway.  The version of npm is locked 
-to 9.7.1 because [amplify-js v6 requires this version or later in the development environment](
-https://docs.amplify.aws/react/build-a-backend/troubleshooting/migrate-from-javascript-v5-to-v6/#step-1-upgrade-your-dev-environment).
+The version of node is locked to 18.13.0 because [Amplify frontend hosting is fastest with
+this version of node 18](https://github.com/aws-amplify/amplify-hosting/issues/3109#issuecomment-1509264093), and vite
+depends on node to do its stuff. Any later versions would require building node from source on
+every build, which failed when I tried it with v18.19.0 anyway. The version of npm is locked
+to 9.7.1 because [amplify-js v6 requires this version or later in the development environment](https://docs.amplify.aws/react/build-a-backend/troubleshooting/migrate-from-javascript-v5-to-v6/#step-1-upgrade-your-dev-environment).
 
 ## Learn More
 
