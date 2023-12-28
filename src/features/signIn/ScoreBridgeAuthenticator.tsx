@@ -5,7 +5,7 @@ import { I18n as amplifyI18n } from "aws-amplify/utils";
 import { useEffect, useState } from "react";
 
 import { useAppSelector } from "../../app/hooks";
-import { selectLanguage } from ".././languageSelector/selectedLanguageSlice";
+import { selectLanguage } from "../languageSelector/selectedLanguageSlice";
 
 function randomLargeInt() {
   return Math.floor(Math.random() * 1000000000);
@@ -18,7 +18,14 @@ export default function ScoreBridgeAuthenticator() {
   const langCode = useAppSelector(selectLanguage);
   const [forceRerenderKey, setForceRerenderKey] = useState(randomLargeInt());
   useEffect(() => {
+    if (!langCode) {
+      return;
+    }
     amplifyI18n.setLanguage(langCode);
+    // 2023-12-28 as I learn more about react, this should not be necessary:
+    // because langCode is a dependency of this useEffect, the whole component
+    // should be rerendered when the langCode changes.  Leaving it for now
+    // TODO: test this theory and remove the key= attribute on Authenticator
     setForceRerenderKey(randomLargeInt());
   }, [langCode]);
   return (

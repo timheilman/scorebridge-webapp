@@ -18,7 +18,7 @@ export default function SuperChickenMode() {
       return (
         <>
           <p>initializing subscriptions for api key...</p>
-          <SubscriptionsComponent clubId={clubId} authMode="API_KEY" />
+          <SubscriptionsComponent clubId={clubId} authMode="apiKey" />
         </>
       );
     } else if (authStatus !== "authenticated") {

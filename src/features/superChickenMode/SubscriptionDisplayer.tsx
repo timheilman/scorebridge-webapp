@@ -3,9 +3,9 @@ import SubscriptionResult from "./SubscriptionResult";
 export default function SubscriptionDisplayer() {
   return (
     <ul>
-      <SubscriptionResult subscriptionId="createdClubDevice" />
-      <SubscriptionResult subscriptionId="deletedClubDevice" />
-      <SubscriptionResult subscriptionId="updatedClub" />
+      <SubscriptionResult subscriptionId="onCreateClubDevice" />
+      <SubscriptionResult subscriptionId="onDeleteClubDevice" />
+      <SubscriptionResult subscriptionId="onUpdateClub" />
     </ul>
   );
 }

@@ -33,7 +33,7 @@ const createClub = async (
         recaptchaToken,
       },
     },
-    "API_KEY",
+    "apiKey",
   );
 };
 
@@ -58,7 +58,7 @@ export default function SignUpForm() {
     setSubmitInFlight(true);
     log("handleSubmit.start", "debug");
     createClub(email, clubName, captchaRef.current?.getValue())
-      .then((result: GraphQLResult<GraphQLQuery<CreateClubResponse>>) => {
+      .then((result) => {
         captchaRef.current?.reset();
         setErrStr(null);
         setSubmitInFlight(false);

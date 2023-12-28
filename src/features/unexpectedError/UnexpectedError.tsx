@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { gqlMutation } from "../../gql";
+import { client } from "../../gql";
 import { mutationUnexpectedError } from "../../scorebridge-ts-submodule/graphql/mutations";
-
 export default function UnexpectedError() {
   const [callResult, setCallResult] = useState<unknown>(null);
   useEffect(() => {
-    gqlMutation(mutationUnexpectedError)
+    client
+      .graphql({ query: mutationUnexpectedError })
       .then(() => {
         throw new Error(
           "This code is expected never to be reached; this throw indicates a test failure.",

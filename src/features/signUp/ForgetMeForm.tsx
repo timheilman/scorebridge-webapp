@@ -2,6 +2,7 @@ import { useAuthenticator } from "@aws-amplify/ui-react";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useAppSelector } from "../../app/hooks";
 import { gqlMutation } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
@@ -9,6 +10,7 @@ import { CreateClubResponse } from "../../scorebridge-ts-submodule/graphql/appsy
 import { mutationDeleteClubAndAdmin } from "../../scorebridge-ts-submodule/graphql/mutations";
 import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
+import { selectCognitoGroups } from "../header/idTokenSlice";
 import styles from "./SignUpForm.module.css";
 const log = logFn("src.features.signUp.ForgetMeForm");
 
@@ -29,6 +31,7 @@ export default function ForgetMeForm() {
     context.signOut,
   ]);
   const clubId = useClubId();
+  const cognitoGroups = useAppSelector(selectCognitoGroups);
   const t = useTranslation().t as TypesafeTranslationT;
   const confirmPhrase = t("forgetMe.confirm.phrase");
   const submitButtonDisabled = () => {
@@ -78,11 +81,16 @@ export default function ForgetMeForm() {
     if (!user.username) {
       throw new Error("no username in ForgetMeForm");
     }
-    if (!user.attributes) {
-      throw new Error("no attributes in ForgetMeForm");
+    if (!cognitoGroups) {
+      throw new Error("no cognitoGroups in ForgetMeForm");
     }
-
-    deleteClubAndAdmin(clubId /* adminSuper: don't do this */, user.username)
+    if (cognitoGroups.includes("adminSuper")) {
+      throw new Error("adminSuper cannot delete their own account");
+    }
+    if (!clubId) {
+      throw new Error("No clubId for clubAdmin in ForgetMeForm");
+    }
+    deleteClubAndAdmin(clubId, user.username)
       .then((result) => {
         setErrStr("");
         setSubmitInFlight(false);

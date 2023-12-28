@@ -1,12 +1,10 @@
-import { GraphQLQuery, GraphQLResult } from "@aws-amplify/api";
 import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { gqlMutation } from "../../gql";
+import { client } from "../../gql";
 import { handleGqlReject } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
-import { ClubDevice } from "../../scorebridge-ts-submodule/graphql/appsync";
 import { mutationCreateClubDevice } from "../../scorebridge-ts-submodule/graphql/mutations";
 import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
@@ -22,17 +20,21 @@ export function CreateClubDeviceForm() {
   const [regToken, setRegToken] = useState("");
   const clubId = useClubId();
   const createClubDevice = async (deviceName: string, regToken: string) => {
-    /* create a new club */
-    return gqlMutation<{ createClubDevice: ClubDevice }>(
-      mutationCreateClubDevice,
-      {
+    if (!clubId) {
+      throw new Error(
+        "No clubId found in CreateClubDeviceForm#createClubDevice",
+      );
+    }
+    return client.graphql({
+      query: mutationCreateClubDevice,
+      variables: {
         input: {
           clubId,
           deviceName,
           regToken,
         },
       },
-    );
+    });
   };
 
   const handleSubmit = (event: SyntheticEvent) => {
@@ -41,17 +43,12 @@ export function CreateClubDeviceForm() {
     setEverSubmitted(true);
     log("handleSubmit.start", "debug");
     createClubDevice(deviceName, regToken)
-      .then(
-        (c: GraphQLResult<GraphQLQuery<{ createClubDevice: ClubDevice }>>) => {
-          setSubmitInFlight(false);
-          setErrStr(null);
-          if (!c.data) {
-            throw new Error("gotta have data");
-          }
-          setDeviceId(c.data.createClubDevice.clubDeviceId);
-          setCreatedDeviceName(c.data.createClubDevice.name);
-        },
-      )
+      .then((result) => {
+        setSubmitInFlight(false);
+        setErrStr(null);
+        setDeviceId(result.data.createClubDevice.clubDeviceId);
+        setCreatedDeviceName(result.data.createClubDevice.name);
+      })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .catch((reason: any) => {
         setSubmitInFlight(false);
