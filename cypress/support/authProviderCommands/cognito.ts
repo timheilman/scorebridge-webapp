@@ -1,6 +1,7 @@
 // cypress/support/auth-provider-commands/cognito.ts
 
 import { Amplify } from "aws-amplify";
+import { signIn } from "aws-amplify/auth"; // just working on amplify f/e hosting for now
 
 import requiredCypressEnvVar from "../requiredCypressEnvVar";
 
@@ -31,9 +32,9 @@ Cypress.Commands.add(
     log.snapshot("before");
 
     // TODO: SCOR-143 oh crap.  This ain't gonna work any more with v6 of amplify
-    const signIn = Auth.signIn({ username, password });
+    const signInResult = signIn({ username, password });
 
-    cy.wrap(signIn, { log: false }).then((cognitoResponse) => {
+    cy.wrap(signInResult, { log: false }).then((cognitoResponse) => {
       // The following is some voodoo found on webpages from before TypeScript
       // also, it seems as though this was all before Cognito got a good API
       // in place, and just slurps from internals.  It's ugly but it works.
