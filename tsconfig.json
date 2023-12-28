@@ -21,7 +21,7 @@
     "src",
     "cypress",
     "cypress.config.ts",
-    "vite.config.ts",
+    "vite.config.mts",
     "src/rootDirName.ts",
     "src/scorebridge-ts-submodule"
   ],

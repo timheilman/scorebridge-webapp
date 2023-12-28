@@ -3,16 +3,14 @@ frontend:
   phases:
     preBuild:
       commands:
-        - nvm use 18
+        - nvm use 18.13.0
         - npm --version
         - npm install -g npm@9.7.1
         - npm --version
         - npm ci
     build:
       commands:
-        - nvm use 18
-        - npm --version
-        - npm install -g npm@9.7.1
+        - nvm use 18.13.0
         - npm --version
         - npm run build
   artifacts:
