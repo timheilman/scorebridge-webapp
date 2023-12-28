@@ -3,13 +3,12 @@ frontend:
   phases:
     preBuild:
       commands:
-        - nvm install -s 18.19.0
-        - nvm use 18.19.0
+        - nvm use 18
         - npm --version
         - npm ci
     build:
       commands:
-        - nvm use 18.19.0
+        - nvm use 18
         - npm run build
   artifacts:
     baseDirectory: dist
