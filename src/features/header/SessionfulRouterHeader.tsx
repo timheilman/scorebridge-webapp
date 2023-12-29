@@ -7,7 +7,7 @@ import { Navigate, NavLink, useLocation } from "react-router-dom";
 
 import { useAppSelector } from "../../app/hooks";
 import { useClubId } from "../../lib/useClubId";
-import OnlineStatus from "../../scorebridge-ts-submodule/OnlineStatus";
+import OnlineStatus from "../../scorebridge-ts-submodule/react/OnlineStatus";
 import { subIdToSubGql } from "../../scorebridge-ts-submodule/subscriptionStatesSlice";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import LanguageSelector from "../languageSelector/LanguageSelector";

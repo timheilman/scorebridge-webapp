@@ -7,7 +7,7 @@ import { client } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
 import { mutationDeleteClubAndAdmin } from "../../scorebridge-ts-submodule/graphql/mutations";
-import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
+import { MaybeFooterElement } from "../../scorebridge-ts-submodule/react/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import { selectCognitoGroups } from "../header/idTokenSlice";
 import styles from "./SignUpForm.module.css";

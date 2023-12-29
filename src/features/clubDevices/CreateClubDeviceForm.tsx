@@ -6,7 +6,7 @@ import { handleGqlReject } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
 import { mutationCreateClubDevice } from "../../scorebridge-ts-submodule/graphql/mutations";
-import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
+import { MaybeFooterElement } from "../../scorebridge-ts-submodule/react/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 
 const log = logFn("src.features.clubDevices.createClubDeviceForm.");

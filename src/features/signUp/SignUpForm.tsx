@@ -9,7 +9,7 @@ import { handleGqlReject } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import requiredViteEnvVar from "../../lib/requiredViteEnvVar";
 import { mutationCreateClub } from "../../scorebridge-ts-submodule/graphql/mutations";
-import { MaybeFooterElement } from "../../scorebridge-ts-submodule/MaybeFooterElement";
+import { MaybeFooterElement } from "../../scorebridge-ts-submodule/react/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
 
