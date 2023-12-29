@@ -4,7 +4,7 @@ import {
   PurgeQueueInProgress,
 } from "@aws-sdk/client-sqs";
 
-import { cachedSqsClient } from "../../src/scorebridge-ts-submodule/cachedSqsClient";
+import { cachedSqsClient } from "../../src/lib/cachedSqsClient";
 import { cypressTaskLogFn } from "../support/cypressTaskLogFn";
 const log = cypressTaskLogFn("cypress.tasks.purgeSqsQueue.");
 
