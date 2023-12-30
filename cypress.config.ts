@@ -6,6 +6,7 @@ import { createTempEmailAccount } from "./cypress/tasks/createTempEmailAccount";
 import { expectClubDetails } from "./cypress/tasks/expectClubDetails";
 import { expectDdbUserDetails } from "./cypress/tasks/expectDdbUserDetails";
 import { fetchGroupsForUser } from "./cypress/tasks/fetchGroupsForUser";
+import { fetchJwts } from "./cypress/tasks/fetchJwts";
 import { fetchLatestEmail } from "./cypress/tasks/fetchLatestEmail";
 import { fetchNullableCogUser } from "./cypress/tasks/fetchNullableCogUser";
 import { fetchSecret } from "./cypress/tasks/fetchSecret";
@@ -25,6 +26,7 @@ export default defineConfig({
         log,
         createTempEmailAccount,
         fetchLatestEmail,
+        fetchJwts,
         setNewPasswordViaAdmin,
         fetchNullableCogUser,
         fetchGroupsForUser,

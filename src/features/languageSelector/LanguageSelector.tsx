@@ -5,7 +5,10 @@ import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { logFn } from "../../lib/logging";
-import { logCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/logCompletionDecorator";
+import {
+  errorSwallowingLogCompletionDecoratorFactory,
+  logCompletionDecoratorFactory,
+} from "../../scorebridge-ts-submodule/logCompletionDecorator";
 import {
   selectLanguage,
   setLanguage,
@@ -35,7 +38,7 @@ const options: Option[] = ["en", "fr", "zh", "he"]
     vl1.label < vl2.label ? -1 : vl1.label === vl2.label ? 0 : 1,
   );
 
-const lcd = logCompletionDecoratorFactory(log, false);
+const lcd = errorSwallowingLogCompletionDecoratorFactory(log);
 const LanguageSelector: FC<SelectProps> = () => {
   const selectedLanguage = useAppSelector(selectLanguage);
   const dispatch = useAppDispatch();
