@@ -23,6 +23,9 @@ plugins:
   - react-hooks
   - cypress
   - chai-friendly
+ignorePatterns:
+  - "node_modules"
+  - "src/scorebridge-ts-submodule/tsSubmoduleLog.ts"
 rules:
   "sort-imports": "off"
   "simple-import-sort/imports": "error"
@@ -32,7 +35,6 @@ rules:
   #  "import/first": "error",
   #  "import/newline-after-import": "error",
   #  "import/no-duplicates": "error"
-  "@typescript-eslint/no-unused-vars": "error"
   "cypress/assertion-before-screenshot": "error"
 settings:
   react:

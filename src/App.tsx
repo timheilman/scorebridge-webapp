@@ -10,7 +10,6 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 import { IdTokenFetcher } from "./features/header/IdTokenFetcher";
 import ScoreBridgeRoutes from "./features/header/ScoreBridgeRoutes";
-import SessionfulRouterHeader from "./features/header/SessionfulRouterHeader";
 import SessionlessRouterHeader from "./features/header/SessionlessRouterHeader";
 import requiredViteEnvVar from "./lib/requiredViteEnvVar";
 import TypesafeTranslationT from "./scorebridge-ts-submodule/TypesafeTranslationT";
