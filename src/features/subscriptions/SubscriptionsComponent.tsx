@@ -6,7 +6,6 @@ import {
   getClubGql,
   listClubDevicesGql,
 } from "../../scorebridge-ts-submodule/graphql/queries";
-import { retryPromise } from "../../scorebridge-ts-submodule/retryPromise";
 import {
   AccessParams,
   deleteSub,
@@ -15,12 +14,13 @@ import {
   handleUnexpectedSubscriptionError,
   pool,
   useSubscriptions,
-} from "../../scorebridge-ts-submodule/subscriptions";
+} from "../../scorebridge-ts-submodule/react/subscriptions";
 import {
   setSubscriptionBirth,
   setSubscriptionStatus,
   subIdToSubGql,
-} from "../../scorebridge-ts-submodule/subscriptionStatesSlice";
+} from "../../scorebridge-ts-submodule/react/subscriptionStatesSlice";
+import { retryPromise } from "../../scorebridge-ts-submodule/retryPromise";
 import {
   deleteClubDevice,
   setClub,

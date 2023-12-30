@@ -4,7 +4,7 @@ import clubDevicesReducer from "../features/clubDevices/clubDevicesSlice";
 import idTokenReducer from "../features/header/idTokenSlice";
 import selectedLanguageReducer from "../features/languageSelector/selectedLanguageSlice";
 import subscriptionsReducer from "../features/subscriptions/subscriptionsSlice";
-import subscriptionStatesReducer from "../scorebridge-ts-submodule/subscriptionStatesSlice";
+import subscriptionStatesReducer from "../scorebridge-ts-submodule/react/subscriptionStatesSlice";
 
 export const store = configureStore({
   reducer: {

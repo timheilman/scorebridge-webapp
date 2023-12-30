@@ -3,7 +3,7 @@ import { useClubId } from "../../lib/useClubId";
 import {
   allSubscriptionsI,
   selectSubscriptionStateById,
-} from "../../scorebridge-ts-submodule/subscriptionStatesSlice";
+} from "../../scorebridge-ts-submodule/react/subscriptionStatesSlice";
 
 export interface SubscriptionResultParams {
   subscriptionId: keyof allSubscriptionsI;
