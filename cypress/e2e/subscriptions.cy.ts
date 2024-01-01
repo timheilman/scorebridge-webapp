@@ -17,17 +17,17 @@ function withClub00CheckSubscriptions(
   }
   cy.contains(
     new RegExp(
-      `Subscription: createdClubDevice; status: .*${expectedMessage}.*; clubId: ${user.clubId}`,
+      `Subscription: onCreateClubDevice; status: .*${expectedMessage}.*; clubId: ${user.clubId}`,
     ),
   );
   cy.contains(
     new RegExp(
-      `Subscription: deletedClubDevice; status: .*${expectedMessage}.*; clubId: ${user.clubId}`,
+      `Subscription: onDeleteClubDevice; status: .*${expectedMessage}.*; clubId: ${user.clubId}`,
     ),
   );
   cy.contains(
     new RegExp(
-      `Subscription: updatedClub; status: .*${expectedMessage}.*; clubId: ${user.clubId}`,
+      `Subscription: onUpdateClub; status: .*${expectedMessage}.*; clubId: ${user.clubId}`,
     ),
   );
 }
@@ -37,7 +37,9 @@ describe("subscriptions", () => {
     envTask<{ userId: string; clubId: string }>("fetchNullableCogUser", {
       email: `scorebridge8+${stage}-testUser-adminClub-club00@gmail.com`,
     }).as("club00User");
+    envTask("logoutByCognitoApi", {});
   });
+
   it("with API_KEY, no subscriptions allowed", () => {
     cy.get<{ userId: string; clubId: string }>("@club00User").then((user) => {
       withClub00CheckSubscriptions(

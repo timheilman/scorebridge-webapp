@@ -1,4 +1,5 @@
 import { useAuthenticator } from "@aws-amplify/ui-react";
+import { Trans } from "react-i18next";
 
 import { useAppSelector } from "../../app/hooks";
 import { selectCognitoGroups } from "../header/idTokenSlice";
@@ -16,9 +17,7 @@ export default function FallbackFormWhenNonAdminSuper() {
     );
   }
   if (!cognitoGroups) {
-    throw new Error(
-      "cognitoGroups is null in unauthenticated FallbackFormWhenNonAdminSuper",
-    );
+    return <Trans>SuperChicken awaiting cognito session fetch...</Trans>;
   }
   if (!cognitoGroups.includes("adminSuper")) {
     return (

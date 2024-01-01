@@ -21,7 +21,7 @@ export default function SuperChickenMode() {
           <SubscriptionsComponent clubId={clubId} authMode="apiKey" />
         </>
       );
-    } else if (authStatus !== "authenticated") {
+    } else if (authStatus === "authenticated") {
       return (
         <p>subscriptions handled by sessionful header when authenticated</p>
       );

@@ -8,6 +8,9 @@ import { envTask } from "../support/envTask";
 import { expectBackendDetails } from "../support/userUtils";
 
 describe("trying to speed up cypress", () => {
+  beforeEach(() => {
+    envTask("logoutByCognitoApi", {});
+  });
   it("actually-deletes things when account deleted", () => {
     const clubName = "My club";
     cy.visit("http://localhost:5173/");

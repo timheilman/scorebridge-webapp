@@ -20,7 +20,7 @@ import {
   setSubscriptionStatus,
   subIdToSubGql,
 } from "../../scorebridge-ts-submodule/react/subscriptionStatesSlice";
-import { retryPromise } from "../../scorebridge-ts-submodule/retryPromise";
+import { retryOnNetworkFailurePromise } from "../../scorebridge-ts-submodule/retryOnNetworkFailurePromise";
 import {
   deleteClubDevice,
   setClub,
@@ -61,7 +61,7 @@ function listClubDevices({ clubId, authMode, dispatch }: AccessParams) {
       // cloud's mapping-templates-ts/Query.listClubDevices.ts for more info.
       const d = res.data.listClubDevices.items;
       // TODO: handle nextToken etc...
-      log("dispatchingSetClubDevices", "debug", { res });
+      // log("dispatchingSetClubDevices", "debug", { res });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       dispatch(
         setClubDevices(
@@ -92,7 +92,7 @@ function getClub({ clubId, authMode, dispatch }: AccessParams) {
       if (res.errors) {
         throw new Error(JSON.stringify(res.errors, null, 2));
       }
-      log("fetchRecentData.dispatchingSetClub", "debug", { res });
+      // log("fetchRecentData.dispatchingSetClub", "debug", { res });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       dispatch(setClub(res.data.getClub!));
     });
@@ -284,8 +284,10 @@ export function SubscriptionsComponent({
     // these must be retried because sometimes after an internet outage the
     // subscriptions will become healthy again before domain-name-service is
     // ready, so the initial refetch of data will fail
-    promises.push(retryPromise(() => listClubDevices(accessParams)));
-    promises.push(retryPromise(() => getClub(accessParams)));
+    promises.push(
+      retryOnNetworkFailurePromise(() => listClubDevices(accessParams)),
+    );
+    promises.push(retryOnNetworkFailurePromise(() => getClub(accessParams)));
     await Promise.all(promises);
   };
 

@@ -6,6 +6,9 @@ import requiredCypressEnvVar from "../support/requiredCypressEnvVar";
 const stage = requiredCypressEnvVar("STAGE");
 
 describe("signUp", () => {
+  beforeEach(() => {
+    envTask("logoutByCognitoApi", {});
+  });
   it("with adminClub-club00, passes happy path", () => {
     const userEmail = `scorebridge8+${stage}-testUser-adminClub-club00@gmail.com`;
     const deviceEmail = `scorebridge8+${stage}-clubDevice-TEST5678@gmail.com`;

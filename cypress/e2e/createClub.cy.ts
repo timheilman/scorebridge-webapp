@@ -21,6 +21,9 @@ const failedClubName =
   "name should not be updated in club table upon invocation by confirmed user";
 
 describe("signUp", () => {
+  beforeEach(() => {
+    envTask("logoutByCognitoApi", {});
+  });
   it("with API_KEY, signUp new address=>sends email; FORCE_RESET_PASSWORD address=>sends email; confirmed address=>already registered", () => {
     cy.visit("http://localhost:5173");
     const newPassword = randomPassword();

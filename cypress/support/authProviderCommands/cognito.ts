@@ -2,6 +2,7 @@
 
 import { Amplify } from "aws-amplify";
 
+import { JwtResponse } from "../../tasks/fetchJwts";
 import requiredCypressEnvVar from "../requiredCypressEnvVar";
 
 // Amazon Cognito
@@ -23,18 +24,9 @@ Cypress.Commands.add(
 
     log.snapshot("before");
 
-    cy.task("fetchJwts", { username, password }).then((jwts) => {
-      Cypress.log({
-        displayName: "exploring amplify v6",
-        message: [`here: ${JSON.stringify(jwts, null, 2)}`],
-        autoEnd: true,
-      });
-      cy.task("log", {
-        catPrefix: "cypress.support.authProviderCommands.cognito.",
-        catSuffix: "fetchJwts",
-        logLevel: "info",
-        addlParams: [jwts],
-      });
+    cy.task("fetchJwts", { username, password }).then((unknownJwts) => {
+      // cypress is not type-safe, so:
+      const jwts = unknownJwts as JwtResponse;
       // The following is some voodoo found on webpages from before TypeScript
       // also, it seems as though this was all before Cognito got a good API
       // in place, and just slurps from internals.  It's ugly but it works.

@@ -8,8 +8,11 @@ import { I18n as amplifyI18n } from "aws-amplify/utils";
 import { Trans, useTranslation } from "react-i18next";
 import { BrowserRouter as Router } from "react-router-dom";
 
+import { useAppSelector } from "./app/hooks";
 import { IdTokenFetcher } from "./features/header/IdTokenFetcher";
+import { selectCognitoGroups } from "./features/header/idTokenSlice";
 import ScoreBridgeRoutes from "./features/header/ScoreBridgeRoutes";
+import SessionfulRouterHeader from "./features/header/SessionfulRouterHeader";
 import SessionlessRouterHeader from "./features/header/SessionlessRouterHeader";
 import requiredViteEnvVar from "./lib/requiredViteEnvVar";
 import TypesafeTranslationT from "./scorebridge-ts-submodule/TypesafeTranslationT";
@@ -50,6 +53,7 @@ amplifyI18n.putVocabularies(amplifyUiReactTranslations);
 export default function App() {
   const { authStatus } = useAuthenticator((context) => [context.authStatus]);
   const t = useTranslation("translation").t as TypesafeTranslationT;
+  const cognitoGroups = useAppSelector(selectCognitoGroups);
   if (authStatus === "configuring") {
     return <Trans>Loading user session</Trans>;
   }
@@ -62,7 +66,9 @@ export default function App() {
         {stage === "prod" ? "" : `-${stage}`}
       </h2>
       <Router>
-        {authStatus === "authenticated" ? (
+        {authStatus === "authenticated" && cognitoGroups ? (
+          <SessionfulRouterHeader />
+        ) : authStatus === "authenticated" ? (
           <IdTokenFetcher />
         ) : (
           <SessionlessRouterHeader />

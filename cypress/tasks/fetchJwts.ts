@@ -1,16 +1,20 @@
 import { Amplify } from "aws-amplify";
-import { fetchAuthSession, signIn } from "aws-amplify/auth";
+import {
+  fetchAuthSession,
+  signIn,
+  signOut as amplifySignOut,
+} from "aws-amplify/auth";
 
 Amplify.configure({
   Auth: {
     Cognito: {
+      // TODO SCOR-143: make these into requiredCypressTaskEnvVars and remove VITE_ prefix
       userPoolId: process.env.VITE_COGNITO_USER_POOL_ID,
       userPoolClientId: process.env.VITE_COGNITO_USER_POOL_CLIENT_ID_WEB,
-      // worrisome: in v5 we had to specify region here; in v6 there is no way to...
     },
   },
 });
-
+export type JwtResponse = Awaited<ReturnType<typeof fetchJwts>>;
 export const fetchJwts = async ({
   username,
   password,
@@ -18,7 +22,7 @@ export const fetchJwts = async ({
   username: string;
   password: string;
 }) => {
-  const signInResult = await signIn({
+  await signIn({
     username,
     password,
     options: { authFlowType: "USER_PASSWORD_AUTH" },
@@ -45,6 +49,11 @@ export const fetchJwts = async ({
   return {
     idToken: idTokenStr,
     accessToken: accessTokenStr,
-    userSub: authSession.userSub,
+    userSub: authSession.userSub!,
   };
+};
+
+export const logoutByCognitoApi = async () => {
+  await amplifySignOut({ global: true });
+  return null;
 };

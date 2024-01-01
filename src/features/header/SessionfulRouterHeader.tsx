@@ -32,7 +32,7 @@ export default function SessionfulRouterHeader() {
   if (!cognitoGroups) {
     throw new Error("cognitoGroups is null in SessionfulRouterHeader");
   }
-  if (!clubId && !cognitoGroups.includes("adminClub")) {
+  if (!clubId && !cognitoGroups.includes("adminSuper")) {
     throw new Error("adminClub member has no clubId");
   }
   if (["/signin", "/signup"].includes(pathname)) {

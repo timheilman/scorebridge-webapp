@@ -39,7 +39,7 @@ const useVoidableClubDevices = () => {
   if (!Object.keys(clubDevices).length) {
     return [{ message: "You have no club devices yet." }];
   } else {
-    log("useVoidableClubDevices.1", "info", { clubDevices });
+    // log("useVoidableClubDevices.1", "info", { clubDevices });
     return Object.values(clubDevices).map((v) => ({
       delete: "X",
       ...v,
