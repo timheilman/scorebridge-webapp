@@ -8,9 +8,9 @@ import {
 Amplify.configure({
   Auth: {
     Cognito: {
-      // TODO SCOR-143: make these into requiredCypressTaskEnvVars and remove VITE_ prefix
-      userPoolId: process.env.VITE_COGNITO_USER_POOL_ID,
-      userPoolClientId: process.env.VITE_COGNITO_USER_POOL_CLIENT_ID_WEB,
+      userPoolId: process.env.CYPRESS_TASK_COGNITO_USER_POOL_ID!,
+      userPoolClientId:
+        process.env.CYPRESS_TASK_COGNITO_USER_POOL_CLIENT_ID_WEB!,
     },
   },
 });
