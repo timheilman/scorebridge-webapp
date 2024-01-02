@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { withPreexistingCredsDo } from "../support/authUtils";
 import { envTask } from "../support/envTask";
 import requiredCypressEnvVar from "../support/requiredCypressEnvVar";
