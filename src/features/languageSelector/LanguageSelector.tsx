@@ -5,10 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { logFn } from "../../lib/logging";
-import {
-  errorSwallowingLogCompletionDecoratorFactory,
-  logCompletionDecoratorFactory,
-} from "../../scorebridge-ts-submodule/logCompletionDecorator";
+import { errorSwallowingLogCompletionDecoratorFactory } from "../../scorebridge-ts-submodule/logCompletionDecorator";
 import {
   selectLanguage,
   setLanguage,

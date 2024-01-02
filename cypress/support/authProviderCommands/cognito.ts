@@ -30,7 +30,7 @@ Cypress.Commands.add(
       // The following is some voodoo found on webpages from before TypeScript
       // also, it seems as though this was all before Cognito got a good API
       // in place, and just slurps from internals.  It's ugly but it works.
-      /* eslint-disable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
+      /* eslint-disable @typescript-eslint/ban-ts-comment */
       // @ts-ignore
       const keyPrefix = `CognitoIdentityServiceProvider.${requiredCypressEnvVar(
         "COGNITO_USER_POOL_CLIENT_ID_WEB",
@@ -63,7 +63,7 @@ Cypress.Commands.add(
 
       // @ts-ignore
       window.localStorage.setItem(`${keyPrefix}.LastAuthUser`, jwts.userSub);
-      /* eslint-enable @typescript-eslint/ban-ts-comment,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access */
+      /* eslint-enable @typescript-eslint/ban-ts-comment */
 
       // window.localStorage.setItem(
       //   "amplify-authenticator-authState",
