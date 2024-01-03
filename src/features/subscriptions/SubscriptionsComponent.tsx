@@ -1,7 +1,12 @@
+import { GraphqlSubscriptionMessage } from "@aws-amplify/api-graphql";
+
 import { useAppDispatch } from "../../app/hooks";
 import { client } from "../../gql";
 import { logFn } from "../../lib/logging";
-import { ClubDevice } from "../../scorebridge-ts-submodule/graphql/appsync";
+import {
+  ClubDevice,
+  Subscription,
+} from "../../scorebridge-ts-submodule/graphql/appsync";
 import {
   getClubGql,
   listClubDevicesGql,
@@ -98,6 +103,45 @@ function getClub({ clubId, authMode, dispatch }: AccessParams) {
     });
 }
 
+function extracted(
+  accessParams: AccessParams,
+  subId: keyof Subscription,
+  variables: {
+    clubId: string;
+  },
+  cb: <T extends keyof Subscription>(
+    nextArg: NonNullable<Pick<Subscription, T>[T]>,
+  ) => void,
+) {
+  try {
+    deleteSub(accessParams.dispatch, subId);
+    log("typedSubscription", "debug", { subId, ...variables });
+    pool[subId] = client
+      .graphql({
+        authMode: accessParams.authMode ?? "userPool",
+        query: subIdToSubGql[subId],
+        variables,
+      })
+      .subscribe({
+        next: (message) => {
+          const datum = message.data[subId];
+          cb(datum);
+        },
+        error: handleAmplifySubscriptionError(accessParams.dispatch, subId),
+      });
+    log("typedSubscription.ok", "debug", { subId });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    accessParams.dispatch(
+      setSubscriptionStatus([subId, "successfullySubscribed"]),
+    );
+    log("typedSubscription.birth", "debug", { subId });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    accessParams.dispatch(setSubscriptionBirth(subId));
+  } catch (e: unknown) {
+    handleUnexpectedSubscriptionError(e, accessParams.dispatch, subId);
+  }
+}
+
 export function SubscriptionsComponent({
   clubId,
   authMode,
@@ -107,47 +151,15 @@ export function SubscriptionsComponent({
   function subscribeToAll(accessParams: AccessParams) {
     log("subscribeToAll", "debug");
 
-    try {
-      deleteSub(accessParams.dispatch, "onCreateClubDevice");
-
-      const variables = { clubId: accessParams.clubId };
-      log("onCreateClubDevice.typedSubscription", "debug", variables);
-      pool.onCreateClubDevice = client
-        .graphql({
-          authMode: accessParams.authMode ?? "userPool",
-          query: subIdToSubGql.onCreateClubDevice,
-          variables: variables,
-        })
-        .subscribe({
-          next: (message) =>
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-call
-            accessParams.dispatch(
-              upsertClubDevice(message.data.onCreateClubDevice),
-            ),
-          error: handleAmplifySubscriptionError(
-            accessParams.dispatch,
-            "onCreateClubDevice",
-          ),
-        });
-      log("onCreateClubDevice.typedSubscription.success", "debug", {
-        subId: "onCreateClubDevice",
-      });
+    const subId = "onCreateClubDevice";
+    const cb = (
+      nextArg: NonNullable<Pick<Subscription, typeof subId>[typeof subId]>,
+    ) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      accessParams.dispatch(
-        setSubscriptionStatus(["onCreateClubDevice", "successfullySubscribed"]),
-      );
-      log("onCreateClubDevice.typedSubscription.success.birth", "debug", {
-        subId: "onCreateClubDevice",
-      });
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      accessParams.dispatch(setSubscriptionBirth("onCreateClubDevice"));
-    } catch (e: unknown) {
-      handleUnexpectedSubscriptionError(
-        e,
-        accessParams.dispatch,
-        "onCreateClubDevice",
-      );
-    }
+      accessParams.dispatch(upsertClubDevice(nextArg));
+    };
+    const variables = { clubId: accessParams.clubId };
+    extracted(accessParams, subId, variables, cb);
 
     try {
       deleteSub(accessParams.dispatch, "onUpdateClubDevice");
