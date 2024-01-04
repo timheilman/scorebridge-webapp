@@ -131,7 +131,9 @@ export function SubscriptionsComponent({
     promises.push(
       retryOnNetworkFailurePromise(() => listClubDevices(accessParams)),
     );
-    promises.push(retryOnNetworkFailurePromise(() => getClub(accessParams)));
+    promises.push(
+      retryOnNetworkFailurePromise(() => getClub(accessParams, setClub)),
+    );
     await Promise.all(promises);
   };
 
