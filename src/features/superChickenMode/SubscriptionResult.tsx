@@ -1,12 +1,10 @@
 import { useAppSelector } from "../../app/hooks";
 import { useClubId } from "../../lib/useClubId";
-import {
-  allSubscriptionsI,
-  selectSubscriptionStateById,
-} from "../../scorebridge-ts-submodule/react/subscriptionStatesSlice";
+import { SubscriptionNames } from "../../scorebridge-ts-submodule/graphql/subscriptions";
+import { selectSubscriptionStateById } from "../../scorebridge-ts-submodule/react/subscriptionStatesSlice";
 
 export interface SubscriptionResultParams {
-  subscriptionId: keyof allSubscriptionsI;
+  subscriptionId: SubscriptionNames;
 }
 export default function SubscriptionResult({
   subscriptionId,

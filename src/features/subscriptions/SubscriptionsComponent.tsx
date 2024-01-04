@@ -1,5 +1,3 @@
-import { GraphqlSubscriptionMessage } from "@aws-amplify/api-graphql";
-
 import { useAppDispatch } from "../../app/hooks";
 import { client } from "../../gql";
 import { logFn } from "../../lib/logging";
@@ -11,6 +9,11 @@ import {
   getClubGql,
   listClubDevicesGql,
 } from "../../scorebridge-ts-submodule/graphql/queries";
+import {
+  GeneratedSubscription,
+  KeyedGeneratedSubscription,
+  SubscriptionNames,
+} from "../../scorebridge-ts-submodule/graphql/subscriptions";
 import {
   AccessParams,
   deleteSub,
@@ -103,30 +106,48 @@ function getClub({ clubId, authMode, dispatch }: AccessParams) {
     });
 }
 
-function extracted(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type OutType<T> = T extends GeneratedSubscription<any, infer OUT>
+  ? NeverEmpty<OUT>
+  : never;
+type NeverEmpty<T> = {
+  [K in keyof T]-?: Exclude<WithListsFixed<T[K]>, undefined | null>;
+};
+type WithListsFixed<T> = T extends PagedList<infer IT, infer NAME>
+  ? PagedList<Exclude<IT, null | undefined>, NAME>
+  : // eslint-disable-next-line @typescript-eslint/ban-types
+    T extends {}
+    ? {
+        [K in keyof T]: WithListsFixed<T[K]>;
+      }
+    : T;
+interface PagedList<T, TYPENAME> {
+  __typename: TYPENAME;
+  nextToken?: string | null | undefined;
+  items: T[];
+}
+
+function extracted<NAME extends SubscriptionNames, IN>(
   accessParams: AccessParams,
-  subId: keyof Subscription,
-  variables: {
-    clubId: string;
-  },
-  cb: <T extends keyof Subscription>(
-    nextArg: NonNullable<Pick<Subscription, T>[T]>,
-  ) => void,
+  subId: NAME,
+  gql: KeyedGeneratedSubscription<NAME, IN>,
+  variables: IN,
+  cb: (val: OutType<typeof gql>) => void,
 ) {
   try {
     deleteSub(accessParams.dispatch, subId);
-    log("typedSubscription", "debug", { subId, ...variables });
+    log("typedSubscription", "debug", {
+      subscriptionName: subId,
+      ...variables,
+    });
     pool[subId] = client
       .graphql({
         authMode: accessParams.authMode ?? "userPool",
-        query: subIdToSubGql[subId],
+        query: gql,
         variables,
       })
       .subscribe({
-        next: (message) => {
-          const datum = message.data[subId];
-          cb(datum);
-        },
+        next: (message) => cb(message.data),
         error: handleAmplifySubscriptionError(accessParams.dispatch, subId),
       });
     log("typedSubscription.ok", "debug", { subId });
@@ -150,16 +171,14 @@ export function SubscriptionsComponent({
 
   function subscribeToAll(accessParams: AccessParams) {
     log("subscribeToAll", "debug");
-
-    const subId = "onCreateClubDevice";
-    const cb = (
-      nextArg: NonNullable<Pick<Subscription, typeof subId>[typeof subId]>,
-    ) => {
+    const cb = (message: Pick<Subscription, "onCreateClubDevice">) => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      accessParams.dispatch(upsertClubDevice(nextArg));
+      accessParams.dispatch(upsertClubDevice(message.onCreateClubDevice!));
     };
+
+    const subId: SubscriptionNames = "onCreateClubDevice";
     const variables = { clubId: accessParams.clubId };
-    extracted(accessParams, subId, variables, cb);
+    extracted(accessParams, subId, subIdToSubGql[subId], variables, cb);
 
     try {
       deleteSub(accessParams.dispatch, "onUpdateClubDevice");
