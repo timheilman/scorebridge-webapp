@@ -1,6 +1,7 @@
 import { useAppDispatch } from "../../app/hooks";
 import { logFn } from "../../lib/logging";
 import {
+  Club,
   ClubDevice,
   Maybe,
 } from "../../scorebridge-ts-submodule/graphql/appsync";
@@ -78,49 +79,47 @@ export function SubscriptionsComponent({
 
   function subscribeToAll(accessParams: AccessParams) {
     log("subscribeToAll", "debug");
-    [
-      {
-        subId: "onCreateClubDevice" as const, // <- had to add "as const"
-        query: subIdToSubGql.onCreateClubDevice,
-        variables: { clubId: accessParams.clubId },
-        callback: (clubDevice: ClubDevice) => {
-          // <- had to add type
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-          accessParams.dispatch(upsertClubDevice(clubDevice));
+    (
+      [
+        {
+          subId: "onCreateClubDevice",
+          query: subIdToSubGql.onCreateClubDevice,
+          variables: { clubId: accessParams.clubId },
+          callback: (clubDevice: ClubDevice) => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            accessParams.dispatch(upsertClubDevice(clubDevice));
+          },
         },
-      },
-    ].forEach((args) => {
+        {
+          subId: "onUpdateClubDevice",
+          query: subIdToSubGql.onUpdateClubDevice,
+          variables: { clubId: accessParams.clubId },
+          callback: (clubDevice: ClubDevice) => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            accessParams.dispatch(upsertClubDevice(clubDevice));
+          },
+        },
+        {
+          subId: "onDeleteClubDevice",
+          query: subIdToSubGql.onDeleteClubDevice,
+          variables: { clubId: accessParams.clubId },
+          callback: (clubDevice: ClubDevice) => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            accessParams.dispatch(deleteClubDevice(clubDevice.clubDeviceId));
+          },
+        },
+        {
+          subId: "onUpdateClub",
+          query: subIdToSubGql.onUpdateClub,
+          variables: { id: accessParams.clubId },
+          callback: (club: Club) => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            accessParams.dispatch(setClub(club));
+          },
+        },
+      ] as const
+    ).forEach((args) => {
       errorCatchingSubscription({ ...args, accessParams });
-    });
-    errorCatchingSubscription({
-      accessParams,
-      subId: "onUpdateClubDevice",
-      query: subIdToSubGql.onUpdateClubDevice,
-      variables: { clubId: accessParams.clubId },
-      callback: (clubDevice) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        accessParams.dispatch(upsertClubDevice(clubDevice));
-      },
-    });
-    errorCatchingSubscription({
-      accessParams,
-      subId: "onDeleteClubDevice",
-      query: subIdToSubGql.onDeleteClubDevice,
-      variables: { clubId: accessParams.clubId },
-      callback: (clubDevice) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        accessParams.dispatch(deleteClubDevice(clubDevice.clubDeviceId));
-      },
-    });
-    errorCatchingSubscription({
-      accessParams,
-      subId: "onUpdateClub",
-      query: subIdToSubGql.onUpdateClub,
-      variables: { id: accessParams.clubId },
-      callback: (club) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        accessParams.dispatch(setClub(club));
-      },
     });
 
     log("doneSubscribing", "debug");
