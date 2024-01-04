@@ -1,11 +1,11 @@
 import { useAppDispatch } from "../../app/hooks";
-import { client } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { ClubDevice } from "../../scorebridge-ts-submodule/graphql/appsync";
 import {
   getClubGql,
   listClubDevicesGql,
 } from "../../scorebridge-ts-submodule/graphql/queries";
+import { client } from "../../scorebridge-ts-submodule/react/gqlClient";
 import {
   AccessParams,
   errorCatchingSubscription,

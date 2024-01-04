@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { client } from "../../gql";
 import { mutationUnexpectedError } from "../../scorebridge-ts-submodule/graphql/mutations";
+import { client } from "../../scorebridge-ts-submodule/react/gqlClient";
 export default function UnexpectedError() {
   const [callResult, setCallResult] = useState<unknown>(null);
   useEffect(() => {

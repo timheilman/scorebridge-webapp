@@ -3,10 +3,10 @@ import { ChangeEvent, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { useAppSelector } from "../../app/hooks";
-import { client } from "../../gql";
 import { logFn } from "../../lib/logging";
 import { useClubId } from "../../lib/useClubId";
 import { mutationDeleteClubAndAdmin } from "../../scorebridge-ts-submodule/graphql/mutations";
+import { client } from "../../scorebridge-ts-submodule/react/gqlClient";
 import { MaybeFooterElement } from "../../scorebridge-ts-submodule/react/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import { selectCognitoGroups } from "../header/idTokenSlice";

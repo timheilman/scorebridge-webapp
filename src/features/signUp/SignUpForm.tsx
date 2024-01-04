@@ -4,11 +4,11 @@ import { ChangeEvent, SyntheticEvent, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { useTranslation } from "react-i18next";
 
-import { client } from "../../gql";
 import { handleGqlReject } from "../../lib/gql";
 import { logFn } from "../../lib/logging";
 import requiredViteEnvVar from "../../lib/requiredViteEnvVar";
 import { mutationCreateClub } from "../../scorebridge-ts-submodule/graphql/mutations";
+import { client } from "../../scorebridge-ts-submodule/react/gqlClient";
 import { MaybeFooterElement } from "../../scorebridge-ts-submodule/react/MaybeFooterElement";
 import TypesafeTranslationT from "../../scorebridge-ts-submodule/TypesafeTranslationT";
 import styles from "./SignUpForm.module.css";
