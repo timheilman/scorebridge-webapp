@@ -1,14 +1,15 @@
 import { useAppDispatch } from "../../app/hooks";
 import { logFn } from "../../lib/logging";
-import { ClubDevice } from "../../scorebridge-ts-submodule/graphql/appsync";
 import {
-  getClubGql,
-  listClubDevicesGql,
-} from "../../scorebridge-ts-submodule/graphql/queries";
+  ClubDevice,
+  Maybe,
+} from "../../scorebridge-ts-submodule/graphql/appsync";
+import { listClubDevicesGql } from "../../scorebridge-ts-submodule/graphql/queries";
 import { client } from "../../scorebridge-ts-submodule/react/gqlClient";
 import {
   AccessParams,
   errorCatchingSubscription,
+  getClub,
   GraphQLAuthMode,
   useSubscriptions,
 } from "../../scorebridge-ts-submodule/react/subscriptions";
@@ -58,36 +59,14 @@ function listClubDevices({ clubId, authMode, dispatch }: AccessParams) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       dispatch(
         setClubDevices(
-          d.reduce(
-            (acc, cd) => {
-              if (cd) {
-                acc[cd.clubDeviceId] = cd;
-              }
-              return acc;
-            },
-            {} as Record<string, ClubDevice>,
-          ),
+          d.reduce((acc: Record<string, ClubDevice>, cd: Maybe<ClubDevice>) => {
+            if (cd) {
+              acc[cd.clubDeviceId] = cd;
+            }
+            return acc;
+          }, {}),
         ),
       );
-    });
-}
-
-function getClub({ clubId, authMode, dispatch }: AccessParams) {
-  return client
-    .graphql({
-      query: getClubGql,
-      variables: {
-        clubId,
-      },
-      authMode,
-    })
-    .then((res) => {
-      if (res.errors) {
-        throw new Error(JSON.stringify(res.errors, null, 2));
-      }
-      // log("fetchRecentData.dispatchingSetClub", "debug", { res });
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      dispatch(setClub(res.data.getClub!));
     });
 }
 
