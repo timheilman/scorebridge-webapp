@@ -78,15 +78,19 @@ export function SubscriptionsComponent({
 
   function subscribeToAll(accessParams: AccessParams) {
     log("subscribeToAll", "debug");
-    errorCatchingSubscription({
-      accessParams,
-      subId: "onCreateClubDevice",
-      query: subIdToSubGql.onCreateClubDevice,
-      variables: { clubId: accessParams.clubId },
-      callback: (clubDevice) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        accessParams.dispatch(upsertClubDevice(clubDevice));
+    [
+      {
+        subId: "onCreateClubDevice" as const, // <- had to add "as const"
+        query: subIdToSubGql.onCreateClubDevice,
+        variables: { clubId: accessParams.clubId },
+        callback: (clubDevice: ClubDevice) => {
+          // <- had to add type
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          accessParams.dispatch(upsertClubDevice(clubDevice));
+        },
       },
+    ].forEach((args) => {
+      errorCatchingSubscription({ ...args, accessParams });
     });
     errorCatchingSubscription({
       accessParams,
