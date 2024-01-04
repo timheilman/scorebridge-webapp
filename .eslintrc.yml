@@ -9,6 +9,9 @@ extends:
   - plugin:react-hooks/recommended
   - plugin:cypress/recommended
   - plugin:chai-friendly/recommended
+ignorePatterns:
+  - "node_modules"
+  - "src/scorebridge-ts-submodule/tsSubmoduleLog.ts"
 parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: latest
@@ -23,9 +26,6 @@ plugins:
   - react-hooks
   - cypress
   - chai-friendly
-ignorePatterns:
-  - "node_modules"
-  - "src/scorebridge-ts-submodule/tsSubmoduleLog.ts"
 rules:
   "sort-imports": "off"
   "simple-import-sort/imports": "error"
