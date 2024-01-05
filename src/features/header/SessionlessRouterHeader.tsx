@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import FeatherIcon from "feather-icons-react";
 import { useTranslation } from "react-i18next";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
