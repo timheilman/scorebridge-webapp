@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import FeatherIcon from "feather-icons-react";
 import { useTranslation } from "react-i18next";
 import { Navigate, NavLink, useLocation } from "react-router-dom";
 
@@ -23,11 +26,21 @@ export default function SessionlessRouterHeader() {
   return (
     <header className="sticky">
       <NavLink to="/signin" className="button rounded">
-        <span data-test-id="signInTab" className="icon-user"></span>
+        <FeatherIcon
+          icon="log-in"
+          size="16"
+          style={{ "vertical-align": "text-top" }}
+        />
+        &nbsp;
         {t("tabs.signIn")}
       </NavLink>
       <NavLink to="/signup" className="button rounded">
-        <span data-test-id="signUpTab" className="icon-info"></span>
+        <FeatherIcon
+          icon="user-plus"
+          size="16"
+          style={{ "vertical-align": "text-top" }}
+        />
+        &nbsp;
         {t("tabs.signUp")}
       </NavLink>
       {requiredViteEnvVar("STAGE") === "prod" ? "" : <LanguageSelector />}
