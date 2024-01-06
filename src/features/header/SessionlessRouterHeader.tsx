@@ -23,7 +23,7 @@ export default function SessionlessRouterHeader() {
   }
   return (
     <header className="sticky">
-      <NavLink to="/signin" className="button rounded">
+      <NavLink to="/signin" className="button rounded" data-test-id="signInTab">
         <FeatherIcon
           icon="log-in"
           size="16"
@@ -32,7 +32,7 @@ export default function SessionlessRouterHeader() {
         &nbsp;
         {t("tabs.signIn")}
       </NavLink>
-      <NavLink to="/signup" className="button rounded">
+      <NavLink to="/signup" className="button rounded" data-test-id="signUpTab">
         <FeatherIcon
           icon="user-plus"
           size="16"
